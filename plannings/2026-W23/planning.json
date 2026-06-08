@@ -1,0 +1,126 @@
+{
+  "week": "2026-W23",
+  "start_date": "2026-06-01",
+  "end_date": "2026-06-07",
+  "hours_available": 40,
+  "carryover_from": "2026-W22",
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-006",
+          "title": "Modelo de negócios Courageous Land",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": 1,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Informar o modelo de negócios proposto para a Courageous Land"
+        },
+        {
+          "id": "yp-007",
+          "title": "Definir interface GPS Carbono para Courageous Land",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": 0,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land"
+        },
+        {
+          "id": "yp-009",
+          "title": "Protótipo integrado sem mock data",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": 0,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frontend only — backend já tem endpoints reais. Deadline original: quarta 04/jun"
+        },
+        {
+          "id": "yp-010",
+          "title": "Entrevista com usuária — prep + sessão",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": 0,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Quarta à tarde — amiga interessada em testar"
+        },
+        {
+          "id": "yp-008",
+          "title": "Conversa com Breno sobre vídeos públicos / estratégia de venda do curso",
+          "repo": "yang-gps",
+          "estimated_hours": 1,
+          "actual_hours": 0,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Alinhar com Breno antes de decidir"
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-004",
+          "title": "Stalinho — protótipo companion app",
+          "repo": "stalolabs",
+          "estimated_hours": 4,
+          "actual_hours": 4,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Sprint 1 bootstrap: estrutura base, schema de lead, design system via submodule, carrossel 'comparativo agentes IA', CHANGELOG"
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-006",
+          "title": "Fix deploy branch beta no Amplify",
+          "repo": "memory-club",
+          "estimated_hours": 2,
+          "actual_hours": 2,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Branch nova no Amplify corrigida"
+        },
+        {
+          "id": "mc-007",
+          "title": "Homepage academia — treino diário + palácio da memória",
+          "repo": "memory-club",
+          "estimated_hours": 6,
+          "actual_hours": 7,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Homepage academia redesenhada + sequência semanal fixa do treino diário (7 slots, com R/RR alternando)"
+        },
+        {
+          "id": "mc-008",
+          "title": "RAM Score integrado — landing pós-resultado → CTA academia",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "RAM Score history list (top 2 + mostrar mais), redesign sharing nos resultados, redirect logged-in users para /academia"
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": true,
+    "what_went_well": "Lançamento do Memory Club v1.0 deu certo — tirou um grande peso. Memory club v1.0 entregue com homepage academia, daily training fixo semanal, stats page nova, Cognito gates, e SART migrado pra dentro do repo. Stalinho Sprint 1 também saiu fora do planejado.",
+    "what_blocked_me": "Semana pessoal atípica com menos tempo disponível. Yang Planet ficou completamente de lado (0 commits) — só consegui fechar o modelo de negócios da Courageous Land (no-code).",
+    "what_to_change": "Não posso mais deixar Yang ficar sem incremento toda semana — sem progresso claro semanal, as coisas começam a parar. W24 com foco máximo em Yang, outros projetos com menos foco."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "id": "yangplanet",
+      "name": "Yang Planet",
+      "repos": ["yang-gps", "yang-gps-frontend", "yang-dashboard-eda"]
+    },
+    {
+      "id": "stalolabs",
+      "name": "Stalo Labs",
+      "repos": ["stalolabs", "stalolabs-growth"]
+    },
+    {
+      "id": "memory-club",
+      "name": "Clube da Memória",
+      "repos": ["memory-club", "sart"]
+    }
+  ]
+}

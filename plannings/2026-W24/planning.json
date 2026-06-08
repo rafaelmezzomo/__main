@@ -1,0 +1,128 @@
+{
+  "week": "2026-W24",
+  "start_date": "2026-06-08",
+  "end_date": "2026-06-14",
+  "hours_available": 40,
+  "carryover_from": "2026-W23",
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-007",
+          "title": "Definir interface GPS Carbono para Courageous Land",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23"
+        },
+        {
+          "id": "yp-009",
+          "title": "IDE GPS sem mock data — frontend integrado com endpoints reais",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Objetivo macro da semana: versão do IDE end-to-end funcionando sem mock. Backend já tem endpoints reais. Carryover W23"
+        },
+        {
+          "id": "yp-010",
+          "title": "Entrevista com usuária — prep + sessão",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Amiga interessada em testar. Carryover W23"
+        },
+        {
+          "id": "yp-011",
+          "title": "Repensar onboarding do usuário + esconder KB no footer",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Onboarding passo a passo ajudando o usuário a entender o app. Base de conhecimento sai do menu principal e vira parte do fluxo de onboarding — acessível inicialmente apenas via link pequeno no footer"
+        },
+        {
+          "id": "yp-008",
+          "title": "Conversa com Breno sobre vídeos públicos / estratégia de venda do curso",
+          "repo": "yang-gps",
+          "estimated_hours": 1,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Alinhar com Breno. Carryover W23"
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-009",
+          "title": "Corrigir bugs do Memory Club v1.0 em produção",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "v1.0 entrou em prod na W23 — coletar e corrigir erros reportados"
+        },
+        {
+          "id": "mc-010",
+          "title": "Adicionar 1 mini-game novo (se der tempo)",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Pra frente — só se sobrar tempo. Foco da semana é Yang"
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-005",
+          "title": "Stalinho como fork do Hermes opensource",
+          "repo": "stalinho",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fim de semana. Versão do Stalinho usando Hermes opensource como base"
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false,
+    "what_went_well": "",
+    "what_blocked_me": "",
+    "what_to_change": "",
+    "metrics": {
+      "tasks_total": 0,
+      "tasks_done": 0,
+      "completion_pct": 0,
+      "hours_estimated": 0,
+      "hours_actual": 0,
+      "accuracy_pct": 0,
+      "by_project": {
+        "yangplanet": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "stalolabs": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "memory-club": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 }
+      }
+    }
+  }
+}

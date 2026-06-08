@@ -1,0 +1,172 @@
+{
+  "week": "2026-W22",
+  "start_date": "2026-05-25",
+  "end_date": "2026-05-31",
+  "hours_available": 40,
+  "carryover_from": "2026-W21",
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-001",
+          "title": "Layout IDE 3 painéis (seções + editor + painel lateral)",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 8,
+          "actual_hours": 10,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "VSCode-like: sidebar seções, editor central, painel lateral agentes"
+        },
+        {
+          "id": "yp-002",
+          "title": "Problems panel com validação de compliance inline",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Erros de compilação: compliance gaps, missing fields, blockers"
+        },
+        {
+          "id": "yp-003",
+          "title": "Painel de agentes com resultados streaming",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 6,
+          "actual_hours": 2,
+          "priority": "red",
+          "status": "partial",
+          "carryover": true,
+          "notes": "Painel redimensionável criado, falta streaming dos 5 agentes. Carryover → W23"
+        },
+        {
+          "id": "yp-004",
+          "title": "Matching + strategy synthesis view",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": 4,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Cards por fundo com scores + capital stack + WACC"
+        },
+        {
+          "id": "yp-005",
+          "title": "Declarar imposto de renda (Yang Planet)",
+          "repo": "yang-gps",
+          "estimated_hours": 0.5,
+          "actual_hours": 0.5,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Concluído segunda 25/05"
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-001",
+          "title": "Alinhar design system growth + revisar copy",
+          "repo": "stalolabs-growth",
+          "estimated_hours": 1,
+          "actual_hours": 2,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Integrar design system + copy system"
+        },
+        {
+          "id": "sl-003",
+          "title": "Corrigir DNS sprintai.com.br",
+          "repo": "stalolabs",
+          "estimated_hours": 0.5,
+          "actual_hours": 0.5,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "Concluído sexta 29/05"
+        },
+        {
+          "id": "sl-002",
+          "title": "Gerar primeiro post",
+          "repo": "stalolabs-growth",
+          "estimated_hours": 1,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Antes da sync sexta 9:30"
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-001",
+          "title": "Homepage academia da memória",
+          "repo": "memory-club",
+          "estimated_hours": 6,
+          "actual_hours": 10,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Primeira tela do app ao entrar em app.memoria.club. 3 estados + protótipos v2-v4"
+        },
+        {
+          "id": "mc-002",
+          "title": "Redesign página resultado RAM Score",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": 4,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Chat flow experimental + rollback para TestSimulator"
+        },
+        {
+          "id": "mc-004",
+          "title": "Declarar imposto de renda (Clube da Memória)",
+          "repo": "memory-club",
+          "estimated_hours": 0.5,
+          "actual_hours": 0.5,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Concluído segunda 25/05"
+        },
+        {
+          "id": "mc-003",
+          "title": "Path minigames aprendizagem diária 10min",
+          "repo": "memory-club",
+          "estimated_hours": 5,
+          "actual_hours": 4,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Training path 13 nós + DailyTrainingCard com streak"
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": true,
+    "what_went_well": "Central de planejamento __main facilitou muito o context switching entre projetos. Produtividade alta — IDE Mode v0.6.0 saiu do zero em 1 dia, homepage Clube da Memória passou por 4 iterações até a versão final.",
+    "what_blocked_me": "Faltou alocar tempo para tarefas no-code (ex: TODOs para reuniões). Trava de ter 3 projetos em andamento mas nenhum rodando com clientes reais ainda.",
+    "what_to_change": "Incluir tarefas no-code no planning. Priorizar colocar produto no ar — Clube da Memória é o único com uso real (baixo volume, sem compromisso). Yang GPS e Stalo Labs ainda em criação. Deploy beta do Clube é prioridade W23.",
+    "metrics": {
+      "tasks_total": 12,
+      "tasks_done": 11,
+      "completion_pct": 92,
+      "hours_estimated": 40.5,
+      "hours_actual": 50,
+      "accuracy_pct": 123,
+      "by_project": {
+        "yangplanet": { "hours_estimated": 22.5, "hours_actual": 22.5, "tasks_done": 4, "tasks_total": 5 },
+        "stalolabs": { "hours_estimated": 2.5, "hours_actual": 8.5, "tasks_done": 3, "tasks_total": 3 },
+        "memory-club": { "hours_estimated": 15.5, "hours_actual": 19, "tasks_done": 4, "tasks_total": 4 }
+      }
+    }
+  }
+}

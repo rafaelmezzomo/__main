@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planning Semanal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    min-height: 100vh;
+  }
+
+  /* Week switcher */
+  .week-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #010409;
+    border-bottom: 1px solid #30363d;
+    padding: 0 24px;
+    height: 36px;
+  }
+  .week-tab {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8b949e;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .week-tab:hover { color: #c9d1d9; }
+  .week-tab.active {
+    color: #f0f6fc;
+    border-bottom-color: #f78166;
+  }
+  .week-tab .tab-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .week-tab .tab-badge.current { background: #1f6feb; color: #fff; }
+  .week-tab .tab-badge.past { background: #21262d; color: #8b949e; }
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .week-nav-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .week-nav-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
+  .week-nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  /* Header */
+  .header {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f0f6fc;
+  }
+  .header .meta {
+    font-size: 13px;
+    color: #8b949e;
+  }
+  .header .meta strong { color: #c9d1d9; }
+
+  /* Retro banner */
+  .retro-banner {
+    display: none;
+    background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
+    border-bottom: 1px solid #30363d;
+    padding: 12px 24px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .retro-banner:hover { background: #1c2333; }
+  .retro-banner.visible { display: block; }
+  .retro-banner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .retro-banner-title {
+    font-weight: 600;
+    color: #f0f6fc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .retro-banner-stats {
+    display: flex;
+    gap: 16px;
+    color: #8b949e;
+    font-size: 12px;
+  }
+  .retro-banner-stats .green { color: #3fb950; }
+  .retro-banner-stats .yellow { color: #d29922; }
+  .retro-banner-chevron {
+    color: #8b949e;
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  .retro-banner-chevron.expanded { transform: rotate(180deg); }
+  .retro-body {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #21262d;
+    line-height: 1.6;
+    color: #8b949e;
+    font-size: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .retro-body.expanded { display: block; }
+  .retro-body h4 { color: #c9d1d9; margin: 8px 0 4px; font-size: 12px; }
+  .retro-body h4:first-child { margin-top: 0; }
+  .retro-body ul { padding-left: 16px; }
+  .retro-body li { margin-bottom: 2px; }
+
+  /* Stats bar */
+  .stats {
+    display: flex;
+    gap: 24px;
+    padding: 12px 24px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    font-size: 13px;
+  }
+  .stat-item { display: flex; align-items: center; gap: 6px; }
+  .stat-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .stat-dot.todo { background: #8b949e; }
+  .stat-dot.doing { background: #d29922; }
+  .stat-dot.done { background: #3fb950; }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 3px;
+    background: #21262d;
+    display: flex;
+  }
+  .progress-done { background: #3fb950; transition: width 0.3s; }
+  .progress-doing { background: #d29922; transition: width 0.3s; }
+
+  /* Board */
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    height: calc(100vh - 150px);
+  }
+
+  .column {
+    border-right: 1px solid #30363d;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .column:last-child { border-right: none; }
+
+  .column-header {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #30363d;
+    background: #161b22;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+  }
+  .column-header .count {
+    background: #30363d;
+    color: #8b949e;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .column-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  /* Cards */
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 6px;
+    cursor: grab;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .card:hover { border-color: #58a6ff; }
+  .card.dragging {
+    opacity: 0.5;
+    border-color: #58a6ff;
+    box-shadow: 0 0 0 1px #58a6ff;
+  }
+  .card-priority {
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    border-radius: 6px 0 0 6px;
+  }
+  .card-priority.red { background: #f85149; }
+  .card-priority.yellow { background: #d29922; }
+  .card-priority.green { background: #3fb950; }
+  .card-priority.white { background: #8b949e; }
+
+  .card-id {
+    font-size: 11px;
+    color: #8b949e;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 4px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #f0f6fc;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .card-project {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 11px;
+  }
+  .card-project.yangplanet { background: #1f3a1f; color: #56d364; }
+  .card-project.memory-club { background: #3d2e00; color: #e3b341; }
+  .card-project.stalolabs { background: #1c2d4f; color: #79c0ff; }
+
+  .card-hours {
+    color: #8b949e;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .card-repo {
+    font-size: 10px;
+    color: #6e7681;
+    margin-top: 4px;
+  }
+
+  /* Drop zone */
+  .column-body.drag-over { background: rgba(56, 139, 253, 0.04); }
+
+  .priority-icon { margin-right: 4px; }
+
+  /* Filter bar */
+  .filters {
+    display: flex;
+    gap: 6px;
+    padding: 8px 24px;
+    background: #0d1117;
+  }
+  .filter-btn {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #30363d;
+    background: transparent;
+    color: #8b949e;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
+  .filter-btn.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+  /* Changelog panel */
+  .changelog-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .changelog-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
+
+  .changelog-panel {
+    display: none;
+    position: fixed;
+    top: 0; right: 0;
+    width: 480px; height: 100vh;
+    background: #161b22;
+    border-left: 1px solid #30363d;
+    z-index: 90;
+    flex-direction: column;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.3);
+  }
+  .changelog-panel.open { display: flex; }
+
+  .changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #30363d;
+  }
+  .changelog-header h3 { font-size: 14px; font-weight: 600; color: #f0f6fc; }
+
+  .changelog-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .changelog-body h2 { font-size: 15px; font-weight: 600; color: #f0f6fc; margin-top: 24px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #21262d; }
+  .changelog-body h2:first-child { margin-top: 0; }
+  .changelog-body h3 { font-size: 13px; font-weight: 600; color: #c9d1d9; margin-top: 12px; margin-bottom: 4px; }
+  .changelog-body ul { padding-left: 18px; margin-bottom: 8px; }
+  .changelog-body li { color: #8b949e; font-size: 13px; margin-bottom: 3px; }
+  .changelog-body h1 { font-size: 16px; color: #f0f6fc; margin-bottom: 16px; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 80px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #30363d;
+  }
+  .modal-header h2 { font-size: 16px; font-weight: 600; color: #f0f6fc; }
+  .modal-close {
+    background: none;
+    border: none;
+    color: #8b949e;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .modal-close:hover { background: #30363d; color: #f0f6fc; }
+
+  .modal-body { padding: 20px; }
+  .modal-field { margin-bottom: 16px; }
+  .modal-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8b949e;
+    margin-bottom: 4px;
+  }
+  .modal-value { font-size: 14px; color: #c9d1d9; line-height: 1.5; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .modal-status-btns { display: flex; gap: 6px; margin-top: 4px; }
+  .modal-status-btn {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    background: transparent;
+    color: #8b949e;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modal-status-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
+  .modal-status-btn.active-todo { background: #21262d; border-color: #8b949e; color: #c9d1d9; }
+  .modal-status-btn.active-doing { background: #2d2000; border-color: #d29922; color: #d29922; }
+  .modal-status-btn.active-done { background: #0d2818; border-color: #3fb950; color: #3fb950; }
+
+  .modal-notes {
+    width: 100%;
+    min-height: 80px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #c9d1d9;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px;
+    resize: vertical;
+    margin-top: 4px;
+  }
+  .modal-notes:focus { outline: none; border-color: #58a6ff; }
+  .modal-notes::placeholder { color: #484f58; }
+
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .priority-badge.red { background: #3d1a1a; color: #f85149; }
+  .priority-badge.yellow { background: #3d2e00; color: #d29922; }
+  .priority-badge.green { background: #0d2818; color: #3fb950; }
+  .priority-badge.white { background: #21262d; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<div class="week-switcher" id="week-switcher"></div>
+
+<div class="header">
+  <h1 id="board-title">Planning</h1>
+  <div class="meta" style="display:flex;align-items:center;gap:12px">
+    <span><span id="date-range"></span> &middot; <strong id="hours-used">0h</strong> / <span id="hours-total">40h</span></span>
+    <button class="changelog-btn" id="retros-toggle">&#128202; Retrospectivas</button>
+    <button class="changelog-btn" id="changelog-toggle">&#9776; Changelog</button>
+  </div>
+</div>
+
+<div class="retro-banner" id="retro-banner">
+  <div class="retro-banner-header">
+    <div class="retro-banner-title">
+      <span>&#128202;</span> <span id="retro-title">Retro</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="retro-banner-stats" id="retro-stats"></div>
+      <span class="retro-banner-chevron" id="retro-chevron">&#9660;</span>
+    </div>
+  </div>
+  <div class="retro-body" id="retro-body"></div>
+</div>
+
+<div class="stats" id="stats-bar"></div>
+<div class="progress-bar">
+  <div class="progress-done" id="progress-done"></div>
+  <div class="progress-doing" id="progress-doing"></div>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="board">
+  <div class="column" data-status="todo">
+    <div class="column-header">
+      <span>Todo</span>
+      <span class="count" id="count-todo">0</span>
+    </div>
+    <div class="column-body" id="col-todo"></div>
+  </div>
+  <div class="column" data-status="doing">
+    <div class="column-header">
+      <span>Doing</span>
+      <span class="count" id="count-doing">0</span>
+    </div>
+    <div class="column-body" id="col-doing"></div>
+  </div>
+  <div class="column" data-status="done">
+    <div class="column-header">
+      <span>Done</span>
+      <span class="count" id="count-done">0</span>
+    </div>
+    <div class="column-body" id="col-done"></div>
+  </div>
+</div>
+
+<div class="changelog-panel" id="changelog-panel">
+  <div class="changelog-header">
+    <h3>Changelog Diário</h3>
+    <button class="modal-close" id="changelog-close">&times;</button>
+  </div>
+  <div class="changelog-body" id="changelog-body">Carregando...</div>
+</div>
+
+<div class="changelog-panel" id="retros-panel">
+  <div class="changelog-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="week-nav-btn" id="retros-prev">&#9664;</button>
+      <button class="week-nav-btn" id="retros-next">&#9654;</button>
+      <h3 id="retros-title">Retrospectiva</h3>
+    </div>
+    <button class="modal-close" id="retros-close">&times;</button>
+  </div>
+  <div class="changelog-body" id="retros-body">Carregando...</div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" id="modal-close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── All weeks data ──
+const WEEKS = {
+  "2026-W22": {
+    week: "2026-W22",
+    start_date: "2026-05-25",
+    end_date: "2026-05-31",
+    hours_available: 40,
+    retro: {
+      completed: true,
+      tasks_done: 11,
+      tasks_total: 12,
+      hours_estimated: 40.5,
+      hours_actual: 50,
+      what_went_well: "Central de planejamento __main facilitou context switching entre projetos. IDE Mode v0.6.0 saiu do zero em 1 dia. 92% das tasks concluídas.",
+      what_blocked: "Faltou alocar tempo para tarefas no-code. Sensação de trava: 3 projetos em andamento mas Clube da Memória é o único com tração real.",
+      what_to_change: "Incluir tarefas no-code no planning. Foco em deploy — build para lançar, não para perfeição. Usar Sonnet como modelo padrão."
+    },
+    projects: {
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-001", title: "Layout IDE 3 painéis (seções + editor + painel lateral)", repo: "yang-gps-frontend", estimated_hours: 8, priority: "red", notes: "VSCode-like: sidebar seções, editor central, painel lateral agentes", default_status: "done" },
+        { id: "yp-002", title: "Problems panel com validação de compliance inline", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Erros de compilação: compliance gaps, missing fields, blockers", default_status: "done" },
+        { id: "yp-003", title: "Painel de agentes com resultados streaming", repo: "yang-gps-frontend", estimated_hours: 6, priority: "red", notes: "Output dos 5 agentes no painel lateral — completado", default_status: "done" },
+        { id: "yp-004", title: "Matching + strategy synthesis view", repo: "yang-gps-frontend", estimated_hours: 4, priority: "yellow", notes: "Cards por fundo com scores + capital stack + WACC", default_status: "done" },
+        { id: "yp-005", title: "Declarar imposto de renda (Yang Planet)", repo: "yang-gps", estimated_hours: 0.5, priority: "red", notes: "Concluído segunda 25/05", default_status: "done" }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-001", title: "Homepage academia da memória", repo: "memory-club", estimated_hours: 6, priority: "red", notes: "3 estados + protótipos v2-v4", default_status: "done" },
+        { id: "mc-002", title: "Redesign página resultado RAM Score", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Chat flow experimental + rollback para TestSimulator", default_status: "done" },
+        { id: "mc-003", title: "Path minigames aprendizagem diária 10min", repo: "memory-club", estimated_hours: 5, priority: "yellow", notes: "Training path 13 nós + DailyTrainingCard", default_status: "done" },
+        { id: "mc-004", title: "Declarar imposto de renda (Clube da Memória)", repo: "memory-club", estimated_hours: 0.5, priority: "red", notes: "Concluído segunda 25/05", default_status: "done" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-001", title: "Alinhar design system growth + revisar copy", repo: "stalolabs-growth", estimated_hours: 1, priority: "red", notes: "Integrar design system + copy system", default_status: "done" },
+        { id: "sl-002", title: "Gerar primeiro post", repo: "stalolabs-growth", estimated_hours: 1, priority: "red", notes: "Antes da sync sexta 9:30", default_status: "done" },
+        { id: "sl-003", title: "Corrigir DNS sprintai.com.br", repo: "stalolabs", estimated_hours: 0.5, priority: "green", notes: "Concluído sexta 29/05", default_status: "done" }
+      ]}
+    }
+  },
+  "2026-W23": {
+    week: "2026-W23",
+    start_date: "2026-06-01",
+    end_date: "2026-06-07",
+    hours_available: 40,
+    retro: {
+      completed: true,
+      tasks_done: 5,
+      tasks_total: 9,
+      hours_estimated: 27,
+      hours_actual: 17,
+      what_went_well: "Lançamento do Memory Club v1.0 deu certo — tirou um grande peso. Homepage academia, daily training fixo semanal, stats page nova, Cognito gates e SART migrado pra dentro do repo. Stalinho Sprint 1 também saiu fora do planejado.",
+      what_blocked: "Semana pessoal atípica com menos tempo disponível. Yang Planet ficou completamente de lado (0 commits) — só consegui fechar o modelo de negócios da Courageous Land (no-code).",
+      what_to_change: "Não posso mais deixar Yang ficar sem incremento toda semana. W24 com foco máximo em Yang, outros projetos com menos foco."
+    },
+    projects: {
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-006", title: "Modelo de negócios Courageous Land", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Informar o modelo de negócios proposto para a Courageous Land", default_status: "done" },
+        { id: "yp-007", title: "Definir interface GPS Carbono para Courageous Land", repo: "yang-gps-frontend", estimated_hours: 3, priority: "red", notes: "Qual interface do GPS Carbono apresentar para a Courageous Land" },
+        { id: "yp-009", title: "Protótipo integrado sem mock data", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Frontend only — backend já tem endpoints reais. Deadline: quarta 04/jun" },
+        { id: "yp-010", title: "Entrevista com usuária — prep + sessão", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Quarta à tarde — amiga interessada em testar" },
+        { id: "yp-008", title: "Conversa com Breno sobre vídeos públicos / estratégia de venda do curso", repo: "yang-gps", estimated_hours: 1, priority: "yellow", notes: "Alinhar com Breno antes de decidir" }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-006", title: "Fix deploy branch beta no Amplify", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Branch nova no Amplify — já tentou, está com erro. Corrigir", default_status: "done" },
+        { id: "mc-007", title: "Homepage academia — treino diário + palácio da memória", repo: "memory-club", estimated_hours: 6, priority: "red", notes: "Design já pronto. Treino diário no topo + palácio da memória embaixo", default_status: "done" },
+        { id: "mc-008", title: "RAM Score integrado — landing pós-resultado → CTA academia", repo: "memory-club", estimated_hours: 3, priority: "red", notes: "Funil: RAM Score grátis → resultado → CTA academia", default_status: "done" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-004", title: "Stalinho — protótipo companion app", repo: "stalolabs", estimated_hours: 4, priority: "yellow", notes: "Pesquisa stack (Chrome ext vs desktop app) + MVP. Quando sobrar tempo", default_status: "done" }
+      ]}
+    }
+  },
+  "2026-W24": {
+    week: "2026-W24",
+    start_date: "2026-06-08",
+    end_date: "2026-06-14",
+    hours_available: 40,
+    retro: null,
+    projects: {
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-007", title: "Definir interface GPS Carbono para Courageous Land", repo: "yang-gps-frontend", estimated_hours: 3, priority: "red", notes: "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23" },
+        { id: "yp-009", title: "IDE GPS sem mock data — frontend integrado com endpoints reais", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Objetivo macro da semana: versão do IDE end-to-end funcionando sem mock. Carryover W23" },
+        { id: "yp-010", title: "Entrevista com usuária — prep + sessão", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Amiga interessada em testar. Carryover W23" },
+        { id: "yp-011", title: "Repensar onboarding do usuário + esconder KB no footer", repo: "yang-gps-frontend", estimated_hours: 6, priority: "red", notes: "Onboarding passo a passo. Base de conhecimento sai do menu principal e vira parte do fluxo de onboarding — acessível inicialmente via link pequeno no footer" },
+        { id: "yp-008", title: "Conversa com Breno sobre vídeos públicos / estratégia de venda do curso", repo: "yang-gps", estimated_hours: 1, priority: "yellow", notes: "Alinhar com Breno. Carryover W23" }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-009", title: "Corrigir bugs do Memory Club v1.0 em produção", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "v1.0 entrou em prod na W23 — coletar e corrigir erros reportados" },
+        { id: "mc-010", title: "Adicionar 1 mini-game novo (se der tempo)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Pra frente — só se sobrar tempo. Foco da semana é Yang" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-005", title: "Stalinho como fork do Hermes opensource", repo: "stalinho", estimated_hours: 4, priority: "white", notes: "Fim de semana. Versão do Stalinho usando Hermes opensource como base" }
+      ]}
+    }
+  }
+};
+
+const WEEK_ORDER = Object.keys(WEEKS).sort();
+let currentWeekKey = WEEK_ORDER[WEEK_ORDER.length - 1]; // default to latest
+
+const PRIORITY_EMOJI = { red: '🔴', yellow: '🟡', green: '🟢', white: '⚪' };
+const PRIORITY_LABELS = { red: 'Fazer Agora', yellow: 'Agendar', green: 'Quick Win', white: 'Backlog' };
+
+// ── LocalStorage ──
+function lsKey(week, type) { return `planning-${type}-${week}`; }
+
+function loadStatuses(week) {
+  try { return JSON.parse(localStorage.getItem(lsKey(week, 'status'))) || {}; } catch { return {}; }
+}
+function saveStatuses(week, statuses) {
+  localStorage.setItem(lsKey(week, 'status'), JSON.stringify(statuses));
+}
+function loadNotes(week) {
+  try { return JSON.parse(localStorage.getItem(lsKey(week, 'notes'))) || {}; } catch { return {}; }
+}
+function saveNotes(week, notes) {
+  localStorage.setItem(lsKey(week, 'notes'), JSON.stringify(notes));
+}
+
+let statuses = {};
+let allNotes = {};
+let activeFilter = 'all';
+
+function getStatus(taskId) {
+  if (statuses[taskId]) return statuses[taskId];
+  // Check default_status from data
+  const data = WEEKS[currentWeekKey];
+  for (const proj of Object.values(data.projects)) {
+    for (const t of proj.tasks) {
+      if (t.id === taskId && t.default_status) return t.default_status;
+    }
+  }
+  return 'todo';
+}
+
+function setStatus(taskId, status) {
+  statuses[taskId] = status;
+  saveStatuses(currentWeekKey, statuses);
+}
+
+function getAllTasks() {
+  const data = WEEKS[currentWeekKey];
+  const tasks = [];
+  for (const [projectId, project] of Object.entries(data.projects)) {
+    for (const task of project.tasks) {
+      tasks.push({ ...task, projectId, projectName: project.name });
+    }
+  }
+  return tasks;
+}
+
+// ── Week switcher ──
+function renderWeekSwitcher() {
+  const el = document.getElementById('week-switcher');
+  el.innerHTML = '';
+
+  for (const wk of WEEK_ORDER) {
+    const data = WEEKS[wk];
+    const isCurrent = wk === currentWeekKey;
+    const isLatest = wk === WEEK_ORDER[WEEK_ORDER.length - 1];
+
+    const tab = document.createElement('div');
+    tab.className = `week-tab ${isCurrent ? 'active' : ''}`;
+
+    const startParts = data.start_date.split('-');
+    const endParts = data.end_date.split('-');
+    const dateLabel = `${startParts[2]}/${startParts[1]} - ${endParts[2]}/${endParts[1]}`;
+
+    let badge = '';
+    if (isLatest) {
+      badge = '<span class="tab-badge current">atual</span>';
+    } else if (data.retro && data.retro.completed) {
+      badge = '<span class="tab-badge past">✓</span>';
+    }
+
+    tab.innerHTML = `${wk} <span style="color:#6e7681;font-size:11px">${dateLabel}</span> ${badge}`;
+    tab.addEventListener('click', () => switchWeek(wk));
+    el.appendChild(tab);
+  }
+
+  // Nav buttons
+  const nav = document.createElement('div');
+  nav.className = 'week-nav';
+
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'week-nav-btn';
+  prevBtn.innerHTML = '&#9664;';
+  prevBtn.disabled = currentWeekKey === WEEK_ORDER[0];
+  prevBtn.addEventListener('click', () => {
+    const idx = WEEK_ORDER.indexOf(currentWeekKey);
+    if (idx > 0) switchWeek(WEEK_ORDER[idx - 1]);
+  });
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'week-nav-btn';
+  nextBtn.innerHTML = '&#9654;';
+  nextBtn.disabled = currentWeekKey === WEEK_ORDER[WEEK_ORDER.length - 1];
+  nextBtn.addEventListener('click', () => {
+    const idx = WEEK_ORDER.indexOf(currentWeekKey);
+    if (idx < WEEK_ORDER.length - 1) switchWeek(WEEK_ORDER[idx + 1]);
+  });
+
+  nav.appendChild(prevBtn);
+  nav.appendChild(nextBtn);
+  el.appendChild(nav);
+}
+
+function switchWeek(weekKey) {
+  currentWeekKey = weekKey;
+  statuses = loadStatuses(weekKey);
+  allNotes = loadNotes(weekKey);
+  activeFilter = 'all';
+  renderWeekSwitcher();
+  renderHeader();
+  renderRetro();
+  renderFilters();
+  render();
+  if (typeof isRetroPanelOpen === 'function' && isRetroPanelOpen()) {
+    retroIdx = WEEK_ORDER.indexOf(currentWeekKey);
+    renderRetroPanel();
+  }
+}
+
+// ── Header ──
+function renderHeader() {
+  const data = WEEKS[currentWeekKey];
+  document.getElementById('board-title').textContent = `Planning ${data.week}`;
+  const startParts = data.start_date.split('-');
+  const endParts = data.end_date.split('-');
+  document.getElementById('date-range').textContent = `${startParts[2]}/${startParts[1]} - ${endParts[2]}/${endParts[1]}`;
+  document.getElementById('hours-total').textContent = `${data.hours_available}h`;
+}
+
+// ── Retro banner ──
+function renderRetro() {
+  const data = WEEKS[currentWeekKey];
+  const banner = document.getElementById('retro-banner');
+  const retro = data.retro;
+
+  if (!retro || !retro.completed) {
+    banner.classList.remove('visible');
+    return;
+  }
+
+  banner.classList.add('visible');
+  document.getElementById('retro-title').textContent = `Retro ${data.week}`;
+
+  const completionPct = Math.round((retro.tasks_done / retro.tasks_total) * 100);
+  document.getElementById('retro-stats').innerHTML = `
+    <span><span class="green">${retro.tasks_done}/${retro.tasks_total}</span> tasks (${completionPct}%)</span>
+    <span><span class="yellow">${retro.hours_actual}h</span> reais vs ${retro.hours_estimated}h est.</span>
+  `;
+
+  document.getElementById('retro-body').innerHTML = `
+    <h4>&#9989; O que foi bem</h4>
+    <p>${retro.what_went_well}</p>
+    <h4>&#9888;&#65039; O que travou</h4>
+    <p>${retro.what_blocked}</p>
+    <h4>&#128260; O que mudar</h4>
+    <p>${retro.what_to_change}</p>
+  `;
+}
+
+// Retro toggle
+let retroExpanded = false;
+document.getElementById('retro-banner').addEventListener('click', () => {
+  retroExpanded = !retroExpanded;
+  document.getElementById('retro-body').classList.toggle('expanded', retroExpanded);
+  document.getElementById('retro-chevron').classList.toggle('expanded', retroExpanded);
+});
+
+// ── Cards ──
+function createCard(task) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.draggable = true;
+  card.dataset.taskId = task.id;
+  card.dataset.project = task.projectId;
+
+  card.innerHTML = `
+    <div class="card-priority ${task.priority}"></div>
+    <div class="card-id">${PRIORITY_EMOJI[task.priority]} ${task.id}</div>
+    <div class="card-title">${task.title}</div>
+    <div class="card-footer">
+      <span class="card-project ${task.projectId}">${task.projectName}</span>
+      <span class="card-hours">${task.estimated_hours}h</span>
+    </div>
+    <div class="card-repo">${task.repo}</div>
+  `;
+
+  card.addEventListener('dragstart', e => {
+    card.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', task.id);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  card.addEventListener('click', e => {
+    if (e.defaultPrevented) return;
+    openModal(task);
+  });
+
+  return card;
+}
+
+// ── Modal ──
+function openModal(task) {
+  const overlay = document.getElementById('modal-overlay');
+  const status = getStatus(task.id);
+
+  document.getElementById('modal-title').textContent = task.title;
+
+  const statusBtnClass = (s) => s !== status ? 'modal-status-btn' : `modal-status-btn active-${s}`;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">ID</div>
+        <div class="modal-value" style="font-family:'SF Mono','Fira Code',monospace">${task.id}</div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Projeto</div>
+        <div class="modal-value"><span class="card-project ${task.projectId}">${task.projectName}</span></div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">Repositório</div>
+        <div class="modal-value">${task.repo}</div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Horas Estimadas</div>
+        <div class="modal-value">${task.estimated_hours}h</div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">Prioridade</div>
+        <div class="modal-value"><span class="priority-badge ${task.priority}">${PRIORITY_EMOJI[task.priority]} ${PRIORITY_LABELS[task.priority]}</span></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Status</div>
+        <div class="modal-status-btns">
+          <button class="${statusBtnClass('todo')}" data-s="todo">Todo</button>
+          <button class="${statusBtnClass('doing')}" data-s="doing">Doing</button>
+          <button class="${statusBtnClass('done')}" data-s="done">Done</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Notas</div>
+      <textarea class="modal-notes" id="modal-notes" placeholder="Adicionar notas...">${allNotes[task.id] || task.notes || ''}</textarea>
+    </div>
+  `;
+
+  document.querySelectorAll('.modal-status-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setStatus(task.id, btn.dataset.s);
+      render();
+      openModal(task);
+    });
+  });
+
+  document.getElementById('modal-notes').addEventListener('input', e => {
+    allNotes[task.id] = e.target.value;
+    saveNotes(currentWeekKey, allNotes);
+  });
+
+  overlay.classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    document.getElementById('retros-panel').classList.remove('open');
+    document.getElementById('changelog-panel').classList.remove('open');
+  }
+});
+
+// ── Render board ──
+function render() {
+  const tasks = getAllTasks();
+  const cols = { todo: [], doing: [], done: [] };
+
+  for (const task of tasks) {
+    const status = getStatus(task.id);
+    if (activeFilter !== 'all' && task.projectId !== activeFilter) continue;
+    cols[status].push(task);
+  }
+
+  const priorityOrder = { red: 0, yellow: 1, green: 2, white: 3 };
+  for (const col of Object.values(cols)) {
+    col.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+  }
+
+  for (const [status, statusTasks] of Object.entries(cols)) {
+    const colEl = document.getElementById(`col-${status}`);
+    colEl.innerHTML = '';
+    for (const task of statusTasks) colEl.appendChild(createCard(task));
+    document.getElementById(`count-${status}`).textContent = statusTasks.length;
+  }
+
+  updateStats(tasks);
+}
+
+function updateStats(allTasks) {
+  const filtered = activeFilter === 'all' ? allTasks : allTasks.filter(t => t.projectId === activeFilter);
+  const total = filtered.length;
+  const doing = filtered.filter(t => getStatus(t.id) === 'doing').length;
+  const done = filtered.filter(t => getStatus(t.id) === 'done').length;
+  const todo = total - doing - done;
+
+  const hoursDone = filtered.filter(t => getStatus(t.id) === 'done').reduce((s, t) => s + t.estimated_hours, 0);
+  const hoursDoing = filtered.filter(t => getStatus(t.id) === 'doing').reduce((s, t) => s + t.estimated_hours, 0);
+  const hoursTotal = filtered.reduce((s, t) => s + t.estimated_hours, 0);
+
+  document.getElementById('hours-used').textContent = `${hoursDone + hoursDoing}h`;
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-item"><div class="stat-dot todo"></div> ${todo} todo</div>
+    <div class="stat-item"><div class="stat-dot doing"></div> ${doing} doing</div>
+    <div class="stat-item"><div class="stat-dot done"></div> ${done} done</div>
+    <div class="stat-item" style="margin-left:auto;color:#8b949e">${hoursDone}h done / ${hoursTotal}h total</div>
+  `;
+
+  const pctDone = total > 0 ? (done / total) * 100 : 0;
+  const pctDoing = total > 0 ? (doing / total) * 100 : 0;
+  document.getElementById('progress-done').style.width = pctDone + '%';
+  document.getElementById('progress-doing').style.width = pctDoing + '%';
+}
+
+// ── Filters ──
+function renderFilters() {
+  const data = WEEKS[currentWeekKey];
+  const filtersEl = document.getElementById('filters');
+  filtersEl.innerHTML = '';
+  const projects = [{ id: 'all', name: 'Todos' }, ...Object.entries(data.projects).map(([id, p]) => ({ id, name: p.name }))];
+
+  for (const proj of projects) {
+    const btn = document.createElement('button');
+    btn.className = `filter-btn ${activeFilter === proj.id ? 'active' : ''}`;
+    btn.textContent = proj.name;
+    btn.addEventListener('click', () => {
+      activeFilter = proj.id;
+      renderFilters();
+      render();
+    });
+    filtersEl.appendChild(btn);
+  }
+}
+
+// ── Drag & drop ──
+document.querySelectorAll('.column-body').forEach(col => {
+  col.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    col.classList.add('drag-over');
+  });
+  col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+  col.addEventListener('drop', e => {
+    e.preventDefault();
+    col.classList.remove('drag-over');
+    const taskId = e.dataTransfer.getData('text/plain');
+    const newStatus = col.parentElement.dataset.status;
+    setStatus(taskId, newStatus);
+    render();
+  });
+});
+
+// ── Changelog ──
+document.getElementById('changelog-toggle').addEventListener('click', () => {
+  const panel = document.getElementById('changelog-panel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  } else {
+    document.getElementById('retros-panel').classList.remove('open');
+    panel.classList.add('open');
+    loadChangelog();
+  }
+});
+document.getElementById('changelog-close').addEventListener('click', () => {
+  document.getElementById('changelog-panel').classList.remove('open');
+});
+
+function loadChangelog() {
+  document.getElementById('changelog-body').innerHTML = parseMarkdown(CHANGELOG_MD);
+}
+
+function parseMarkdown(md) {
+  return md
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, m => '<ul>' + m + '</ul>')
+    .replace(/<\/ul>\s*<ul>/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.+?)`/g, '<code style="background:#21262d;padding:2px 5px;border-radius:3px;font-size:12px">$1</code>')
+    .replace(/\n{2,}/g, '<br>');
+}
+
+const CHANGELOG_MD = `# Changelog Diário
+
+## 2026-05-28 (quarta)
+
+### Yang Planet
+- PRD: Email allow-list no sign-up — Cognito Pre-SignUp Lambda + DynamoDB
+- IDE docs
+
+### Clube da Memória (4 commits)
+- RAM Score conversacional (experimentação + rollback)
+- Homepage redesenhada com 3 estados (sem RAM / treinando / retake)
+- Fix duplicação de sessão, botão "Ver resultado completo" no HistoryDrawer
+
+### Stalo Labs — stalolabs-meetings
+- v0.3.5: fix ffmpeg PATH + race condition
+- v0.3.6: diagnostic logging + startup health check
+
+## 2026-05-27 (terça)
+
+### Yang Planet — IDE Mode v0.6.0 (6 commits)
+- IDE Mode base com toggle Report/IDE, editor com section cards, validação, star/tier
+- Matching tab com fund matches, Strategy tab com capital stack
+- Split editor, IDE como overlay fixo, full viewport
+
+### Stalo Labs
+- Decks for prospects
+
+## 2026-05-26 (segunda)
+
+### Clube da Memória — Protótipos conversacionais
+- Protótipo v2 (companion AI), v3 (fluxo progressivo), v4 (scroll unificado)
+- Decisão: homepage conversacional com companion AI
+
+## 2026-05-25 (domingo)
+
+### __main (Central de Planejamento)
+- Central de planejamento, scripts, board visual, skills
+- Retro W21 + Planning W22
+
+### Clube da Memória — Homepage v1.0
+- RAM Score donut, HistoryDrawer, Training Path, layout mobile-first
+`;
+
+// ── Retrospectivas (paginadas) ──
+const RETROS_MD = {
+  "2026-W21": `# Retro Semana 2026-W21 (19/05 - 25/05)
+
+## Métricas
+- Tarefas: 17/17 concluídas (100%)
+- Horas: 53h real vs 49h estimado (108% accuracy)
+- Utilização: 53h / 40h disponíveis (133%)
+
+| Projeto | Est. | Real | % Tempo | Conclusão |
+|---------|------|------|---------|-----------|
+| Clube da Memória | 25h | 28h | 53% | 8/8 |
+| Stalo Labs | 13h | 14h | 26% | 5/5 |
+| Yang Planet | 11h | 11h | 21% | 4/4 |
+
+## Destaques
+- Memory Club dominou a semana: landing page, monetização, unificação SART, bug fixes, onboarding
+- **Yang Planet (yang-gps-fundoclima):** download completo de 386 projetos brasileiros do IDB desde 2018 (~10GB de dados). Levou um dia inteiro mas deu certo. Próximo passo: análise dos dados como base de conhecimento (backlog para Tiago; se não fizer, Rafael assume depois)
+- Stalolabs: landing pages PT/EN + setup infra Amplify + DNS (stalolabs.com + sprintai.com.br)
+- Semana estourou 13h acima do budget de 40h
+
+## Reflexão
+1. **O que foi bem?**
+   - Unificação dos repos do Clube da Memória (SART + memory-club) e definição de estratégia única de monetização
+   - stalo-meetings: duas versões entregues e testadas na prática
+2. **O que me travou?**
+   - Yang Planet: não conseguiu gerar um produto que una a jornada completa (originação → matching → blended finance). Ficou em documentação sem avançar no produto
+3. **O que vou mudar?**
+   - Memory Club: meta clara para W22 — beta v1.0 no ar até quinta (29/05), com path completo SART → app + minigames de aprendizagem diária 10min além dos cursos de palácio da memória
+   - Stalolabs: foco em stalo-growth, gerar primeiro post até sexta (30/05)
+   - Yang Planet: precisa sair de docs e entrar em produto
+
+## Carryover → W22
+- **Yang Planet (fundoclima):** analisar os 386 projetos IDB baixados e estruturar como base de conhecimento — backlog Tiago (fallback: Rafael)
+`,
+  "2026-W22": `# Retro W22 — 25 a 31/mai 2026
+
+## Métricas
+
+| | Planejado | Real |
+|---|---|---|
+| **Tarefas** | 12 | 11 done + 1 parcial (92%) |
+| **Horas** | 40.5h | ~50h (123% do budget) |
+| **Commits** | — | 34 commits em 6 repos |
+| **Sessions Claude** | — | 18 sessions, ~500M tokens |
+
+### Por projeto
+
+| Projeto | Horas est. | Horas reais | Tasks done | Não planejado |
+|---------|-----------|-------------|------------|---------------|
+| **Yang Planet** | 22.5h | 22.5h | 4/5 | PRD email allow-list, IDE docs/prototype |
+| **Stalo Labs** | 2.5h | 8.5h | 3/3 | Decks prospects, meetings v0.3.5/v0.3.6, carrosséis |
+| **Clube da Memória** | 15.5h | 19h | 4/4 | Protótipos v2-v4, chat flow experimental |
+
+### Carryover para W23
+- **yp-003**: Painel de agentes com streaming (painel redimensionável criado, falta streaming)
+
+## Dia a dia
+
+- **Seg 25/05** — Central __main (planning, retro W21, board, skills) + Homepage Clube v1.0
+- **Ter 26/05** — Protótipos homepage conversacional (v2, v3, v4)
+- **Qua 27/05** — IDE Mode v0.6.0 completo (yang-gps-frontend) + RAM Score conversacional
+- **Qui 28/05** — Homepage redesign final (3 estados) + PRD email allow-list + fix ffmpeg meetings
+- **Sex 29/05** — stalolabs-growth (KB, carrosséis, decks) + stalolabs (hero, DNS)
+- **Sáb-Dom** — Sem commits. Retro.
+
+## Reflexão
+
+### O que foi bem
+- Central de planejamento \`__main\` facilitou muito o context switching entre os 3 projetos
+- Produtividade alta: IDE Mode v0.6.0 saiu do zero em 1 dia, homepage do Clube passou por 4 iterações até a versão final
+- 92% das tasks planejadas concluídas
+
+### O que travou
+- Faltou alocar tempo para tarefas no-code (TODOs para reuniões, alinhamentos)
+- Sensação de trava: 3 projetos em andamento mas nenhum "no ar com clientes" — na verdade Clube da Memória já tem tração real
+
+### Reflexão estratégica
+- **Clube da Memória é o cavalo certo** — 735 usuários únicos desde lançamento, 90 ativos/mês, 100 clientes pagantes do curso, 1.8% de conversão orgânica sem marketing. Produto online desde jan/2025
+- Evolução em andamento: de ferramenta de palácio da memória → academia completa (RAM Score + treino diário + palácio + vídeo-aulas integradas)
+- Funil de growth definido: TikTok/Instagram (sócios cuidam) → RAM Score grátis → resultado → CTA academia → conversão. Rafael foca 100% em tech
+- **Yang GPS** próximo de aporte, mas ainda em criação (IDE Mode v0.6.0 pronto)
+- **Stalo Labs** é temporário
+- Risco identificado: excesso de iteração em UI (4 versões de homepage + chat flow revertido = muita energia em exploração). Com deadline, executar > experimentar
+
+### O que mudar em W23
+- Incluir tarefas no-code no planning (reuniões, alinhamentos, prep)
+- Foco em deploy: build para lançar, não para perfeição
+- Clube da Memória: beta da academia no ar antes da TNM (quinta 05/jun) — priorizar integração do que já existe (RAM Score + jogos + 12 aulas gravadas) sobre features novas
+- Considerar usar Sonnet como modelo padrão para economizar budget do Claude
+`,
+  "2026-W23": `# Retro Semana 2026-W23 (01/06 - 07/06)
+
+## Métricas
+- Tarefas: 5/9 concluídas (56%)
+- Horas: 17h real vs 27h estimado (semana pessoal atípica com menos tempo disponível)
+- Utilização: 17h / 40h disponíveis (43%)
+
+| Projeto | Est. | Real | % Tempo | Conclusão |
+|---------|------|------|---------|-----------|
+| **Yang Planet** | 12h | 1h | 6% | 1/5 (apenas modelo de negócios Courageous Land) |
+| **Stalo Labs** | 4h | 4h | 24% | 1/1 (Stalinho Sprint 1 bootstrap) |
+| **Clube da Memória** | 11h | 12h | 70% | 3/3 + muito não planejado |
+
+## Highlights por projeto
+
+### Clube da Memória — Memory Club v1.0 lançado 🎉
+- Homepage academia redesenhada (mc-007)
+- RAM Score integrado com history list + redesign sharing (mc-008)
+- Deploy branch beta no Amplify corrigido (mc-006)
+- **Não planejado:** stats page nova, daily training redux com sequência semanal fixa (R/RR alternando), Cognito gates, standalone game routes, shared MainNav desktop, SART migrado pra dentro do memory-club, polish geral
+
+### Stalo Labs — Stalinho Sprint 1
+- Estrutura base + schema de lead em markdown
+- Design system consumido via submodule do stalolabs-growth
+- Carrossel "comparativo agentes IA" (Hermes vs Claude SDK vs OpenClaw)
+
+### Yang Planet — parado
+- 0 commits em yang-gps / yang-gps-frontend / dashboards
+- Apenas yp-006 (modelo de negócios Courageous Land) entregue, no-code
+
+## Reflexão
+
+### O que foi bem
+Lançamento do Memory Club v1.0 deu certo — tirou um grande peso. Memory Club v1.0 entregue com homepage academia, daily training fixo semanal, stats page nova, Cognito gates, e SART migrado pra dentro do repo. Stalinho Sprint 1 também saiu fora do planejado.
+
+### O que travou
+Semana pessoal atípica com menos tempo disponível. Yang Planet ficou completamente de lado (0 commits) — só consegui fechar o modelo de negócios da Courageous Land (no-code).
+
+### O que mudar em W24
+Não posso mais deixar Yang ficar sem incremento toda semana — sem progresso claro semanal, as coisas começam a parar. **W24 com foco máximo em Yang**, outros projetos com menos foco.
+
+## Carryover → 2026-W24
+- **yp-007** Definir interface GPS Carbono para Courageous Land (3h)
+- **yp-009** Protótipo integrado sem mock data (4h)
+- **yp-010** Entrevista com usuária — prep + sessão (2h)
+- **yp-008** Conversa com Breno sobre vídeos públicos (1h)
+
+## Tokens Claude da semana
+
+| Projeto | Input | Output | Cache | Total |
+|---------|-------|--------|-------|-------|
+| Yang Planet | 173 | 23.4k | 6.4M | 6.4M |
+| Stalo Labs | 22.5k | 249.1k | 20.4M | 20.7M |
+| Clube da Memória | 4.9k | 1.4M | 594.0M | 595.4M |
+| outros | 406 | 89.6k | 11.8M | 11.9M |
+| **Total** | **28.0k** | **1.8M** | **632.6M** | **634.5M** |
+
+*94% do consumo foi no Clube da Memória — alinhado com a distribuição de tempo da semana.*
+`
+};
+
+let retroIdx = WEEK_ORDER.indexOf(currentWeekKey);
+
+function renderRetroPanel() {
+  const key = WEEK_ORDER[retroIdx];
+  document.getElementById('retros-title').textContent = `Retro ${key}`;
+  const md = RETROS_MD[key];
+  document.getElementById('retros-body').innerHTML = md
+    ? parseMarkdown(md)
+    : `<p style="color:#8b949e">Retro ainda não disponível para <strong>${key}</strong>.</p>`;
+  document.getElementById('retros-prev').disabled = retroIdx === 0;
+  document.getElementById('retros-next').disabled = retroIdx === WEEK_ORDER.length - 1;
+}
+
+function isRetroPanelOpen() {
+  return document.getElementById('retros-panel').classList.contains('open');
+}
+
+document.getElementById('retros-toggle').addEventListener('click', () => {
+  const panel = document.getElementById('retros-panel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  } else {
+    document.getElementById('changelog-panel').classList.remove('open');
+    panel.classList.add('open');
+    retroIdx = WEEK_ORDER.indexOf(currentWeekKey);
+    renderRetroPanel();
+  }
+});
+document.getElementById('retros-close').addEventListener('click', () => {
+  document.getElementById('retros-panel').classList.remove('open');
+});
+document.getElementById('retros-prev').addEventListener('click', () => {
+  if (retroIdx > 0) { retroIdx--; renderRetroPanel(); }
+});
+document.getElementById('retros-next').addEventListener('click', () => {
+  if (retroIdx < WEEK_ORDER.length - 1) { retroIdx++; renderRetroPanel(); }
+});
+
+// ── Init ──
+statuses = loadStatuses(currentWeekKey);
+allNotes = loadNotes(currentWeekKey);
+renderWeekSwitcher();
+renderHeader();
+renderRetro();
+renderFilters();
+render();
+</script>
+</body>
+</html>

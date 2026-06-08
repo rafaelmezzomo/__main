@@ -1,0 +1,227 @@
+{
+  "week": "2026-W21",
+  "start_date": "2026-05-19",
+  "end_date": "2026-05-25",
+  "hours_available": 40,
+  "carryover_from": null,
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-001",
+          "title": "README com escopo do projeto e diagrama de arquitetura",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": 2,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "PR #18 merged"
+        },
+        {
+          "id": "yp-002",
+          "title": "Guia de escrita de projetos IDB TC v0",
+          "repo": "yang-gps",
+          "estimated_hours": 4,
+          "actual_hours": 4,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "PR #19 merged"
+        },
+        {
+          "id": "yp-003",
+          "title": "Planning Rockefeller",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": 2,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": ""
+        },
+        {
+          "id": "yp-004",
+          "title": "Doc processo de submissão IDB com diagrama de fluxo",
+          "repo": "yang-gps",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "PR #20 merged"
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-001",
+          "title": "Refatoração CSS: tokens, classes e entrada única",
+          "repo": "stalolabs",
+          "estimated_hours": 2,
+          "actual_hours": 2,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": ""
+        },
+        {
+          "id": "sl-002",
+          "title": "Landing page stalolabs: copy, perfis, links, hero, heading sizes",
+          "repo": "stalolabs",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Schedule a call, profiles, copy updates"
+        },
+        {
+          "id": "sl-003",
+          "title": "Versão inglês com toggle de idioma",
+          "repo": "stalolabs",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Fix relative paths para file:// compat"
+        },
+        {
+          "id": "sl-004",
+          "title": "Merge sprintai-landing + setup AWS Amplify",
+          "repo": "stalolabs",
+          "estimated_hours": 3,
+          "actual_hours": 4,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "PR #4 merged, config DNS stalolabs.com + sprintai.com.br no Amplify"
+        },
+        {
+          "id": "sl-005",
+          "title": "Responsive breakpoints mobile/tablet + ajustes finais",
+          "repo": "stalolabs",
+          "estimated_hours": 2,
+          "actual_hours": 2,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "travessão fix"
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-001",
+          "title": "Landing page final + merge PR #44",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": 5,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Landing page v1, exercícios, depoimentos post-it style, CTA, DNS memoria.club no Amplify"
+        },
+        {
+          "id": "mc-002",
+          "title": "Planning #25 Monetização academia + plano growth/lançamento",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Planning monetização, funil, growth viral vs fórmula de lançamento"
+        },
+        {
+          "id": "mc-003",
+          "title": "Planning #30 Overhaul documentação",
+          "repo": "memory-club",
+          "estimated_hours": 1,
+          "actual_hours": 1,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": ""
+        },
+        {
+          "id": "mc-004",
+          "title": "Unificar SART cognitive tests no memory-club repo",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": 5,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Merge sart into memory-club, fix tests, display RAM score"
+        },
+        {
+          "id": "mc-005",
+          "title": "Fix bugs RAM Score: CTA design system, cores, navegação, ranking botão",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": 4,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "CTA amarelo padronizado, fix light mode, botão ranking, display último score na home"
+        },
+        {
+          "id": "mc-006",
+          "title": "Novo onboarding: reduzir tutorial de 8 etapas para 3",
+          "repo": "sart",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "new flow ram->app"
+        },
+        {
+          "id": "mc-007",
+          "title": "Fix 4 bugs: token search score, result viewer nav, LTM flow, PAL errors",
+          "repo": "sart",
+          "estimated_hours": 4,
+          "actual_hours": 4,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Simplificar PAL para 3 erros totais, LTM direto 8 palavras"
+        },
+        {
+          "id": "mc-008",
+          "title": "Restructure LTM: 4-phase recall flow com scoring base 1000",
+          "repo": "sart",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": ""
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false,
+    "what_went_well": "",
+    "what_blocked_me": "",
+    "what_to_change": "",
+    "metrics": {
+      "tasks_total": 16,
+      "tasks_done": 16,
+      "completion_pct": 100,
+      "hours_estimated": 46,
+      "hours_actual": 53,
+      "accuracy_pct": 87,
+      "by_project": {
+        "yangplanet": { "hours_estimated": 11, "hours_actual": 11, "tasks_done": 4, "tasks_total": 4 },
+        "stalolabs": { "hours_estimated": 13, "hours_actual": 14, "tasks_done": 5, "tasks_total": 5 },
+        "memory-club": { "hours_estimated": 25, "hours_actual": 28, "tasks_done": 8, "tasks_total": 8 }
+      }
+    }
+  }
+}
