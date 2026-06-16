@@ -16,18 +16,18 @@
           "priority": "red",
           "status": "todo",
           "carryover": true,
-          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23"
+          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23 → W25"
         },
         {
           "id": "yp-009",
           "title": "IDE GPS sem mock data — frontend integrado com endpoints reais",
           "repo": "yang-gps-frontend",
           "estimated_hours": 4,
-          "actual_hours": null,
+          "actual_hours": 12,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
-          "notes": "Objetivo macro da semana: versão do IDE end-to-end funcionando sem mock. Backend já tem endpoints reais. Carryover W23"
+          "notes": "CONCLUÍDO. 23 commits (yang-gps + frontend, v0.6.1→v0.9.3): IDE como home, manual mode com re-runs seletivos, endpoints reais, swap /text→/pdf, kill long-polling. Objetivo macro da semana entregue"
         },
         {
           "id": "yp-010",
@@ -38,7 +38,7 @@
           "priority": "red",
           "status": "todo",
           "carryover": true,
-          "notes": "Amiga interessada em testar. Carryover W23"
+          "notes": "Amiga interessada em testar. Não realizada. Carryover W23 → W25"
         },
         {
           "id": "yp-011",
@@ -49,7 +49,7 @@
           "priority": "red",
           "status": "todo",
           "carryover": false,
-          "notes": "Onboarding passo a passo ajudando o usuário a entender o app. Base de conhecimento sai do menu principal e vira parte do fluxo de onboarding — acessível inicialmente apenas via link pequeno no footer"
+          "notes": "Maior tarefa da semana — ficou pra trás. Frontend foi todo pro IDE. Carryover → W25"
         },
         {
           "id": "yp-008",
@@ -60,7 +60,7 @@
           "priority": "yellow",
           "status": "todo",
           "carryover": true,
-          "notes": "Alinhar com Breno. Carryover W23"
+          "notes": "Alinhar com Breno. Não realizada. Carryover W23 → W25"
         }
       ]
     },
@@ -71,22 +71,22 @@
           "title": "Corrigir bugs do Memory Club v1.0 em produção",
           "repo": "memory-club",
           "estimated_hours": 4,
-          "actual_hours": null,
+          "actual_hours": 4,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "v1.0 entrou em prod na W23 — coletar e corrigir erros reportados"
+          "notes": "CONCLUÍDO. Fixes RAM (selector digitSpan, pill no header, subdomínio ram.memoria.club) + exclusão da rodada de treino da pontuação no PAL"
         },
         {
           "id": "mc-010",
           "title": "Adicionar 1 mini-game novo (se der tempo)",
           "repo": "memory-club",
           "estimated_hours": 3,
-          "actual_hours": null,
+          "actual_hours": 4,
           "priority": "yellow",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Pra frente — só se sobrar tempo. Foco da semana é Yang"
+          "notes": "CONCLUÍDO (bônus). Minigame Torre de Controle v1 + v2 construído — era 'só se sobrar tempo'"
         }
       ]
     },
@@ -97,31 +97,31 @@
           "title": "Stalinho como fork do Hermes opensource",
           "repo": "stalinho",
           "estimated_hours": 4,
-          "actual_hours": null,
+          "actual_hours": 5,
           "priority": "white",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Fim de semana. Versão do Stalinho usando Hermes opensource como base"
+          "notes": "CONCLUÍDO. Hermes como submodule, cerebro/ como HERMES_HOME + runtime (ADR-002), README + KB de Product-Led Growth, skill criar-carousel. Também: landing interativa da Stalo Labs (não planejado)"
         }
       ]
     }
   },
   "retro": {
-    "completed": false,
-    "what_went_well": "",
-    "what_blocked_me": "",
-    "what_to_change": "",
+    "completed": true,
+    "what_went_well": "Ampla execução — Yang Planet, Clube da Memória e Stalinho/Hermes avançaram na mesma semana. O foco em Yang da W23 se concretizou: IDE GPS sem mock data entregue (23 commits, v0.6.1→v0.9.3).",
+    "what_blocked_me": "O onboarding (yp-011, a maior tarefa, 6h) ficou pra trás — o frontend foi todo pro IDE. As tarefas no-code do Yang (interface Courageous, entrevista, conversa com Breno) também não saíram.",
+    "what_to_change": "Manter o foco em Yang e fechar o onboarding (yp-011) que ficou, junto com o carryover de tarefas no-code.",
     "metrics": {
-      "tasks_total": 0,
-      "tasks_done": 0,
-      "completion_pct": 0,
-      "hours_estimated": 0,
-      "hours_actual": 0,
-      "accuracy_pct": 0,
+      "tasks_total": 8,
+      "tasks_done": 4,
+      "completion_pct": 50,
+      "hours_estimated": 27,
+      "hours_actual": 25,
+      "accuracy_pct": 93,
       "by_project": {
-        "yangplanet": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
-        "stalolabs": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
-        "memory-club": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 }
+        "yangplanet": { "hours_estimated": 16, "hours_actual": 12, "tasks_done": 1, "tasks_total": 5 },
+        "stalolabs": { "hours_estimated": 4, "hours_actual": 5, "tasks_done": 1, "tasks_total": 1 },
+        "memory-club": { "hours_estimated": 7, "hours_actual": 8, "tasks_done": 2, "tasks_total": 2 }
       }
     }
   }

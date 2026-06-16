@@ -1,0 +1,108 @@
+{
+  "week": "2026-W25",
+  "period_label": "Sprint",
+  "sprint_weeks": ["2026-W25", "2026-W26"],
+  "start_date": "2026-06-15",
+  "end_date": "2026-06-28",
+  "hours_available": 80,
+  "carryover_from": "2026-W24",
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-011",
+          "title": "Onboarding do usuário — fluxo passo a passo + esconder KB no footer",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "PRIORIDADE DA SEMANA. Onboarding passo a passo ajudando o usuário a entender o app. Base de conhecimento sai do menu principal e vira parte do fluxo — acessível via link pequeno no footer. Carryover W24"
+        },
+        {
+          "id": "yp-012",
+          "title": "Entrada sem fricção — novo usuário cria conta e testa sem setup",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Objetivo macro: versão onboarded onde é fácil novos usuários entrarem e testarem. Acesso/demo com mínimo de barreira"
+        },
+        {
+          "id": "yp-010",
+          "title": "Entrevista com usuária — prep + sessão",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Amiga interessada em testar — parte de validar a versão onboarded com usuário real. Carryover W23/W24"
+        },
+        {
+          "id": "yp-007",
+          "title": "Definir interface GPS Carbono para Courageous Land",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23/W24"
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-011",
+          "title": "Segundo minigame novo — fechar 2 minigames (Torre + 1)",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Meta da semana: ter 2 minigames no ar. Torre de Controle já saiu na W24 — falta construir +1"
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-006",
+          "title": "Aprofundar Hermes/Stalinho — pesquisa",
+          "repo": "stalinho",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Sem entrega de produto — apenas continuar a pesquisa e aprofundamento em Hermes + Stalinho"
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false,
+    "what_went_well": "",
+    "what_blocked_me": "",
+    "what_to_change": "",
+    "metrics": {
+      "tasks_total": 0,
+      "tasks_done": 0,
+      "completion_pct": 0,
+      "hours_estimated": 0,
+      "hours_actual": 0,
+      "accuracy_pct": 0,
+      "by_project": {
+        "yangplanet": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "stalolabs": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "memory-club": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 }
+      }
+    }
+  }
+}

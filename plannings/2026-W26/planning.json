@@ -1,0 +1,112 @@
+{
+  "week": "2026-W26",
+  "period_label": "Semana",
+  "sprint_weeks": ["2026-W26"],
+  "start_date": "2026-06-22",
+  "end_date": "2026-06-28",
+  "hours_available": 40,
+  "carryover_from": "2026-W25",
+  "macro_objective": "Versão onboarded — entrada sem fricção: usuário aprovado entra e testa sem setup. Acesso controlado por allow-list (aprovação manual) + waiting room pós-login + proteção de custo no backend.",
+  "projects": {
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-013",
+          "title": "Infra de allow-list/aprovação — tabela + endpoints admin + GET /user/approval-status + grandfather",
+          "repo": "yang-gps",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Base do PRD Email Allow-list. Tabela yang-gps-allowlist (PK entry, type email/domain). Rotas GET/POST/DELETE /admin/allowlist em gps-admin (reusa _is_admin). GET /user/approval-status em gps-get-project lê a tabela fresh (não grupo JWT). Script grandfather-allowlist.py seeda usuários atuais — rodar ANTES do enforcement."
+        },
+        {
+          "id": "yp-012",
+          "title": "Gate de aprovação no front + tela 'aguardando aprovação' (PT-BR)",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Objetivo macro. AuthProvider expõe isApproved (espelha isAdmin) via GET /user/approval-status. ProtectedRoute: autenticado mas não aprovado → tela WaitingForApproval (polling leve, navega pra / ao aprovar). Rota /aguardando-aprovacao. Carryover W25"
+        },
+        {
+          "id": "yp-011",
+          "title": "Primeiro uso sem fricção — polir landing IDE (upload em destaque) + esconder KB no footer",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "IDEHome/EmptyState já caem no upload — só polir. Esconder o link de Knowledge Base no footer (vira link pequeno fora do menu principal). Carryover W24/W25"
+        },
+        {
+          "id": "yp-014a",
+          "title": "Enforce de aprovação nas rotas autenticadas (analyze + match via API GW)",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "GetItem na allow-list pelo email do claim (requestContext.authorizer.jwt.claims) antes de processar; 403 se não aprovado. Sem isso o waiting room não protege custo. Rodar grandfather antes."
+        },
+        {
+          "id": "yp-014b",
+          "title": "Fechar a Function URL pública do match (AuthType: NONE)",
+          "repo": "yang-gps",
+          "estimated_hours": 1,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "template.yaml:266 AuthType NONE → AWS_IAM (ou remover FunctionUrlConfig + Output MatchFunctionUrl se confirmado sem uso). É o buraco real de cost-attack. Pipeline analyze→match é invoke IAM (handler.py:432), não quebra. Front usa só API Gateway."
+        },
+        {
+          "id": "yp-015a",
+          "title": "Admin — endpoint /admin/pending-users (listar usuários sem aprovação)",
+          "repo": "yang-gps",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "list_users do pool diff allow-list, atrás do _is_admin em gps-admin. Alimenta a fila de aprovação."
+        },
+        {
+          "id": "yp-015b",
+          "title": "Admin — tela de aprovação em /admin (listar pendentes + aprovar/remover)",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Tela dentro de /admin (já protegido por AdminGate) consumindo /admin/pending-users + /admin/allowlist. Botão aprovar = POST /admin/allowlist."
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false,
+    "what_went_well": "",
+    "what_blocked_me": "",
+    "what_to_change": "",
+    "metrics": {
+      "tasks_total": 0,
+      "tasks_done": 0,
+      "completion_pct": 0,
+      "hours_estimated": 0,
+      "hours_actual": 0,
+      "accuracy_pct": 0,
+      "by_project": {
+        "yangplanet": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "stalolabs": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
+        "memory-club": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 }
+      }
+    }
+  }
+}
