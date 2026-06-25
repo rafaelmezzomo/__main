@@ -25,6 +25,7 @@ fi
 START_DATE=$(jq -r '.start_date' "$JSON")
 END_DATE=$(jq -r '.end_date' "$JSON")
 HOURS_AVAILABLE=$(jq -r '.hours_available' "$JSON")
+PERIOD_LABEL=$(jq -r '.period_label // "Semana"' "$JSON")
 
 # Format dates for display (DD/MM)
 START_DISPLAY=$(date -j -f "%Y-%m-%d" "$START_DATE" "+%d/%m" 2>/dev/null || echo "$START_DATE")
@@ -106,7 +107,7 @@ done
 [ -z "$WHITE_TASKS" ] && WHITE_TASKS="*Nenhuma tarefa*"$'\n'
 
 cat > "$OUTPUT" << EOF
-# Planning Semana $WEEK ($START_DISPLAY - $END_DISPLAY)
+# Planning $PERIOD_LABEL $WEEK ($START_DISPLAY - $END_DISPLAY)
 
 **Horas disponíveis:** ${HOURS_AVAILABLE}h | **Horas alocadas:** ${TOTAL_HOURS}h | **Livre:** $(awk "BEGIN{print $HOURS_AVAILABLE - $TOTAL_HOURS}")h
 
@@ -174,7 +175,7 @@ for PROJECT_ID in $(jq -r '.projects | keys[]' "$JSON"); do
     [ -z "$REPO_TASKS" ] && continue
 
     cat > "$WEEKLY_DIR/$WEEK.md" << EOF
-# $PROJECT_NAME / $REPO — Semana $WEEK ($START_DISPLAY - $END_DISPLAY)
+# $PROJECT_NAME / $REPO — $PERIOD_LABEL $WEEK ($START_DISPLAY - $END_DISPLAY)
 
 **Horas estimadas:** ${REPO_HOURS}h
 

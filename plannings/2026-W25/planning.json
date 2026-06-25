@@ -14,9 +14,9 @@
           "title": "Onboarding do usuário — fluxo passo a passo + esconder KB no footer",
           "repo": "yang-gps-frontend",
           "estimated_hours": 6,
-          "actual_hours": null,
+          "actual_hours": 8,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "PRIORIDADE DA SEMANA. Onboarding passo a passo ajudando o usuário a entender o app. Base de conhecimento sai do menu principal e vira parte do fluxo — acessível via link pequeno no footer. Carryover W24"
         },
@@ -25,9 +25,9 @@
           "title": "Entrada sem fricção — novo usuário cria conta e testa sem setup",
           "repo": "yang-gps-frontend",
           "estimated_hours": 4,
-          "actual_hours": null,
+          "actual_hours": 4,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
           "notes": "Objetivo macro: versão onboarded onde é fácil novos usuários entrarem e testarem. Acesso/demo com mínimo de barreira"
         },
@@ -40,18 +40,62 @@
           "priority": "red",
           "status": "todo",
           "carryover": true,
-          "notes": "Amiga interessada em testar — parte de validar a versão onboarded com usuário real. Carryover W23/W24"
+          "notes": "Tarefa do Tiago (não do Rafael). Ficou paralisada porque o Tiago entrou em licença médica — agora que voltou ele vai pegar. Validar a versão onboarded com usuário real. Carryover W23/W24/W25"
         },
         {
           "id": "yp-007",
           "title": "Definir interface GPS Carbono para Courageous Land",
           "repo": "yang-gps-frontend",
           "estimated_hours": 3,
+          "actual_hours": 2,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": true,
+          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23/W24"
+        },
+        {
+          "id": "yp-013",
+          "title": "Reformulação UX matching + estratégia (grid checkável, picker de fundos, fix ID Fundo Clima, polling de estratégia)",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 8,
+          "actual_hours": 8,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Adicionada retroativamente (não estava no planning original). Grid 'Fundos disponíveis' unificado e checkável (remove modal), botão primário por seleção, lista colapsável, sem ícones. Picker de fundos para a estratégia (fund_ids no /strategy). Fix: Fundo Clima (fnmc)/GCF (gcf-global) apareciam 'não elegível' por mismatch catálogo↔backend (matchId alias). Botão Gerar Estratégia não fica azul sem créditos. Estratégia trata 503 do API GW como 'rodando' + polling até landing. Backend: /strategy aceita fund_ids (yang-gps v0.11)."
+        },
+        {
+          "id": "yp-014",
+          "title": "Loading centralizado em /match e /strategy com tips por fase",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
           "actual_hours": null,
           "priority": "yellow",
           "status": "todo",
-          "carryover": true,
-          "notes": "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23/W24"
+          "carryover": false,
+          "notes": "A experiência de loading precisa melhorar. Nas páginas /match e /strategy ter um loading centralizado, com tips relativas à fase do processo em andamento (match vs strategy)."
+        },
+        {
+          "id": "yp-015",
+          "title": "Fix long polling — resultado pronto no backend não atualiza o front (/match e /strategy)",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Bug observado testando o front: tanto em /match quanto em /strategy o resultado fica pronto no backend mas o long polling não atualiza a UI. Resolvido: front passa a superficializar falhas de match/strategy em vez de girar pra sempre (PR #14); backend persiste marker de falha pra o front capturar (yang-gps)."
+        },
+        {
+          "id": "yp-016",
+          "title": "Internacionalização (i18n) do GPS Carbono — frontend multi-idioma",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 12,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "doing",
+          "carryover": false,
+          "notes": "PIVOT: reverte a decisão de pt-BR-only (commit 02e6543 / yp-007) e volta a priorizar i18n. Feature grande, em implementação. Arquitetura desenhada no doc 2026-06-19-i18n-arquitetura.md. Virou a prioridade do resto do sprint (até 28/06)."
         }
       ]
     },
@@ -62,11 +106,11 @@
           "title": "Segundo minigame novo — fechar 2 minigames (Torre + 1)",
           "repo": "memory-club",
           "estimated_hours": 4,
-          "actual_hours": null,
+          "actual_hours": 9,
           "priority": "yellow",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Meta da semana: ter 2 minigames no ar. Torre de Controle já saiu na W24 — falta construir +1"
+          "notes": "FECHADO e com sobra: além da Torre (W24), saíram DOIS minigames novos — Encaixe Sombra (rotação mental 3D, Shepard & Metzler, 22/06) e Garçom Maluco (23/06). Mais kit arcade reutilizável, tela de pause compartilhada, tela de resultado generalizada e jogos agrupados por foco cognitivo."
         }
       ]
     },
@@ -87,21 +131,21 @@
     }
   },
   "retro": {
-    "completed": false,
-    "what_went_well": "",
-    "what_blocked_me": "",
-    "what_to_change": "",
+    "completed": true,
+    "what_went_well": "Memory deslanchou: dois minigames novos no mesmo par de dias — Encaixe Sombra (rotação mental 3D) e Garçom Maluco — fechando o mc-011 com sobra, mais kit arcade reutilizável e tela de pause/resultado compartilhadas. No Yang, o bug crônico do long polling (yp-015) finalmente caiu (PR #14): match/strategy agora superficializam falha em vez de girar pra sempre. E na semana 1 do sprint já tinham entrado onboarding (yp-011/012) + reformulação UX matching (yp-013).",
+    "what_blocked_me": "Pivot grande no meio do sprint: a internacionalização (yp-016) voltou a ser prioridade depois de já ter sido descartada (pt-BR-only, yp-007/commit 02e6543). É uma feature grande e está consumindo o resto do sprint — empurrou yp-014 (loading centralizado) pra trás. A entrevista com usuária (yp-010) segue como carryover crônico (W23/W24/W25), travada no Tiago.",
+    "what_to_change": "Bancar o pivot de i18n com foco — é a maior frente aberta e precisa fechar até 28/06. Aceitar que yp-014 e sl-006 provavelmente não saem nesse sprint. Reconhecer o padrão: decisão de produto (drop i18n → retomar i18n) reabriu escopo grande no meio do caminho; da próxima decidir i18n vs pt-BR-only antes de começar a tocar a UI.",
     "metrics": {
-      "tasks_total": 0,
-      "tasks_done": 0,
-      "completion_pct": 0,
-      "hours_estimated": 0,
-      "hours_actual": 0,
-      "accuracy_pct": 0,
+      "tasks_total": 10,
+      "tasks_done": 6,
+      "tasks_doing": 1,
+      "completion_pct": 60,
+      "hours_estimated": 49,
+      "hours_actual": 36,
       "by_project": {
-        "yangplanet": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
-        "stalolabs": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 },
-        "memory-club": { "hours_estimated": 0, "hours_actual": 0, "tasks_done": 0, "tasks_total": 0 }
+        "yangplanet": { "hours_estimated": 41, "hours_actual": 25, "tasks_done": 5, "tasks_total": 8, "note": "yp-016 i18n em andamento" },
+        "stalolabs": { "hours_estimated": 4, "hours_actual": 2, "tasks_done": 0, "tasks_total": 1 },
+        "memory-club": { "hours_estimated": 4, "hours_actual": 9, "tasks_done": 1, "tasks_total": 1 }
       }
     }
   }

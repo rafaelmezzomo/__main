@@ -629,21 +629,66 @@ const WEEKS = {
     start_date: "2026-06-08",
     end_date: "2026-06-14",
     hours_available: 40,
-    retro: null,
+    retro: {
+      completed: true,
+      tasks_done: 4,
+      tasks_total: 8,
+      hours_estimated: 27,
+      hours_actual: 25,
+      what_went_well: "Ampla execução — Yang Planet, Clube da Memória e Stalinho/Hermes avançaram na mesma semana. O foco em Yang da W23 se concretizou: IDE GPS sem mock data entregue (23 commits, v0.6.1→v0.9.3).",
+      what_blocked: "O onboarding (yp-011, a maior tarefa, 6h) ficou pra trás — o frontend foi todo pro IDE. As tarefas no-code do Yang (interface Courageous, entrevista, conversa com Breno) também não saíram.",
+      what_to_change: "Manter o foco em Yang e fechar o onboarding (yp-011) que ficou, junto com o carryover de tarefas no-code."
+    },
     projects: {
       "yangplanet": { name: "Yang Planet", tasks: [
         { id: "yp-007", title: "Definir interface GPS Carbono para Courageous Land", repo: "yang-gps-frontend", estimated_hours: 3, priority: "red", notes: "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23" },
-        { id: "yp-009", title: "IDE GPS sem mock data — frontend integrado com endpoints reais", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Objetivo macro da semana: versão do IDE end-to-end funcionando sem mock. Carryover W23" },
+        { id: "yp-009", title: "IDE GPS sem mock data — frontend integrado com endpoints reais", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Objetivo macro da semana: versão do IDE end-to-end funcionando sem mock. Carryover W23", default_status: "done" },
         { id: "yp-010", title: "Entrevista com usuária — prep + sessão", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Amiga interessada em testar. Carryover W23" },
         { id: "yp-011", title: "Repensar onboarding do usuário + esconder KB no footer", repo: "yang-gps-frontend", estimated_hours: 6, priority: "red", notes: "Onboarding passo a passo. Base de conhecimento sai do menu principal e vira parte do fluxo de onboarding — acessível inicialmente via link pequeno no footer" },
         { id: "yp-008", title: "Conversa com Breno sobre vídeos públicos / estratégia de venda do curso", repo: "yang-gps", estimated_hours: 1, priority: "yellow", notes: "Alinhar com Breno. Carryover W23" }
       ]},
       "memory-club": { name: "Clube da Memória", tasks: [
-        { id: "mc-009", title: "Corrigir bugs do Memory Club v1.0 em produção", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "v1.0 entrou em prod na W23 — coletar e corrigir erros reportados" },
-        { id: "mc-010", title: "Adicionar 1 mini-game novo (se der tempo)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Pra frente — só se sobrar tempo. Foco da semana é Yang" }
+        { id: "mc-009", title: "Corrigir bugs do Memory Club v1.0 em produção", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "v1.0 entrou em prod na W23 — coletar e corrigir erros reportados", default_status: "done" },
+        { id: "mc-010", title: "Adicionar 1 mini-game novo (se der tempo)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Pra frente — só se sobrar tempo. Foco da semana é Yang", default_status: "done" }
       ]},
       "stalolabs": { name: "Stalo Labs", tasks: [
-        { id: "sl-005", title: "Stalinho como fork do Hermes opensource", repo: "stalinho", estimated_hours: 4, priority: "white", notes: "Fim de semana. Versão do Stalinho usando Hermes opensource como base" }
+        { id: "sl-005", title: "Stalinho como fork do Hermes opensource", repo: "stalinho", estimated_hours: 4, priority: "white", notes: "Fim de semana. Versão do Stalinho usando Hermes opensource como base", default_status: "done" }
+      ]}
+    }
+  },
+  "2026-W25": {
+    week: "2026-W25",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W25", "2026-W26"],
+    start_date: "2026-06-15",
+    end_date: "2026-06-28",
+    hours_available: 80,
+    retro: {
+      completed: true,
+      tasks_done: 6,
+      tasks_total: 10,
+      hours_estimated: 49,
+      hours_actual: 36,
+      what_went_well: "Memory deslanchou: dois minigames novos em dois dias — Encaixe Sombra (rotação mental 3D) e Garçom Maluco — fechando o mc-011 com sobra, mais kit arcade reutilizável e tela de pause/resultado compartilhadas. No Yang, o bug crônico do long polling (yp-015) finalmente caiu (PR #14). Na semana 1 já tinham entrado onboarding (yp-011/012) + reformulação UX matching (yp-013).",
+      what_blocked: "Pivot grande no meio do sprint: a i18n (yp-016) voltou a ser prioridade depois de já ter sido descartada (pt-BR-only, yp-007). Feature grande, consumindo o resto do sprint — empurrou o yp-014. A entrevista com usuária (yp-010) segue carryover crônico, travada no Tiago.",
+      what_to_change: "Bancar o pivot de i18n com foco — maior frente aberta, fechar até 28/06. Aceitar que yp-014 e sl-006 provavelmente não saem. Reconhecer o padrão: decisão de produto (drop i18n → retomar i18n) reabriu escopo grande no meio do caminho — da próxima, decidir i18n vs pt-BR-only antes de tocar a UI."
+    },
+    projects: {
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-011", title: "Onboarding do usuário — fluxo passo a passo + esconder KB no footer", repo: "yang-gps-frontend", estimated_hours: 6, priority: "red", notes: "PRIORIDADE DA SEMANA. Onboarding passo a passo. KB sai do menu principal e vira parte do fluxo — link pequeno no footer. Carryover W24", default_status: "done" },
+        { id: "yp-012", title: "Entrada sem fricção — novo usuário cria conta e testa sem setup", repo: "yang-gps-frontend", estimated_hours: 4, priority: "red", notes: "Objetivo macro: versão onboarded onde é fácil novos usuários entrarem e testarem", default_status: "done" },
+        { id: "yp-013", title: "Reformulação UX matching + estratégia (grid checkável, picker de fundos, fix ID Fundo Clima, polling)", repo: "yang-gps-frontend", estimated_hours: 8, priority: "red", notes: "Adicionada retroativamente. Grid 'Fundos disponíveis' unificado e checkável (remove modal), picker de fundos (fund_ids no /strategy), fix FC/GCF 'não elegível' por mismatch catálogo↔backend, estratégia trata 503 do API GW como 'rodando' + polling (yang-gps v0.11)", default_status: "done" },
+        { id: "yp-010", title: "Entrevista com usuária — prep + sessão", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Tarefa do Tiago. Parou pela licença médica dele — voltou e vai pegar. Validar a versão onboarded com usuário real. Carryover W23/W24/W25" },
+        { id: "yp-007", title: "Definir interface GPS Carbono para Courageous Land", repo: "yang-gps-frontend", estimated_hours: 3, priority: "yellow", notes: "Qual interface do GPS Carbono apresentar para a Courageous Land. Carryover W23/W24", default_status: "done" },
+        { id: "yp-014", title: "Loading centralizado em /match e /strategy com tips por fase", repo: "yang-gps-frontend", estimated_hours: 3, priority: "yellow", notes: "A experiência de loading precisa melhorar. Loading centralizado nas páginas /match e /strategy, com tips relativas à fase do processo (match vs strategy)" },
+        { id: "yp-015", title: "Fix long polling — resultado pronto no backend não atualiza o front (/match e /strategy)", repo: "yang-gps-frontend", estimated_hours: 3, priority: "red", notes: "Resolvido: front superficializa falhas de match/strategy em vez de girar pra sempre (PR #14); backend persiste marker de falha", default_status: "done" },
+        { id: "yp-016", title: "Internacionalização (i18n) do GPS Carbono — frontend multi-idioma", repo: "yang-gps-frontend", estimated_hours: 12, priority: "red", notes: "PIVOT: reverte a decisão de pt-BR-only (yp-007/commit 02e6543) e volta a priorizar i18n. Feature grande, em implementação. Arquitetura no doc 2026-06-19-i18n-arquitetura.md. Prioridade do resto do sprint (até 28/06)", default_status: "doing" }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-011", title: "Segundo minigame novo — fechar 2 minigames (Torre + 1)", repo: "memory-club", estimated_hours: 4, priority: "yellow", notes: "FECHADO com sobra: além da Torre (W24), saíram DOIS minigames novos — Encaixe Sombra (rotação mental 3D, 22/06) e Garçom Maluco (23/06). Mais kit arcade reutilizável e telas de pause/resultado compartilhadas", default_status: "done" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-006", title: "Aprofundar Hermes/Stalinho — pesquisa", repo: "stalinho", estimated_hours: 4, priority: "white", notes: "Sem entrega de produto — apenas continuar a pesquisa e aprofundamento em Hermes + Stalinho" }
       ]}
     }
   }
@@ -655,6 +700,11 @@ let currentWeekKey = WEEK_ORDER[WEEK_ORDER.length - 1]; // default to latest
 const PRIORITY_EMOJI = { red: '🔴', yellow: '🟡', green: '🟢', white: '⚪' };
 const PRIORITY_LABELS = { red: 'Fazer Agora', yellow: 'Agendar', green: 'Quick Win', white: 'Backlog' };
 
+// ── Sync mode ──
+// Servido por scripts/serve.js (http) → status sincroniza com planning.json no disco.
+// Aberto via file:// → fallback localStorage (offline, Claude não enxerga).
+const SERVER = location.protocol.startsWith('http');
+
 // ── LocalStorage ──
 function lsKey(week, type) { return `planning-${type}-${week}`; }
 
@@ -663,6 +713,46 @@ function loadStatuses(week) {
 }
 function saveStatuses(week, statuses) {
   localStorage.setItem(lsKey(week, 'status'), JSON.stringify(statuses));
+}
+
+// Lê os status do planning.json no disco (modo server). Retorna {} se falhar.
+async function fetchDiskStatuses(week) {
+  try {
+    const res = await fetch(`/api/planning/${week}`);
+    if (!res.ok) return {};
+    const json = await res.json();
+    const map = {};
+    for (const proj of Object.values(json.projects || {})) {
+      for (const t of proj.tasks || []) {
+        if (t.status && t.status !== 'todo') map[t.id] = t.status;
+      }
+    }
+    return map;
+  } catch { return {}; }
+}
+
+// Grava um status no disco (modo server). Fire-and-forget com toast no erro.
+function pushDiskStatus(week, taskId, status) {
+  fetch('/api/status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ week, taskId, status }),
+  }).then(r => { if (!r.ok) showSyncToast('Falha ao salvar no disco'); })
+    .catch(() => showSyncToast('Servidor offline — status não salvo'));
+}
+
+function showSyncToast(msg) {
+  let el = document.getElementById('sync-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-toast';
+    el.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#3d1d1d;border:1px solid #f85149;color:#ffa198;padding:8px 14px;border-radius:6px;font-size:13px;z-index:9999;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.opacity = '0'; }, 3000);
 }
 function loadNotes(week) {
   try { return JSON.parse(localStorage.getItem(lsKey(week, 'notes'))) || {}; } catch { return {}; }
@@ -690,6 +780,7 @@ function getStatus(taskId) {
 function setStatus(taskId, status) {
   statuses[taskId] = status;
   saveStatuses(currentWeekKey, statuses);
+  if (SERVER) pushDiskStatus(currentWeekKey, taskId, status);
 }
 
 function getAllTasks() {
@@ -772,6 +863,15 @@ function switchWeek(weekKey) {
   if (typeof isRetroPanelOpen === 'function' && isRetroPanelOpen()) {
     retroIdx = WEEK_ORDER.indexOf(currentWeekKey);
     renderRetroPanel();
+  }
+  // Modo server: o disco é a fonte de verdade — sobrepõe o status do localStorage.
+  if (SERVER) {
+    fetchDiskStatuses(weekKey).then(disk => {
+      if (weekKey !== currentWeekKey) return;
+      statuses = { ...statuses, ...disk };
+      saveStatuses(weekKey, statuses);
+      render();
+    });
   }
 }
 
@@ -1247,6 +1347,115 @@ Não posso mais deixar Yang ficar sem incremento toda semana — sem progresso c
 | **Total** | **28.0k** | **1.8M** | **632.6M** | **634.5M** |
 
 *94% do consumo foi no Clube da Memória — alinhado com a distribuição de tempo da semana.*
+`,
+  "2026-W24": `# Retro Semana 2026-W24 (08/06 - 14/06)
+
+## Métricas
+- Tarefas: 4/8 concluídas (50%)
+- Horas: 25h real vs 27h estimado (precisão 93%)
+- Utilização: 25h / 40h disponíveis (63%)
+
+| Projeto | Est. | Real | % Tempo | Conclusão |
+|---------|------|------|---------|-----------|
+| **Yang Planet** | 16h | 12h | 48% | 1/5 (IDE sem mock — objetivo macro da semana) |
+| **Clube da Memória** | 7h | 8h | 32% | 2/2 (bugs v1.0 + minigame bônus) |
+| **Stalo Labs** | 4h | 5h | 20% | 1/1 (Stalinho/Hermes) |
+
+## Highlights por projeto
+
+### Yang Planet — **IDE GPS sem mock data entregue** 🎯
+O objetivo macro da semana saiu. 23 commits entre yang-gps e yang-gps-frontend (v0.6.1 → v0.9.3):
+- IDE como home, project picker, pipeline visibility
+- Manual mode com re-runs seletivos (analyze / match / strategy)
+- Frontend integrado com endpoints reais — fim do mock data
+- Backend: swap \`/projects/{id}/text\` → \`/pdf\`, in-place PDF replace, projetos persistentes
+- **Carryover (não saiu):** yp-007 interface Courageous, yp-010 entrevista, yp-011 onboarding, yp-008 conversa Breno
+
+### Clube da Memória — bugs v1.0 + minigame bônus
+- mc-009: fixes RAM (selector digitSpan, pill no header, subdomínio ram.memoria.club abre direto), exclusão da rodada de treino no PAL
+- mc-010 (bônus 🟡, era "só se sobrar tempo"): minigame **Torre de Controle** v1 + v2 construído
+
+### Stalo Labs — Stalinho como fork do Hermes
+- sl-005: Hermes como submodule, cerebro/ como HERMES_HOME + runtime (ADR-002), README, KB de Product-Led Growth, skill criar-carousel
+- **Não planejado:** landing interativa da Stalo Labs (disc page)
+
+## Reflexão
+
+### O que foi bem
+Ampla execução — Yang Planet, Clube da Memória e Stalinho/Hermes avançaram na mesma semana. O foco em Yang decidido na W23 se concretizou: o IDE GPS sem mock data (objetivo macro) foi entregue com 23 commits.
+
+### O que travou
+O onboarding (yp-011, a maior tarefa da semana com 6h) ficou pra trás — todo o esforço de frontend foi pro IDE. As tarefas no-code do Yang (interface Courageous, entrevista, conversa com Breno) também não saíram.
+
+### O que mudar em W25
+Manter o foco em Yang e fechar o onboarding (yp-011) que ficou, junto com o carryover de tarefas no-code.
+
+## Carryover → 2026-W25
+- **yp-007** Definir interface GPS Carbono para Courageous Land (3h)
+- **yp-010** Entrevista com usuária — prep + sessão (2h)
+- **yp-011** Repensar onboarding do usuário + esconder KB no footer (6h)
+- **yp-008** Conversa com Breno sobre vídeos públicos (1h)
+
+## Tokens Claude da semana
+
+| Projeto | Input | Output | Cache | Total |
+|---------|-------|--------|-------|-------|
+| Yang Planet | 15.9k | 991.4k | 394.3M | 395.3M |
+| Clube da Memória | 8.4k | 569.8k | 86.6M | 87.1M |
+| Stalo Labs | 805 | 166.5k | 18.7M | 18.9M |
+| outros | 9.5k | 765.4k | 120.4M | 121.2M |
+| **Total** | **34.6k** | **2.5M** | **620.0M** | **622.5M** |
+
+*63% do consumo foi no Yang Planet — inverteu a W23 (onde Yang foi ~1%) e bate com o foco da semana.*
+`,
+  "2026-W25": `# Retro Sprint 2026-W25–W26 (15/06 - 28/06) — parcial em 25/06
+
+> Sprint de 2 semanas. Consolida o progresso até **25/06** (quinta da W26). Tarefas abertas (yp-014, yp-010, sl-006) seguem vivas até 28/06.
+
+## Métricas (parcial)
+- Tarefas: 6/10 concluídas (60%) + 1 em andamento (yp-016 i18n)
+- Horas: ~36h real vs 49h estimado (i18n ainda rodando, fora do real)
+
+| Projeto | Est. | Real | Conclusão |
+|---------|------|------|-----------|
+| **Yang Planet** | 41h | ~25h | 5/8 (onboarding + entrada sem fricção + UX matching + interface CL + fix long polling) — **i18n em andamento** |
+| **Clube da Memória** | 4h | ~9h | 1/1 (mc-011 fechado com sobra: 2 minigames novos) |
+| **Stalo Labs** | 4h | ~2h | 0/1 (só assets de marketing) |
+
+## Highlights por projeto
+
+### Clube da Memória — **mc-011 fechado com sobra** 🎯
+Não foi "Torre + 1" — foram **dois minigames novos** em dois dias:
+- **Encaixe Sombra** (22/06) — rotação mental 3D (Shepard & Metzler), objeto grande responsivo + sombra-alvo, nota como medida de habilidade (qualidade × amostra).
+- **Garçom Maluco** (23/06) — contagem regressiva compartilhada + tela de pause reutilizável.
+- Infra de arcade: kit visual reutilizável a partir da Torre, tela de pause (em vez de bloquear o gesto de voltar), tela de resultado generalizada, jogos agrupados por foco cognitivo (Memória / Raciocínio / Atenção).
+- Fixes: histórico do RAM filtra só sessões de RAM, highlight legível no light mode, header consistente nas telas da barra inferior.
+
+### Yang Planet — fix do long polling + pivot pra i18n
+- **yp-015 fechado** (22/06, PR #14): match/strategy paravam de girar pra sempre — agora superficializam a falha; backend persiste marker de falha pro front capturar.
+- **yp-016 (NOVO, em andamento):** internacionalização do GPS Carbono. **Pivot** — reverte a decisão de pt-BR-only (commit 02e6543 / yp-007). Feature grande, arquitetura no doc \`2026-06-19-i18n-arquitetura.md\`. Prioridade do resto do sprint.
+- (Semana 1, já registrado) onboarding yp-011/012, UX matching yp-013, interface CL yp-007, hardening de backend (créditos/bateria, approval gate, async match driblando o cap de 29s do API GW).
+- **Não saiu:** yp-014 (loading centralizado) — empurrado pelo i18n; yp-010 (entrevista, Tiago).
+
+### Stalo Labs — sem movimento novo
+- Só os assets de growth da seg 15. **sl-006** (pesquisa Hermes/Stalinho) não saiu.
+
+## Reflexão
+
+### O que foi bem
+Memory deslanchou — dois minigames novos no mesmo par de dias fecharam o mc-011 com folga, e ainda sobrou infra de arcade reutilizável. No Yang, o bug crônico do long polling (yp-015) finalmente caiu.
+
+### O que travou
+Um pivot grande no meio do sprint: a i18n (yp-016) voltou a ser prioridade depois de já ter sido **descartada** (pt-BR-only). Feature grande, consumindo o resto do sprint — empurrou o yp-014. A entrevista com usuária (yp-010) segue carryover crônico, travada no Tiago.
+
+### O que mudar
+Bancar o pivot de i18n com foco — maior frente aberta, fechar até 28/06. Aceitar que yp-014 e sl-006 provavelmente não saem. Reconhecer o padrão: a decisão de produto (drop i18n → retomar i18n) reabriu escopo grande no meio do caminho — da próxima, fechar i18n vs pt-BR-only **antes** de tocar a UI.
+
+## Em andamento / Carryover → próximo sprint
+- **yp-016** Internacionalização (i18n) do GPS Carbono — *em andamento*, prioridade até 28/06
+- **yp-014** Loading centralizado em /match e /strategy com tips por fase (3h)
+- **yp-010** Entrevista com usuária — prep + sessão (2h) *(crônica W23/W24/W25)*
+- **sl-006** Aprofundar Hermes/Stalinho — pesquisa (4h)
 `
 };
 
@@ -1289,13 +1498,13 @@ document.getElementById('retros-next').addEventListener('click', () => {
 });
 
 // ── Init ──
-statuses = loadStatuses(currentWeekKey);
-allNotes = loadNotes(currentWeekKey);
-renderWeekSwitcher();
-renderHeader();
-renderRetro();
-renderFilters();
-render();
+if (!SERVER) {
+  const warn = document.createElement('div');
+  warn.style.cssText = 'background:#3d2d00;border-bottom:1px solid #d29922;color:#e3b341;padding:6px 16px;font-size:12px;text-align:center;';
+  warn.textContent = 'Modo offline — status fica só no navegador. Rode `node scripts/serve.js` e abra localhost:4321 para sincronizar com o planning.json.';
+  document.body.insertBefore(warn, document.body.firstChild);
+}
+switchWeek(currentWeekKey);
 </script>
 </body>
 </html>
