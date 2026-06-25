@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O caminho mais curto — quando o GPS otimiza tempo e ignora o resto</title>
+<style>
+  :root{
+    --bg:#F5F7FA;
+    --surface:#FFFFFF;
+    --ink:#0E1726;
+    --ink-2:#475467;
+    --ink-3:#8A95A6;
+    --line:#E4E8EE;
+    --line-2:#D5DBE4;
+    --accent:#0E7C66;
+    --accent-soft:#E3F2EE;
+    --warn:#B42318;
+    --warn-soft:#FEE4E2;
+    --road:#C7CED9;
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding:28px 20px 56px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  header{margin-bottom:26px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 10px}
+  h1{font-size:clamp(26px,4vw,40px);line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;font-weight:680;max-width:20ch}
+  .lede{color:var(--ink-2);font-size:15px;max-width:66ch;margin:0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;margin-top:26px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h2{font-size:12px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 16px;font-weight:600}
+
+  .map-card{display:flex;flex-direction:column}
+  svg{width:100%;height:auto;display:block;font-family:var(--sans)}
+  .maplabel{font-size:12px;font-weight:600;fill:var(--ink)}
+  .maplabel.sub{font-size:10px;font-weight:500;fill:var(--ink-3);font-family:var(--mono)}
+  .zonelabel{font-size:11px;font-weight:700;fill:var(--warn);font-family:var(--mono);letter-spacing:.02em}
+  .roadline{stroke:var(--road);fill:none;stroke-linecap:round}
+
+  .controls{display:flex;flex-direction:column;gap:6px}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:500;margin-bottom:9px}
+  .ctrl .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--mono);margin-top:4px}
+  input[type=range]{width:100%;cursor:pointer;accent-color:var(--accent)}
+  .modepill{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}
+  .modepill.fast{color:var(--warn);background:var(--warn-soft)}
+  .modepill.safe{color:var(--accent);background:var(--accent-soft)}
+
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0 0}
+  .kpi{border:1px solid var(--line);border-radius:11px;padding:13px 14px;background:var(--bg)}
+  .kpi .k-lab{font-size:11px;color:var(--ink-3);font-weight:500;margin:0 0 6px;line-height:1.2}
+  .kpi .k-val{font-family:var(--mono);font-size:clamp(20px,2.6vw,26px);font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1}
+  .kpi .k-val.warn{color:var(--warn)}
+  .kpi .k-val.ok{color:var(--accent)}
+  .kpi .k-sub{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:6px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+  .legend span{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2)}
+  .legend .sw{width:18px;height:4px;border-radius:2px;flex:none}
+  .legend .dot{width:11px;height:11px;border-radius:3px;flex:none}
+
+  .read{background:var(--accent-soft);border:1px solid #CBE6DE;border-radius:12px;padding:16px 18px;margin-top:22px;font-size:13.5px;color:#0B5A4A}
+  .read b{color:#08402F}
+  footer{max-width:1180px;margin:28px auto 0;font-size:12px;color:var(--ink-3);line-height:1.6}
+  footer a{color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Mobilidade urbana · São Paulo · 2026</p>
+    <h1>O caminho mais curto</h1>
+    <p class="lede">Voltando do <b>zoológico</b> para o <b>Shopping Morumbi</b>, o GPS me jogou numa rota espremida entre as comunidades de <b>Diadema</b> e <b>Americanópolis</b> — e, várias vezes, pediu para eu <b>entrar na favela</b> para cortar caminho. Arraste o controle entre <b>tempo</b> e <b>segurança</b> e veja o que o algoritmo troca por alguns minutos.</p>
+  </header>
+
+  <div class="grid">
+    <section class="card map-card">
+      <h2>Rota · zoológico → Shopping Morumbi</h2>
+      <svg id="map" viewBox="0 0 720 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa esquemático com rota entre o zoológico e o Shopping Morumbi">
+        <defs>
+          <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="7" height="7" fill="var(--warn-soft)"></rect>
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#F0A39B" stroke-width="2.2"></line>
+          </pattern>
+        </defs>
+
+        <!-- malha viária de fundo -->
+        <g class="bgroads" stroke-width="9" opacity="0.9"></g>
+
+        <!-- zonas (comunidades) -->
+        <g id="zones"></g>
+
+        <!-- rota -->
+        <path id="route" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+
+        <!-- pinos -->
+        <g id="pins"></g>
+      </svg>
+
+      <div class="legend">
+        <span><span class="sw" style="background:linear-gradient(90deg,var(--warn),var(--accent))"></span>Rota (cor = tempo→segurança)</span>
+        <span><span class="dot" style="background:url(#hatch);border:1px solid #F0A39B;background-color:var(--warn-soft)"></span>Comunidade</span>
+        <span><span class="dot" style="background:var(--accent)"></span>Origem / destino</span>
+      </div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <section class="card">
+        <h2>Otimizar por</h2>
+        <div class="controls">
+          <div class="ctrl">
+            <label>Critério <span class="modepill fast" id="mode">mais rápido</span></label>
+            <input type="range" id="opt" min="0" max="100" value="0" step="1" aria-label="Otimizar por tempo ou segurança">
+            <div class="ends"><span>⏱ tempo</span><span>segurança 🛡</span></div>
+          </div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="read" id="insight"></div>
+</div>
+
+<footer>
+  Mapa esquemático e ilustrativo — geografia simplificada, não é um traçado real rua a rua. Os números (distância, tempo, trechos em comunidade) são estimativas para fins de comparação, não medições. O episódio é real: apps de navegação otimizam por <b>ETA</b> (tempo estimado de chegada) e custo de via, não por percepção de segurança; em São Paulo isso recorrentemente produz rotas que atravessam ou tangenciam comunidades. Para análise e debate, não recomendação de trajeto.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function $(id){return document.getElementById(id);}
+  var SVG="http://www.w3.org/2000/svg";
+  function el(t,a){var e=document.createElementNS(SVG,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function mix(c1,c2,t){
+    return "rgb("+Math.round(lerp(c1[0],c2[0],t))+","+Math.round(lerp(c1[1],c2[1],t))+","+Math.round(lerp(c1[2],c2[2],t))+")";
+  }
+  var WARN=[180,35,24], OK=[14,124,102];
+
+  // pontos das duas rotas (mesma contagem -> dá pra interpolar)
+  // rápida: corta em diagonal, raspando as duas comunidades
+  var FAST=[[600,392],[540,372],[472,360],[404,300],[356,252],[244,182],[120,116]];
+  // segura: sobe e contorna pelas avenidas, longe das zonas
+  var SAFE=[[600,392],[616,296],[566,206],[440,150],[320,122],[206,114],[120,116]];
+
+  // comunidades (zonas) — a rota rápida passa por dentro/junto
+  var ZONES=[
+    {x:356,y:255,r:54,name:"Americanópolis"},
+    {x:472,y:362,r:50,name:"Diadema"}
+  ];
+
+  // avenidas de fundo (esquemáticas)
+  var BGROADS=[
+    "M40,120 H690", "M120,40 V430", "M600,40 V430",
+    "M40,300 C220,330 420,360 690,360", "M40,210 C260,150 460,140 690,200"
+  ];
+
+  // ---- métricas por modo (t=0 rápido, t=1 seguro) ----
+  var M={
+    km:    [14.2,18.6],
+    min:   [26,38],
+    zones: [2,0],
+    asks:  [4,0]
+  };
+
+  function path(pts){
+    var d="M"+pts[0][0]+","+pts[0][1];
+    for(var i=1;i<pts.length;i++) d+=" L"+pts[i][0]+","+pts[i][1];
+    return d;
+  }
+  function blend(t){
+    var p=[];
+    for(var i=0;i<FAST.length;i++) p.push([lerp(FAST[i][0],SAFE[i][0],t),lerp(FAST[i][1],SAFE[i][1],t)]);
+    return p;
+  }
+
+  // ---- desenha fundo estático ----
+  (function(){
+    var g=$("map").querySelector(".bgroads");
+    BGROADS.forEach(function(d){ g.appendChild(el("path",{d:d,class:"roadline"})); });
+
+    var zg=$("zones");
+    ZONES.forEach(function(z){
+      zg.appendChild(el("circle",{cx:z.x,cy:z.y,r:z.r,fill:"url(#hatch)",stroke:"#E58A80","stroke-width":1.5,opacity:.95}));
+      var lab=el("text",{x:z.x,y:z.y+4,"text-anchor":"middle",class:"zonelabel"});
+      lab.textContent=z.name; zg.appendChild(lab);
+    });
+
+    var pg=$("pins");
+    function pin(x,y,label,sub,anchor){
+      pg.appendChild(el("circle",{cx:x,cy:y,r:7,fill:"var(--accent)",stroke:"#fff","stroke-width":2.5}));
+      var dx = anchor==="end" ? -12 : 12;
+      var a  = anchor==="end" ? "end" : "start";
+      var t1=el("text",{x:x+dx,y:y-2,"text-anchor":a,class:"maplabel"}); t1.textContent=label; pg.appendChild(t1);
+      var t2=el("text",{x:x+dx,y:y+12,"text-anchor":a,class:"maplabel sub"}); t2.textContent=sub; pg.appendChild(t2);
+    }
+    pin(600,392,"Zoológico","origem","start");
+    pin(120,116,"Shopping Morumbi","destino","end");
+  })();
+
+  // ---- KPIs ----
+  var kpisEl=$("kpis");
+  function kpiCard(lab,val,sub,cls){
+    var d=document.createElement("div"); d.className="kpi";
+    d.innerHTML='<div class="k-lab">'+lab+'</div><div class="k-val '+(cls||"")+'">'+val+'</div><div class="k-sub">'+sub+'</div>';
+    return d;
+  }
+
+  function render(){
+    var t=parseInt($("opt").value,10)/100;
+
+    // rota
+    var rt=$("route");
+    rt.setAttribute("d",path(blend(t)));
+    rt.setAttribute("stroke",mix(WARN,OK,t));
+
+    // modo pill
+    var mp=$("mode");
+    if(t<.34){ mp.textContent="mais rápido"; mp.className="modepill fast"; }
+    else if(t>.66){ mp.textContent="mais seguro"; mp.className="modepill safe"; }
+    else { mp.textContent="meio-termo"; mp.className="modepill"; mp.style.color="var(--ink-2)"; mp.style.background="var(--line)"; }
+    if(t<.34||t>.66){ mp.style.color=""; mp.style.background=""; }
+
+    var km   = lerp(M.km[0],M.km[1],t);
+    var min  = Math.round(lerp(M.min[0],M.min[1],t));
+    var zones= Math.round(lerp(M.zones[0],M.zones[1],t));
+    var asks = Math.round(lerp(M.asks[0],M.asks[1],t));
+
+    var dMin = min - M.min[0];
+    var zCls = zones>0?"warn":"ok";
+
+    kpisEl.innerHTML="";
+    kpisEl.appendChild(kpiCard("Tempo estimado", min+" min", dMin>0?("+"+dMin+" min vs. rápido"):"rota mais rápida", dMin>0?"":"warn"));
+    kpisEl.appendChild(kpiCard("Distância", km.toFixed(1)+" km", "porta a porta",""));
+    kpisEl.appendChild(kpiCard("Atravessa comunidade", zones>0?(zones+(zones>1?" trechos":" trecho")):"Nenhum", zones>0?"Diadema · Americanópolis":"contorna pelas avenidas", zCls));
+    kpisEl.appendChild(kpiCard("“Entrar p/ cortar caminho”", asks+(asks===1?" vez":" vezes"), asks>0?"sugestões do app":"nenhuma sugestão", asks>0?"warn":"ok"));
+
+    drawInsight(t,min,km,zones,asks);
+  }
+
+  function drawInsight(t,min,km,zones,asks){
+    var dMin=M.min[1]-M.min[0], dKm=(M.km[1]-M.km[0]).toFixed(1);
+    var box=$("insight");
+    box.innerHTML=
+      "<b>O que o algoritmo troca.</b> A rota <b>mais rápida</b> economiza <b>"+dMin+" minutos</b> e <b>"+dKm+" km</b> — e o preço disso é atravessar <b>2 comunidades</b> e receber <b>4 sugestões</b> do GPS para entrar na favela e “cortar caminho”. "+
+      "O otimizador enxerga só duas variáveis: <b>distância</b> e <b>tempo de via</b>. Segurança, iluminação, fluxo de pessoas, risco de assalto — nada disso entra na conta, porque o app não tem esse dado e, quando tem, não o usa. "+
+      "A rota <b>mais segura</b> custa <b>+"+dMin+" min</b> e <b>+"+dKm+" km</b> para contornar tudo pelas grandes avenidas. "+
+      "A lição não é “o GPS errou o caminho” — ele acertou o caminho que pediram. O problema é que <b>ninguém pediu o caminho seguro</b>: o botão padrão é “mais rápido”, e o mais rápido, em São Paulo, às vezes passa por dentro do que você jamais escolheria a pé.";
+  }
+
+  $("opt").addEventListener("input",render);
+  render();
+})();
+</script>
+</body></html>

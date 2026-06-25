@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog — Rafael Mezzomo</title>
+<meta name="description" content="Textos sobre produto, engenharia e empreender no Brasil.">
+<link rel="stylesheet" href="assets/blog.css">
+<script>
+  (function () {
+    var t = localStorage.getItem('blog-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container">
+    <a class="brand" href="index.html">Blog</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">◐</button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="index-hero">
+    <h1>Blog</h1>
+    <p>Textos sobre produto, engenharia e empreender no Brasil. Escrevendo pra pensar melhor e me posicionar.</p>
+  </section>
+
+  <section class="post-list" id="postList"></section>
+</main>
+
+<!-- MANIFESTO: re-estampar a cada regeneração com o conteúdo de blog/blog.json -->
+<script type="application/json" id="manifest">
+{
+  "posts": [
+    {
+      "slug": "gestao-tempo",
+      "title": "Gestão de tempo: a semana típica com a família junto",
+      "summary": "Uma semana real mapeada hora a hora — trabalho, foco, família, logística — e o que os blocos revelam sobre as escolhas.",
+      "eyebrow": "PRODUTIVIDADE",
+      "tags": ["produtividade", "rotina", "família"],
+      "created": "2026-06-17",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "gestao-tempo/index.html"
+    },
+    {
+      "slug": "custo-familia",
+      "title": "Custo de vida: do quarto à casa cheia — São Paulo × Vale do Silício",
+      "summary": "Quanto muda o custo de vida conforme a família cresce, comparando São Paulo e o Vale do Silício.",
+      "eyebrow": "DINHEIRO",
+      "tags": ["custo de vida", "família", "comparação"],
+      "created": "2026-06-15",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "custo-familia/Custo de vida — do quarto à casa cheia · Vale do Silício.html"
+    },
+    {
+      "slug": "gpt-custo-familia",
+      "title": "Comparador de custo de vida: solteiro vs família",
+      "summary": "Uma calculadora interativa pra comparar os gastos de morar sozinho versus sustentar uma família.",
+      "eyebrow": "FERRAMENTA",
+      "tags": ["custo de vida", "calculadora", "família"],
+      "created": "2026-06-15",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "gpt-custo-familia/comparador_custo_vida_familia.html"
+    }
+  ]
+}
+</script>
+
+<script>
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    var p = iso.split('-');
+    if (p.length !== 3) return iso;
+    return parseInt(p[2], 10) + ' ' + meses[parseInt(p[1], 10) - 1] + ' ' + p[0];
+  }
+
+  function render(manifest) {
+    var list = document.getElementById('postList');
+    var posts = (manifest.posts || []).filter(function (p) { return p.status !== 'draft'; });
+    posts.sort(function (a, b) { return (b.created || '').localeCompare(a.created || ''); });
+
+    if (!posts.length) {
+      list.innerHTML = '<p class="empty-state">Nenhum post publicado ainda.</p>';
+      return;
+    }
+
+    list.innerHTML = posts.map(function (p) {
+      var tags = (p.tags || []).map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+      var updated = (p.updated && p.updated.length)
+        ? '<span class="badge">atualizado</span>' : '';
+      return '' +
+        '<a class="post-card" href="' + encodeURI(p.path) + '">' +
+          '<div class="meta-row">' +
+            '<span class="post-date">' + fmtDate(p.created) + '</span>' +
+            updated +
+          '</div>' +
+          '<h2>' + p.title + '</h2>' +
+          (p.summary ? '<p>' + p.summary + '</p>' : '') +
+          (tags ? '<div class="tag-row">' + tags + '</div>' : '') +
+        '</a>';
+    }).join('');
+  }
+
+  var inline = document.getElementById('manifest');
+  var manifest = { posts: [] };
+  try { manifest = JSON.parse(inline.textContent); } catch (e) {}
+
+  if (manifest.posts && manifest.posts.length) {
+    render(manifest);
+  } else {
+    fetch('blog.json')
+      .then(function (r) { return r.json(); })
+      .then(render)
+      .catch(function () { render(manifest); });
+  }
+
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = (cur ? cur === 'dark' : prefersDark) ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('blog-theme', next);
+  });
+</script>
+</body>
+</html>

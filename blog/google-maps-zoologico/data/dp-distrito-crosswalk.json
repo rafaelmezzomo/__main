@@ -1,0 +1,18 @@
+{
+  "_doc": "Mapeia Delegacia de Polícia (DP) da SSP-SP -> ds_codigo do distrito (codigourbano/distritos-sp). Use quando o export da SSP vier agregado por DP em vez de por distrito. Aproximado: alguns DPs cobrem mais de um distrito.",
+  "crosswalk": [
+    { "dp": "16º DP - Vila Clementino", "ds_codigo": "77", "distrito": "SAUDE" },
+    { "dp": "36º DP - Vila Mariana", "ds_codigo": "90", "distrito": "VILA MARIANA" },
+    { "dp": "96º DP - Brooklin / Campo Belo", "ds_codigo": "15", "distrito": "CAMPO BELO" },
+    { "dp": "DP Moema", "ds_codigo": "32", "distrito": "MOEMA" },
+    { "dp": "49º DP - São Mateus? n/a", "ds_codigo": null, "distrito": null },
+    { "dp": "37º DP - Campo Limpo? n/a", "ds_codigo": null, "distrito": null },
+    { "dp": "76º DP - Jabaquara", "ds_codigo": "38", "distrito": "JABAQUARA" },
+    { "dp": "27º DP - Cidade Ademar", "ds_codigo": "22", "distrito": "CIDADE ADEMAR" },
+    { "dp": "57º DP - Parque da Mooca? n/a", "ds_codigo": null, "distrito": null },
+    { "dp": "26º DP - Sacomã", "ds_codigo": "68", "distrito": "SACOMA" },
+    { "dp": "55º DP - Parque São Lucas? n/a", "ds_codigo": null, "distrito": null },
+    { "dp": "16º DP - Cursino", "ds_codigo": "27", "distrito": "CURSINO" },
+    { "dp": "55º DP - Ipiranga", "ds_codigo": "34", "distrito": "IPIRANGA" }
+  ]
+}

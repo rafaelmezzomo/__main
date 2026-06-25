@@ -1,0 +1,19 @@
+# SNAPSHOT ILUSTRATIVO — SUBSTITUIR pelo export oficial da SSP-SP.
+# Fonte oficial: https://www.ssp.sp.gov.br/estatistica/dados-mensais (XLSX por DP/região).
+# Os valores abaixo são aproximações de ordem de grandeza para o corredor Moema -> Zoológico,
+# transcritos manualmente apenas para o app rodar end-to-end. NÃO são números oficiais.
+# Para dados reais: baixe o XLSX da SSP, exporte para este formato e rode `npm run build:risk`.
+# Colunas: ds_codigo,distrito,roubos,furtos,populacao  (roubos/furtos = total no período)
+ds_codigo,distrito,roubos,furtos,populacao
+32,MOEMA,520,1480,82000
+15,CAMPO BELO,610,1390,66000
+90,VILA MARIANA,980,2300,131000
+77,SAUDE,1040,2120,120000
+27,CURSINO,1860,1980,113000
+34,IPIRANGA,1720,2040,109000
+68,SACOMA,1910,1760,88000
+38,JABAQUARA,3120,3380,223000
+22,CIDADE ADEMAR,4980,3920,268000
+71,SANTO AMARO,980,1820,71000
+16,CAMPO GRANDE,760,1340,92000
+58,PEDREIRA,2380,2010,150000

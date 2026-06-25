@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comparador de custo de vida: solteiro vs família</title>
+  <style>
+    :root {
+      --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --line:#243244;
+      --accent:#60a5fa; --good:#34d399;
+      --c1:#60a5fa; --c2:#34d399; --c3:#f59e0b; --c4:#f472b6; --c5:#a78bfa; --c6:#22d3ee; --c7:#fb7185; --c8:#c084fc;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:linear-gradient(180deg,#0b1020,#111827); color:var(--text); }
+    .wrap { max-width:1200px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:30px; line-height:1.15; }
+    p { color:var(--muted); margin:0 0 22px; }
+    .grid { display:grid; grid-template-columns: 360px 1fr; gap:18px; align-items:start; }
+    .card { background:rgba(17,24,39,.86); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.22); }
+    .controls h2, .chart h2, .tablecard h2 { font-size:16px; margin:0 0 12px; }
+    label { display:flex; align-items:center; gap:8px; color:#d1d5db; margin:8px 0; cursor:pointer; }
+    select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0b1220; color:var(--text); margin-bottom:14px; }
+    input[type="checkbox"] { width:16px; height:16px; accent-color: var(--accent); }
+    .section { border-top:1px solid var(--line); padding-top:12px; margin-top:12px; }
+    .totals { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-bottom:14px; }
+    .totalbox { background:#0b1220; border:1px solid var(--line); border-radius:14px; padding:12px; }
+    .totalbox small { color:var(--muted); display:block; }
+    .totalbox strong { font-size:20px; }
+    .bars { display:flex; gap:26px; align-items:flex-end; height:360px; border-left:1px solid var(--line); border-bottom:1px solid var(--line); padding:18px 18px 0; overflow-x:auto; }
+    .barGroup { width:118px; min-width:118px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+    .stack { width:76px; height:280px; display:flex; flex-direction:column-reverse; justify-content:flex-start; background:#0b1220; border-radius:12px 12px 0 0; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
+    .seg { width:100%; border-top:1px solid rgba(255,255,255,.15); position:relative; }
+    .seg:hover::after { content: attr(data-tip); position:absolute; left:86px; bottom:0; white-space:nowrap; background:#020617; color:white; padding:6px 8px; border-radius:8px; font-size:12px; z-index:4; border:1px solid var(--line); }
+    .barLabel { text-align:center; margin-top:10px; font-size:12px; color:#cbd5e1; min-height:32px; }
+    .barValue { font-weight:700; color:white; font-size:13px; }
+    .legend { display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:16px; }
+    .pill { display:inline-flex; align-items:center; gap:7px; color:#cbd5e1; font-size:12px; }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th,td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:right; }
+    th:first-child,td:first-child { text-align:left; }
+    th { color:#cbd5e1; font-weight:600; background:#0b1220; position:sticky; top:0; }
+    .muted { color:var(--muted); }
+    .note { font-size:12px; color:var(--muted); margin-top:12px; }
+    .toggleRow { display:grid; grid-template-columns: 1fr 1fr; gap:4px 10px; }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns:1fr; }
+      .totals { grid-template-columns:1fr; }
+      .wrap { padding:18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Comparador de custo de vida: solteiro vs família</h1>
+    <p>Modelo exploratório com os números da conversa. Use os toggles para incluir/excluir categorias e comparar o salto de custo anual e mensal.</p>
+
+    <div class="grid">
+      <aside class="card controls">
+        <h2>Controles</h2>
+        <label for="regionSelect">Cidade / região</label>
+        <select id="regionSelect"></select>
+
+        <div class="section">
+          <h2>Cenários no gráfico</h2>
+          <div id="scenarioToggles" class="toggleRow"></div>
+        </div>
+
+        <div class="section">
+          <h2>Categorias incluídas</h2>
+          <div id="categoryToggles"></div>
+        </div>
+
+        <div class="section">
+          <button id="allOn" style="padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#1d4ed8;color:white;cursor:pointer;">Incluir tudo</button>
+          <button id="coreOnly" style="padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:white;cursor:pointer;margin-left:6px;">Só custo essencial</button>
+        </div>
+      </aside>
+
+      <main>
+        <section class="card chart">
+          <h2>Antes e depois — barras empilhadas por grupo de custo</h2>
+          <div class="totals" id="totals"></div>
+          <div class="bars" id="bars"></div>
+          <div class="legend" id="legend"></div>
+          <div class="note">Passe o mouse sobre cada segmento da barra para ver o valor por categoria. Valores anuais; mensal = anual ÷ 12.</div>
+        </section>
+
+        <section class="card tablecard" style="margin-top:18px;">
+          <h2>Tabela iterativa</h2>
+          <div style="overflow:auto; max-height:520px;">
+            <table id="dataTable"></table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+<script>
+const rows = [{"region": "Silicon Valley", "scenario": "Solteiro", "category": "Moradia", "annual": 18000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Alimentação", "annual": 7200, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Saúde", "annual": 3000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Transporte", "annual": 3600, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Lazer/Férias", "annual": 6000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Doações", "annual": 3000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Solteiro", "category": "Investimentos", "annual": 20000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Moradia", "annual": 42000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Alimentação", "annual": 12000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Saúde", "annual": 7000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Transporte", "annual": 8000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Lazer/Férias", "annual": 8000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Doações", "annual": 5000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado", "category": "Investimentos", "annual": 25000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Moradia", "annual": 54000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Alimentação", "annual": 15000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Saúde", "annual": 10000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Escola/Childcare", "annual": 35000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Transporte", "annual": 10000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Lazer/Férias", "annual": 8000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Doações", "annual": 6000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 1 filho", "category": "Investimentos", "annual": 25000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Moradia", "annual": 66000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Alimentação", "annual": 20000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Saúde", "annual": 12000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Escola/Childcare", "annual": 66000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Transporte", "annual": 12000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Lazer/Férias", "annual": 10000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Doações", "annual": 8000, "currency": "USD"}, {"region": "Silicon Valley", "scenario": "Casado + 2 filhos", "category": "Investimentos", "annual": 30000, "currency": "USD"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Moradia", "annual": 18000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Alimentação", "annual": 12000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Saúde", "annual": 3000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Transporte", "annual": 6000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Lazer/Férias", "annual": 12000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Doações", "annual": 3000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Solteiro", "category": "Investimentos", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Moradia", "annual": 48000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Alimentação", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Saúde", "annual": 12000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Transporte", "annual": 18000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Lazer/Férias", "annual": 18000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Doações", "annual": 6000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado", "category": "Investimentos", "annual": 36000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Moradia", "annual": 60000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Alimentação", "annual": 30000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Saúde", "annual": 18000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Escola/Childcare", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Transporte", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Lazer/Férias", "annual": 18000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Doações", "annual": 8000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 1 filho", "category": "Investimentos", "annual": 36000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Moradia", "annual": 72000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Alimentação", "annual": 40000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Saúde", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Escola/Childcare", "annual": 48000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Transporte", "annual": 30000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Lazer/Férias", "annual": 24000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Doações", "annual": 10000, "currency": "BRL"}, {"region": "São Paulo", "scenario": "Casado + 2 filhos", "category": "Investimentos", "annual": 36000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Moradia", "annual": 15000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Alimentação", "annual": 12000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Saúde", "annual": 3000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Transporte", "annual": 8000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Lazer/Férias", "annual": 10000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Doações", "annual": 3000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Solteiro", "category": "Investimentos", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Moradia", "annual": 42000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Alimentação", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Saúde", "annual": 12000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Transporte", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Lazer/Férias", "annual": 18000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Doações", "annual": 6000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado", "category": "Investimentos", "annual": 36000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Moradia", "annual": 54000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Alimentação", "annual": 30000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Saúde", "annual": 18000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Escola/Childcare", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Transporte", "annual": 30000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Lazer/Férias", "annual": 18000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Doações", "annual": 8000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 1 filho", "category": "Investimentos", "annual": 36000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Moradia", "annual": 66000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Alimentação", "annual": 40000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Saúde", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Escola/Childcare", "annual": 48000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Transporte", "annual": 36000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Lazer/Férias", "annual": 24000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Doações", "annual": 10000, "currency": "BRL"}, {"region": "Brasília", "scenario": "Casado + 2 filhos", "category": "Investimentos", "annual": 36000, "currency": "BRL"}];
+const scenarios = ["Solteiro","Casado","Casado + 1 filho","Casado + 2 filhos"];
+const categoryOrder = ["Moradia","Alimentação","Saúde","Escola/Childcare","Transporte","Lazer/Férias","Doações","Investimentos"];
+const colors = {
+  "Moradia":"var(--c1)",
+  "Alimentação":"var(--c2)",
+  "Saúde":"var(--c3)",
+  "Escola/Childcare":"var(--c4)",
+  "Transporte":"var(--c5)",
+  "Lazer/Férias":"var(--c6)",
+  "Doações":"var(--c7)",
+  "Investimentos":"var(--c8)"
+};
+let selectedRegion = "São Paulo";
+let selectedScenarios = new Set(scenarios);
+let selectedCategories = new Set(categoryOrder);
+
+const $ = (id) => document.getElementById(id);
+const regions = [...new Set(rows.map(r => r.region))];
+
+function currencyFor(region) {
+  return rows.find(r => r.region === region)?.currency || "BRL";
+}
+
+function fmt(value, currency) {
+  return new Intl.NumberFormat("pt-BR", {
+    style:"currency",
+    currency,
+    maximumFractionDigits:0
+  }).format(value);
+}
+
+function total(region, scenario) {
+  return rows
+    .filter(r => r.region === region && r.scenario === scenario && selectedCategories.has(r.category))
+    .reduce((s,r) => s + r.annual, 0);
+}
+
+function init() {
+  $("regionSelect").innerHTML = regions.map(r => `<option value="${r}">${r}</option>`).join("");
+  $("regionSelect").value = selectedRegion;
+  $("regionSelect").addEventListener("change", e => { selectedRegion = e.target.value; render(); });
+
+  $("scenarioToggles").innerHTML = scenarios.map(s => `
+    <label><input type="checkbox" data-scenario="${s}" checked /> ${s}</label>
+  `).join("");
+  document.querySelectorAll("[data-scenario]").forEach(el => {
+    el.addEventListener("change", e => {
+      e.target.checked ? selectedScenarios.add(e.target.dataset.scenario) : selectedScenarios.delete(e.target.dataset.scenario);
+      render();
+    });
+  });
+
+  $("categoryToggles").innerHTML = categoryOrder.map(c => `
+    <label><input type="checkbox" data-category="${c}" checked /> <span class="dot" style="background:${colors[c]}"></span> ${c}</label>
+  `).join("");
+  document.querySelectorAll("[data-category]").forEach(el => {
+    el.addEventListener("change", e => {
+      e.target.checked ? selectedCategories.add(e.target.dataset.category) : selectedCategories.delete(e.target.dataset.category);
+      render();
+    });
+  });
+
+  $("allOn").addEventListener("click", () => {
+    selectedCategories = new Set(categoryOrder);
+    document.querySelectorAll("[data-category]").forEach(el => el.checked = true);
+    render();
+  });
+  $("coreOnly").addEventListener("click", () => {
+    selectedCategories = new Set(["Moradia","Alimentação","Saúde","Escola/Childcare","Transporte"]);
+    document.querySelectorAll("[data-category]").forEach(el => el.checked = selectedCategories.has(el.dataset.category));
+    render();
+  });
+  render();
+}
+
+function renderTotals() {
+  const currency = currencyFor(selectedRegion);
+  const visible = scenarios.filter(s => selectedScenarios.has(s));
+  const base = total(selectedRegion, "Solteiro") || 1;
+  $("totals").innerHTML = visible.map(s => {
+    const t = total(selectedRegion, s);
+    return `<div class="totalbox">
+      <small>${s}</small>
+      <strong>${fmt(t, currency)}</strong>
+      <small>${fmt(t/12, currency)}/mês · ${(t/base).toFixed(1)}x solteiro</small>
+    </div>`;
+  }).join("");
+}
+
+function renderBars() {
+  const currency = currencyFor(selectedRegion);
+  const visible = scenarios.filter(s => selectedScenarios.has(s));
+  const maxTotal = Math.max(...visible.map(s => total(selectedRegion, s)), 1);
+  $("bars").innerHTML = visible.map(s => {
+    const t = total(selectedRegion, s);
+    const stackHeight = Math.max(8, (t / maxTotal) * 280);
+    const segs = categoryOrder
+      .filter(c => selectedCategories.has(c))
+      .map(c => {
+        const item = rows.find(r => r.region === selectedRegion && r.scenario === s && r.category === c);
+        const val = item ? item.annual : 0;
+        if (!val) return "";
+        const h = (val / Math.max(t, 1)) * stackHeight;
+        return `<div class="seg" style="height:${h}px;background:${colors[c]}" data-tip="${c}: ${fmt(val, currency)}/ano"></div>`;
+      }).join("");
+    return `<div class="barGroup">
+      <div class="stack" style="height:${stackHeight}px">${segs}</div>
+      <div class="barLabel"><div class="barValue">${fmt(t, currency)}</div>${s}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderLegend() {
+  $("legend").innerHTML = categoryOrder.filter(c => selectedCategories.has(c)).map(c =>
+    `<span class="pill"><span class="dot" style="background:${colors[c]}"></span>${c}</span>`
+  ).join("");
+}
+
+function renderTable() {
+  const currency = currencyFor(selectedRegion);
+  const header = `<thead><tr><th>Categoria</th>${scenarios.map(s => `<th>${s}</th>`).join("")}</tr></thead>`;
+  const bodyRows = categoryOrder.filter(c => selectedCategories.has(c)).map(c => {
+    const cells = scenarios.map(s => {
+      const item = rows.find(r => r.region === selectedRegion && r.scenario === s && r.category === c);
+      return `<td>${item ? fmt(item.annual, currency) : "—"}</td>`;
+    }).join("");
+    return `<tr><td>${c}</td>${cells}</tr>`;
+  }).join("");
+  const totalRow = `<tr><td><strong>Total anual</strong></td>${scenarios.map(s => `<td><strong>${fmt(total(selectedRegion,s), currency)}</strong></td>`).join("")}</tr>`;
+  const monthlyRow = `<tr><td><strong>Total mensal</strong></td>${scenarios.map(s => `<td><strong>${fmt(total(selectedRegion,s)/12, currency)}</strong></td>`).join("")}</tr>`;
+  $("dataTable").innerHTML = header + `<tbody>${bodyRows}${totalRow}${monthlyRow}</tbody>`;
+}
+
+function render() {
+  renderTotals();
+  renderBars();
+  renderLegend();
+  renderTable();
+}
+
+init();
+</script>
+</body>
+</html>

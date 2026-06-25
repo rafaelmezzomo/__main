@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.env.local
+
+# planilhas brutas da SSP (não versionar; só o risk-index.json gerado é commitado)
+data/raw/

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custo de vida — do quarto à casa cheia · São Paulo × Vale do Silício</title>
+<style>
+  :root{
+    --bg:#F5F7FA;
+    --surface:#FFFFFF;
+    --ink:#0E1726;
+    --ink-2:#475467;
+    --ink-3:#8A95A6;
+    --line:#E4E8EE;
+    --line-2:#D5DBE4;
+    --accent:#0E7C66;
+    --accent-soft:#E3F2EE;
+    --warn:#B42318;
+
+    /* paleta por grupo */
+    --c-moradia:#0F766E;
+    --c-escola:#C2620B;
+    --c-saude:#BE123C;
+    --c-alimentacao:#4D7C0F;
+    --c-transporte:#3538CD;
+    --c-lazer:#7A3CD0;
+    --c-diversos:#667085;
+    --c-invest:#0E7C66;
+    --c-doacoes:#CA8A04;
+    --c-imposto:#98A2B3;
+
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:28px 20px 56px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  /* ---------- header ---------- */
+  header{margin-bottom:26px}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin:0 0 10px;
+  }
+  .doc-title{
+    font-size:22px;line-height:1.2;letter-spacing:-.01em;
+    margin:0 0 4px;font-weight:600;color:var(--ink);
+  }
+  .doc-date{font-size:12.5px;color:var(--ink-3);margin:0 0 16px}
+  .lede{color:var(--ink-2);font-size:15px;max-width:64ch;margin:0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* ---------- controle global de moeda ---------- */
+  .gctrl{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:18px}
+  .gctrl-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+  .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .seg button{
+    background:none;border:none;cursor:pointer;font:inherit;font-size:13px;font-weight:600;
+    color:var(--ink-2);padding:6px 14px;border-right:1px solid var(--line-2);
+  }
+  .seg button:last-child{border-right:none}
+  .seg button:hover{background:var(--bg)}
+  .seg button.on{background:var(--accent);color:#fff}
+  .rate{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
+  .rate input{
+    width:74px;font-family:var(--mono);font-size:13px;text-align:right;
+    border:1px solid var(--line-2);border-radius:7px;padding:5px 7px;background:var(--surface);color:var(--ink);
+  }
+  .rate input:focus{outline:none;border-color:var(--accent)}
+
+  /* ---------- region ---------- */
+  .region{margin-top:8px}
+  .region + .region{margin-top:44px;padding-top:38px;border-top:2px solid var(--line-2)}
+  .region-head{margin-bottom:18px}
+  .region-title{font-size:clamp(20px,2.6vw,27px);font-weight:680;letter-spacing:-.01em;margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+  .region-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px}
+  .region-tag.primary{color:var(--accent);border-color:#CBE6DE;background:var(--accent-soft)}
+  .region-note{color:var(--ink-2);font-size:13.5px;margin:0;max-width:72ch}
+  .region-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 8px}
+
+  /* ---------- layout ---------- */
+  .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;margin-top:8px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .rightcol{display:flex;flex-direction:column;gap:22px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:20px;
+  }
+  .card h2{
+    font-size:12px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-3);margin:0 0 16px;font-weight:600;
+  }
+
+  /* ---------- table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{
+    text-align:right;font-weight:600;color:var(--ink-2);font-size:11px;
+    padding:0 0 10px;border-bottom:1px solid var(--line-2);vertical-align:bottom;
+  }
+  thead th.lbl{text-align:left}
+  thead th small{display:block;font-weight:400;color:var(--ink-3);font-size:10px;margin-top:2px}
+  tbody td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+  .cat-cell{display:flex;align-items:center;gap:9px}
+  .swatch{width:11px;height:11px;border-radius:3px;flex:none}
+  .cat-name{font-weight:500}
+  tr.off .cat-name{color:var(--ink-3);text-decoration:line-through}
+  tr.off input.val{opacity:.4}
+  tr.off td.grouptot{opacity:.4}
+  td.grouptot{text-align:right;font-family:var(--mono);font-size:13px;color:var(--ink-2);font-weight:600;padding-right:6px}
+  tr.subitem .cat-name{padding-left:26px;font-weight:400;color:var(--ink-2);font-size:13px}
+  tr.subitem.off .cat-name{color:var(--ink-3)}
+  tr.subitem.off input.val{opacity:.4}
+  tr.subitem.collapsed{display:none}
+  tr.groupparent{cursor:pointer}
+  .caret{flex:none;width:14px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:9px;transition:transform .15s;margin-right:-3px}
+  tr.collapsed .caret{transform:rotate(-90deg)}
+  input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+
+  td.num{text-align:right}
+  input.val{
+    width:84px;text-align:right;font-family:var(--mono);font-size:13px;
+    border:1px solid transparent;border-radius:6px;padding:4px 6px;background:transparent;
+    color:var(--ink);
+  }
+  input.val:hover{border-color:var(--line-2)}
+  input.val:focus{outline:none;border-color:var(--accent);background:#fff}
+
+  .cat-name-input{
+    font:inherit;font-weight:500;color:var(--ink);
+    border:1px solid transparent;border-radius:6px;padding:3px 6px;background:transparent;
+    min-width:80px;max-width:160px;width:100%;
+  }
+  .cat-name-input:hover{border-color:var(--line-2)}
+  .cat-name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+  tr.off .cat-name-input{color:var(--ink-3);text-decoration:line-through}
+  .row-del{
+    margin-left:auto;background:none;border:none;color:var(--ink-3);cursor:pointer;
+    font-size:16px;line-height:1;padding:2px 7px;border-radius:6px;flex:none;
+    opacity:0;transition:opacity .12s,color .12s,background .12s;
+  }
+  .cat-cell:hover .row-del,.row-del:focus{opacity:1}
+  .row-del:hover{color:var(--warn);background:#FCE7E7}
+  .add-group{
+    margin-top:6px;background:none;border:1px dashed var(--line-2);border-radius:8px;
+    color:var(--ink-2);cursor:pointer;font:inherit;font-size:13px;padding:8px 12px;width:100%;
+  }
+  .add-group:hover{border-color:var(--accent);color:var(--accent)}
+  tr.addrow td{border-bottom:none;padding-top:8px}
+
+  tr.sum td{border-bottom:none;padding-top:11px;font-family:var(--mono)}
+  tr.sum .cat-name{font-family:var(--sans)}
+  tr.divider td{border-bottom:2px solid var(--line-2);padding:0}
+  tr.sub td{font-weight:600}
+  tr.layer td{color:var(--ink-2)}
+  tr.gross td{padding-top:13px}
+  tr.gross .cat-name{font-weight:700;font-family:var(--sans);font-size:15px}
+  tr.gross td.num{font-weight:700;font-size:16px;color:var(--accent)}
+  tr.annual td{padding-top:6px;color:var(--ink-3)}
+  tr.annual .cat-name{font-family:var(--sans);font-weight:500;color:var(--ink-2)}
+  tr.annual td.num{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-2)}
+
+  /* ---------- controls ---------- */
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin-top:4px}
+  @media (max-width:520px){.controls{grid-template-columns:1fr}}
+  .ctrl label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:500;margin-bottom:7px}
+  .ctrl .v{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+  .ctrl-note{font-size:12px;color:var(--ink-3);margin:14px 0 0;grid-column:1/-1}
+  .warn{color:var(--warn);font-weight:600}
+
+  /* ---------- kpis ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
+  .kpi{border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:var(--bg)}
+  .kpi .kpi-scn{font-size:11px;color:var(--ink-3);font-weight:500;margin:0 0 6px;line-height:1.2}
+  .kpi .kpi-total{font-family:var(--mono);font-size:clamp(17px,2.2vw,23px);font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1}
+  .kpi .kpi-mult{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);margin-top:5px}
+  .kpi .kpi-mult .delta{color:var(--ink-3);font-weight:500}
+  .kpi.base .kpi-mult{color:var(--ink-3)}
+
+  /* ---------- chart ---------- */
+  .chart-card{display:flex;flex-direction:column}
+  .chart-wrap{flex:1;min-height:0}
+  svg{width:100%;height:auto;display:block;font-family:var(--sans)}
+  .seg{transition:opacity .15s}
+  .grossLine{stroke:var(--ink);stroke-width:1.5}
+  .grossLabel{font-family:var(--mono);font-size:12.5px;font-weight:700;fill:var(--ink)}
+  .barLabel{font-size:13px;font-weight:600;fill:var(--ink)}
+  .barSub{font-size:11px;fill:var(--ink-3)}
+  .ghostBox{fill:none;stroke:var(--c-moradia);stroke-width:1.2;stroke-dasharray:4 3;opacity:.55}
+  .ghostLabel{font-family:var(--mono);font-size:10px;fill:var(--c-moradia);opacity:.85}
+
+  /* ---------- legend ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+  .legend button{
+    display:flex;align-items:center;gap:7px;background:none;border:none;cursor:pointer;
+    font:inherit;font-size:12.5px;color:var(--ink-2);padding:2px 0;
+  }
+  .legend button .swatch{width:12px;height:12px;border-radius:3px}
+  .legend button.off{color:var(--ink-3)}
+  .legend button.off .swatch{opacity:.3}
+  .legend .fixed{cursor:default;color:var(--ink-3);display:flex;align-items:center;gap:7px;font-size:12.5px}
+  .legend .fixed .swatch{width:12px;height:12px;border-radius:3px}
+
+  /* ---------- story / infográficos ---------- */
+  .story{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+  @media (max-width:900px){.story{grid-template-columns:1fr}}
+  .story-card{display:flex;flex-direction:column}
+  .story-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 6px}
+  .story-title{font-size:18px;font-weight:680;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink)}
+  .story-cap{font-size:13px;line-height:1.55;color:var(--ink-2);margin:auto 0 0}
+  .story-cap b{color:var(--ink);font-weight:600}
+  .story-empty{font-size:13px;color:var(--ink-3);margin:0 0 12px}
+
+  /* escada */
+  .stair{display:flex;align-items:flex-end;gap:14px;margin:0 0 16px}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center}
+  .step-col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;width:100%;height:184px}
+  .step-val{font-family:var(--mono);font-weight:700;font-size:13px;margin-bottom:7px;color:var(--ink);white-space:nowrap}
+  .step-bar{width:72%;max-width:92px;border-radius:9px 9px 0 0;min-height:6px;transition:height .25s}
+  .step-foot{text-align:center;margin-top:9px}
+  .step-name{font-weight:600;font-size:13px;color:var(--ink)}
+  .step-mult{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600;margin-top:2px}
+  .step-jump{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:3px;white-space:nowrap}
+
+  /* delta */
+  .delta{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+  .delta-row{display:grid;grid-template-columns:minmax(72px,108px) 1fr auto;align-items:center;gap:10px;font-size:13px}
+  .delta-name{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .delta-track{background:var(--bg);border:1px solid var(--line);border-radius:6px;height:20px;overflow:hidden}
+  .delta-fill{height:100%;border-radius:6px 0 0 6px;transition:width .25s}
+  .delta-val{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap}
+  .delta-row.top .delta-name{font-weight:700;color:var(--ink)}
+  .delta-row.top .delta-val{color:var(--accent)}
+
+  footer{max-width:1180px;margin:28px auto 0;font-size:12px;color:var(--ink-3);line-height:1.6}
+  footer a{color:var(--ink-2)}
+  .read{background:var(--accent-soft);border:1px solid #CBE6DE;border-radius:12px;padding:18px 20px;margin-top:22px;font-size:13.5px;line-height:1.6;color:#0B5A4A}
+  .read b{color:#08402F}
+  .read p{margin:0 0 11px}
+  .read p:last-child{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="doc-title">Do quarto à casa cheia</h1>
+    <p class="doc-date">Publicado em 15 de junho de 2026</p>
+    <p class="lede">Quanto custa, por mês, ser solteiro, casal com um filho e casal com dois — primeiro em <b>São Paulo (R$)</b>, depois no <b>Vale do Silício (US$)</b> para comparação. Duas perguntas guiam a leitura: <b>quanto o custo cresce ao longo da vida</b> e <b>o que realmente muda quando se passa de um para dois filhos</b>. Ligue e desligue cada grupo, edite os valores e ajuste investimento e doações — tudo (tabela, gráfico e os dois infográficos abaixo) recalcula na hora.</p>
+    <div class="gctrl">
+      <span class="gctrl-lbl">Moeda</span>
+      <div class="seg" id="curseg">
+        <button type="button" data-mode="native" class="on">Nativo</button>
+        <button type="button" data-mode="BRL">R$</button>
+        <button type="button" data-mode="USD">US$</button>
+      </div>
+      <label class="rate">US$&nbsp;1&nbsp;=&nbsp;R$ <input id="rate" type="number" value="5.40" step="0.01" min="0"></label>
+    </div>
+  </header>
+
+  <div id="region-sp" class="region"></div>
+  <div id="region-sv" class="region"></div>
+  <div id="region-br" class="region"></div>
+</div>
+
+<footer>
+  Estimativas de mercado (mensais). <b>São Paulo (R$):</b> aluguel de apartamento por nº de quartos, mensalidade de escola/creche particular, plano de saúde + bolso por dependente, mercado e transporte (referências de mercado SP 2025–26). <b>Vale do Silício (US$):</b> Moradia é o custo total da casa — aluguel + contas (luz/água/gás) + internet + limpeza (médias Sunnyvale/Mountain View; quem aluga nos EUA não paga condomínio separado — a taxa de HOA é do proprietário e já está no aluguel); creche/escola (Santa Clara/San Mateo), saúde (KFF/CHCF California Health Benefits Survey 2025), mercado ~20–30% acima da média nacional, benchmark MIT Living Wage. Imposto não entra: é custo de receita, não de custo de vida, e varia por pessoa/país. Referências para análise, não recomendação financeira.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var SCN     = ["Solteiro","Casal + 1 filho","Casal + 2 filhos"];
+  var SCN_TH  = ["Solteiro","Casal + 1","Casal + 2"];
+
+  var fmtBRL = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+  var fmtUSD = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+
+  // ---------- datasets ----------
+  function catsSP(){return [
+    {id:"moradia",     label:"Moradia",          color:"var(--c-moradia)",     on:true, vals:[4000,9100,11000], sub:[
+      {label:"Aluguel",               vals:[2800,5800,7000]},
+      {label:"Condomínio",            vals:[ 800,1500,2000]},
+      {label:"Contas (luz/água/gás)", vals:[ 300, 400, 700]},
+      {label:"Internet",              vals:[ 100, 400, 200]},
+      {label:"Limpeza",               vals:[   0,1000,1100]}
+    ]},
+    {id:"escola",      label:"Escola / creche",  color:"var(--c-escola)",      on:true, vals:[0,6000,12000]},
+    {id:"saude",       label:"Saúde",            color:"var(--c-saude)",       on:true, vals:[500,3000,3500]},
+    {id:"alimentacao", label:"Alimentação",      color:"var(--c-alimentacao)", on:true, vals:[3000,5000,6000]},
+    {id:"transporte",  label:"Transporte",       color:"var(--c-transporte)",  on:true, vals:[800,1500,1700]},
+    {id:"lazer",       label:"Lazer/Viagem",     color:"var(--c-lazer)",       on:true, vals:[2000,4000,4500]},
+    {id:"diversos",    label:"Diversos",         color:"var(--c-diversos)",    on:true, vals:[800,1500,2000]},
+    {id:"viagem",      label:"Viagem",           color:"#0EA5A0",              on:true, vals:[2000,3000,3500]}
+  ];}
+
+  function catsSV(){return [
+    {id:"moradia",     label:"Moradia",          color:"var(--c-moradia)",     on:true, vals:[1620,4590,6050], sub:[
+      {label:"Aluguel",               vals:[1500,4000,5300]},
+      {label:"Contas (luz/água/gás)", vals:[  90, 230, 290]},
+      {label:"Internet",              vals:[  30,  60,  60]},
+      {label:"Limpeza",               vals:[   0, 300, 400]}
+    ]},
+    {id:"escola",      label:"Escola / creche",  color:"var(--c-escola)",      on:true, vals:[0,2500,5000]},
+    {id:"saude",       label:"Saúde",            color:"var(--c-saude)",       on:true, vals:[110,610,760]},
+    {id:"alimentacao", label:"Alimentação",      color:"var(--c-alimentacao)", on:true, vals:[650,1200,1500]},
+    {id:"transporte",  label:"Transporte",       color:"var(--c-transporte)",  on:true, vals:[300,500,600]},
+    {id:"lazer",       label:"Lazer/Viagem",     color:"var(--c-lazer)",       on:true, vals:[600,800,1000]},
+    {id:"diversos",    label:"Diversos",         color:"var(--c-diversos)",    on:true, vals:[200,400,500]},
+    {id:"viagem",      label:"Viagem",           color:"#0EA5A0",              on:true, vals:[400,700,900]}
+  ];}
+
+  // Brasília: base de São Paulo, com educação 50% menor e Lazer/Viagem 20% menor
+  function catsBR(){return [
+    {id:"moradia",     label:"Moradia",          color:"var(--c-moradia)",     on:true, vals:[4000,9100,11000], sub:[
+      {label:"Aluguel",               vals:[2800,5800,7000]},
+      {label:"Condomínio",            vals:[ 800,1500,2000]},
+      {label:"Contas (luz/água/gás)", vals:[ 300, 400, 700]},
+      {label:"Internet",              vals:[ 100, 400, 200]},
+      {label:"Limpeza",               vals:[   0,1000,1100]}
+    ]},
+    {id:"escola",      label:"Escola / creche",  color:"var(--c-escola)",      on:true, vals:[0,3000,6000]},
+    {id:"saude",       label:"Saúde",            color:"var(--c-saude)",       on:true, vals:[500,3000,3500]},
+    {id:"alimentacao", label:"Alimentação",      color:"var(--c-alimentacao)", on:true, vals:[3000,5000,6000]},
+    {id:"transporte",  label:"Transporte",       color:"var(--c-transporte)",  on:true, vals:[800,1500,1700]},
+    {id:"lazer",       label:"Lazer/Viagem",     color:"var(--c-lazer)",       on:true, vals:[1600,3200,3600]},
+    {id:"diversos",    label:"Diversos",         color:"var(--c-diversos)",    on:true, vals:[800,1500,2000]},
+    {id:"viagem",      label:"Viagem",           color:"#0EA5A0",              on:true, vals:[2000,3000,3500]}
+  ];}
+
+  // ---------- insight (análise tipo analista financeiro) ----------
+  function analystInsight(R, fmt, cats, cfg){
+    var place = cfg.place || ("Em "+cfg.city);
+    var single=R.rows[0], fam1=R.rows[1], fam2=R.rows[2];
+    var C2=fam2.C||1;
+    var mult = single.total>0 ? fam2.total/single.total : 0;
+    function byId(id){ return cats.find(function(c){return c.id===id;}); }
+    var moradia=byId("moradia");
+    var parts=[];
+
+    // 1 — panorama
+    parts.push("<b>Panorama.</b> "+place+", o custo total mensal vai de <b>"+fmt.format(single.total)+"</b> (solteiro) a <b>"+fmt.format(fam1.total)+"</b> com um filho e <b>"+fmt.format(fam2.total)+"</b> com dois — alta de <b>"+mult.toFixed(1)+"×</b>. No ano, a família de quatro compromete <b>"+fmt.format(fam2.total*12)+"</b>: é uma estrutura de custo fixo elevado, pouco sensível a cortes pontuais.");
+
+    // 2 — moradia (peso + itens compressíveis)
+    if(moradia && C2>0){
+      var hShare=Math.round(moradia.vals[2]/C2*100);
+      var seg="<b>Moradia.</b> Maior bloco fixo da família: <b>"+fmt.format(moradia.vals[2])+"</b>/mês, "+hShare+"% do consumo"+(hShare>=35?" — acima do teto saudável de ~30% que se costuma recomendar para habitação":"")+".";
+      if(moradia.sub){
+        var cond=moradia.sub.find(function(s){return /condom/i.test(s.label);});
+        var limp=moradia.sub.find(function(s){return /limpeza/i.test(s.label);});
+        var flags=[];
+        if(cond && cond.vals[2]>0) flags.push(fmt.format(cond.vals[2])+" de condomínio");
+        if(limp && limp.vals[2]>0) flags.push(fmt.format(limp.vals[2])+" de limpeza");
+        if(flags.length) seg+=" Dentro dela, "+flags.join(" e ")+" são os itens mais negociáveis — rever contrato/condomínio ou a frequência da diarista libera caixa sem tocar no essencial.";
+      }
+      parts.push(seg);
+      if(cfg.nativeCur==="USD" && moradia.sub){
+        var alq=moradia.sub[0].vals;
+        if(alq[2]>0){ var rp=Math.round(alq[0]/alq[2]*100);
+          parts.push("<b>Rateio.</b> Sozinho, paga só um quarto compartilhado ("+fmt.format(alq[0])+" de aluguel) — cerca de "+rp+"% do aluguel da casa inteira. A 'virada' da família não é gastar por gosto: é deixar de ratear e assumir o imóvel inteiro.");
+        }
+      }
+    }
+
+    // 3 — o salto do 1º para o 2º filho
+    var deltas=[];
+    cats.forEach(function(c){ if(c.on){var d=c.vals[2]-c.vals[1]; if(d>0) deltas.push({name:c.label,id:c.id,d:d});} });
+    deltas.sort(function(a,b){return b.d-a.d;});
+    if(deltas.length){
+      var totD=deltas.reduce(function(a,x){return a+x.d;},0);
+      var top=deltas[0], pct=Math.round(top.d/totD*100);
+      var extra = top.id==="escola"
+        ? " A segunda mensalidade é o gasto menos flexível da conta — é onde compensa caçar bolsa, desconto por irmão ou alternativa de rede."
+        : " Vale verificar se há ganho de escala ao dividir esse item entre os filhos.";
+      parts.push("<b>De um para dois filhos.</b> O segundo filho adiciona <b>+"+fmt.format(totD)+"/mês</b> (<b>"+fmt.format(totD*12)+"</b>/ano), e <b>"+pct+"%</b> disso é <b>"+top.name+"</b>."+extra);
+    }
+
+    // 4 — onde cortar (discricionário)
+    var discIds={lazer:1,diversos:1,viagem:1};
+    var disc=cats.filter(function(c){return c.on && discIds[c.id];});
+    if(disc.length && C2>0){
+      var discTot=disc.reduce(function(a,c){return a+c.vals[2];},0);
+      var discShare=Math.round(discTot/C2*100);
+      var cut=discTot*0.3;
+      var names=disc.map(function(c){return c.label;}).join(", ");
+      parts.push("<b>Onde cortar.</b> O grupo discricionário ("+names+") soma <b>"+fmt.format(discTot)+"</b>, "+discShare+"% do consumo da família — a alavanca mais rápida de economia. Reduzir <b>30%</b> aí devolve <b>"+fmt.format(cut)+"/mês</b> ("+fmt.format(cut*12)+"/ano) sem mexer em moradia, escola ou saúde.");
+    }
+
+    // 5 — poupança / comprometimento
+    if(R.inv!==undefined){
+      var savePct = fam2.total>0 ? Math.round(fam2.inv/fam2.total*100) : 0;
+      parts.push("<b>Poupança.</b> Com investimento em "+Math.round(R.inv*100)+"% e doações em "+Math.round(R.don*100)+"% do consumo, vão <b>"+fmt.format(fam2.inv)+"/mês</b> para investimento — só "+savePct+"% do total comprometido. Ajuste os controles para testar metas mais agressivas: cada ponto de corte no discricionário pode virar poupança sem reduzir padrão essencial.");
+    }
+
+    return "<p>"+parts.join("</p><p>")+"</p>";
+  }
+
+  // ---------- conversão de moeda (estado global) ----------
+  var STATE={mode:"native", rate:5.40};   // mode: "native" | "BRL" | "USD"
+  function convCur(v,from,to,rate){
+    if(from===to) return v;
+    if(from==="BRL"&&to==="USD") return v/rate;
+    if(from==="USD"&&to==="BRL") return v*rate;
+    return v;
+  }
+
+  // ---------- region configs ----------
+  var REGIONS = [
+    {root:"region-sp", tag:"Principal", tagCls:"primary", nativeCur:"BRL", city:"São Paulo", place:"Em São Paulo",
+     title:"São Paulo", scnSub:["1 quarto","2 quartos","3 quartos"],
+     cats:catsSP(), insight:analystInsight,
+     note:"O custo da vida na maior cidade do Brasil, em reais. Edite qualquer célula para refletir o seu caso."},
+    {root:"region-sv", tag:"Comparação", tagCls:"", nativeCur:"USD", city:"Vale do Silício", place:"No Vale do Silício",
+     title:"Vale do Silício", scnSub:["quarto compart.","2 quartos","3 quartos"],
+     cats:catsSV(), insight:analystInsight,
+     note:"A mesma estrutura no coração da tecnologia americana, em dólares — para dimensionar a diferença."},
+    {root:"region-br", tag:"Comparação", tagCls:"", nativeCur:"BRL", city:"Brasília", place:"Em Brasília",
+     title:"Brasília", scnSub:["1 quarto","2 quartos","3 quartos"],
+     cats:catsBR(), insight:analystInsight,
+     note:"A capital, em reais: parte da mesma base de São Paulo, com educação ~50% menor e Lazer/Viagem ~20% menor."}
+  ];
+
+  // ---------- shared svg helpers ----------
+  var SVG="http://www.w3.org/2000/svg";
+  function el(tag,attrs){var e=document.createElementNS(SVG,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);return e;}
+  function styleColor(varRef){
+    var probe=document.createElement("span"); probe.style.color=varRef; document.body.appendChild(probe);
+    var col=getComputedStyle(probe).color; document.body.removeChild(probe); return col;
+  }
+
+  // ---------- region factory ----------
+  function makeRegion(cfg){
+    var root=document.getElementById(cfg.root);
+    var cats=cfg.cats;
+
+    // estado de moeda da região (derivado de STATE)
+    var effCur=cfg.nativeCur;
+    var conv=function(v){return v;};
+    var dispFmt=fmtBRL;
+    var valBindings=[];
+    function setCurrency(){
+      effCur = STATE.mode==="native" ? cfg.nativeCur : STATE.mode;
+      var curFmt = effCur==="BRL"?fmtBRL:fmtUSD;
+      conv = function(v){ return convCur(v, cfg.nativeCur, effCur, STATE.rate); };
+      dispFmt = { format:function(v){ return curFmt.format(conv(v)); } };
+    }
+    function refreshInputs(){
+      valBindings.forEach(function(b){ b.el.value = Math.round(conv(b.read())); });
+    }
+
+    // ---- scaffold ----
+    var thHtml='<tr><th class="lbl">Grupo de custo</th>'+
+      SCN_TH.map(function(s,i){return '<th>'+s+'<small>'+cfg.scnSub[i]+'</small></th>';}).join('')+'</tr>';
+    root.innerHTML=
+      '<div class="region-head">'+
+        '<p class="region-eyebrow">'+cfg.city+'</p>'+
+        '<h2 class="region-title">'+cfg.title+' <span class="region-tag '+cfg.tagCls+'">'+cfg.tag+'</span></h2>'+
+        '<p class="region-note">'+cfg.note+'</p>'+
+      '</div>'+
+      '<div class="grid">'+
+        '<section class="card">'+
+          '<h2>Tabela interativa</h2>'+
+          '<table class="tbl"><thead>'+thHtml+'</thead><tbody class="rows"></tbody><tbody class="totals"></tbody></table>'+
+        '</section>'+
+        '<div class="rightcol">'+
+          '<section class="card">'+
+            '<h2>Premissas</h2>'+
+            '<div class="controls">'+
+              '<div class="ctrl"><label>Investimento <span class="v invV">15%</span></label>'+
+                '<input type="range" class="inv" min="0" max="60" value="15" step="1"></div>'+
+              '<div class="ctrl"><label>Doações / causas <span class="v donV">5%</span></label>'+
+                '<input type="range" class="don" min="0" max="40" value="5" step="1"></div>'+
+              '<p class="ctrl-note">Investimento e doações são calculados como % do subtotal de consumo. O número final é o custo total mensal comprometido — sem imposto, que é custo de receita e varia por pessoa/país.</p>'+
+            '</div>'+
+          '</section>'+
+          '<section class="card chart-card">'+
+            '<h2>Custo total mensal — por grupo</h2>'+
+            '<div class="kpis"></div>'+
+            '<div class="chart-wrap"><svg class="chart" viewBox="0 0 560 440" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Gráfico de barras empilhadas comparando os cenários"></svg></div>'+
+            '<div class="legend"></div>'+
+          '</section>'+
+        '</div>'+
+      '</div>'+
+      '<div class="story">'+
+        '<section class="card story-card">'+
+          '<p class="story-kicker">A leitura · 1</p>'+
+          '<h3 class="story-title">O custo cresce com a vida</h3>'+
+          '<div class="stair"></div>'+
+          '<p class="story-cap stair-cap"></p>'+
+        '</section>'+
+        '<section class="card story-card">'+
+          '<p class="story-kicker">A leitura · 2</p>'+
+          '<h3 class="story-title">Um filho ou dois?</h3>'+
+          '<div class="delta"></div>'+
+          '<p class="story-cap delta-cap"></p>'+
+        '</section>'+
+      '</div>'+
+      '<div class="read insight"></div>';
+
+    var rowsEl=root.querySelector(".rows");
+    var totalsEl=root.querySelector(".totals");
+    var legendEl=root.querySelector(".legend");
+    var kpisEl=root.querySelector(".kpis");
+    var invEl=root.querySelector(".inv");
+    var donEl=root.querySelector(".don");
+
+    function recalcMoradia(){
+      cats.forEach(function(c){
+        if(!c.sub) return;
+        for(var s=0;s<3;s++){ var t=0; c.sub.forEach(function(si){t+=si.vals[s];}); c.vals[s]=t; }
+      });
+    }
+
+    // ---- build table rows ----
+    var moradiaSumCells=[];
+    function buildRows(){
+      rowsEl.innerHTML=""; moradiaSumCells=[]; valBindings.length=0;
+      cats.forEach(function(c){
+        var tr=document.createElement("tr"); tr.dataset.id=c.id;
+        var td0=document.createElement("td");
+        var cell=document.createElement("div"); cell.className="cat-cell";
+        var cb=document.createElement("input"); cb.type="checkbox"; cb.checked=c.on;
+        cb.setAttribute("aria-label","Incluir "+c.label);
+        cb.addEventListener("change",function(){ c.on=cb.checked; render(); });
+        var sw=document.createElement("span"); sw.className="swatch"; sw.style.background=c.color;
+        var nm=document.createElement("input"); nm.className="cat-name-input"; nm.type="text"; nm.value=c.label;
+        nm.setAttribute("aria-label","Nome do grupo");
+        nm.addEventListener("input",function(){ renameAll(cfg.root, c.id, nm.value); });
+        var del=document.createElement("button"); del.type="button"; del.className="row-del";
+        del.textContent="×"; del.title="Remover grupo"; del.setAttribute("aria-label","Remover "+c.label);
+        del.addEventListener("click",function(){ removeGroupAll(c.id); });
+        if(c.sub){
+          var caret=document.createElement("span"); caret.className="caret"; caret.textContent="▾";
+          cell.appendChild(caret);
+          tr.addEventListener("click",function(e){
+            if(e.target.closest("input,button")) return;
+            c.collapsed=!c.collapsed; render();
+          });
+        }
+        cell.appendChild(cb); cell.appendChild(sw); cell.appendChild(nm); cell.appendChild(del);
+        td0.appendChild(cell); tr.appendChild(td0);
+
+        if(c.sub){
+          for(var s=0;s<3;s++){ var tdSum=document.createElement("td"); tdSum.className="num grouptot"; tr.appendChild(tdSum); moradiaSumCells.push(tdSum); }
+          rowsEl.appendChild(tr);
+          c.sub.forEach(function(si){
+            var str=document.createElement("tr"); str.className="subitem"; str.dataset.id=c.id;
+            var stc=document.createElement("td");
+            var snm=document.createElement("span"); snm.className="cat-name"; snm.textContent=si.label;
+            stc.appendChild(snm); str.appendChild(stc);
+            for(var s=0;s<3;s++){
+              (function(sidx){
+                var td=document.createElement("td"); td.className="num";
+                var inp=document.createElement("input"); inp.className="val"; inp.type="number";
+                inp.value=si.vals[sidx]; inp.min=0; inp.step=10;
+                inp.setAttribute("aria-label",c.label+" · "+si.label+" "+SCN[sidx]);
+                inp.addEventListener("input",function(){
+                  var v=parseFloat(inp.value); v=isNaN(v)?0:Math.max(0,v);
+                  si.vals[sidx]=convCur(v, effCur, cfg.nativeCur, STATE.rate);
+                  recalcMoradia(); render();
+                });
+                valBindings.push({el:inp, read:function(){return si.vals[sidx];}});
+                td.appendChild(inp); str.appendChild(td);
+              })(s);
+            }
+            rowsEl.appendChild(str);
+          });
+          return;
+        }
+
+        for(var s2=0;s2<3;s2++){
+          (function(si){
+            var td=document.createElement("td"); td.className="num";
+            var inp=document.createElement("input"); inp.className="val"; inp.type="number";
+            inp.value=c.vals[si]; inp.min=0; inp.step=10;
+            inp.setAttribute("aria-label",c.label+" "+SCN[si]);
+            inp.addEventListener("input",function(){
+              var v=parseFloat(inp.value); v=isNaN(v)?0:Math.max(0,v);
+              c.vals[si]=convCur(v, effCur, cfg.nativeCur, STATE.rate); render();
+            });
+            valBindings.push({el:inp, read:function(){return c.vals[si];}});
+            td.appendChild(inp); tr.appendChild(td);
+          })(s2);
+        }
+        rowsEl.appendChild(tr);
+      });
+
+      var addTr=document.createElement("tr"); addTr.className="addrow";
+      var addTd=document.createElement("td"); addTd.colSpan=4;
+      var addBtn=document.createElement("button"); addBtn.type="button"; addBtn.className="add-group";
+      addBtn.textContent="+ adicionar grupo"; addBtn.addEventListener("click",addGroupAll);
+      addTd.appendChild(addBtn); addTr.appendChild(addTd); rowsEl.appendChild(addTr);
+    }
+    buildRows();
+
+    // ---- totals scaffold ----
+    function totalRow(cls,name){
+      var tr=document.createElement("tr"); tr.className=cls;
+      var td=document.createElement("td"); var n=document.createElement("span");
+      n.className="cat-name"; n.textContent=name; td.appendChild(n); tr.appendChild(td);
+      var out=[];
+      for(var s=0;s<3;s++){var t=document.createElement("td");t.className="num";tr.appendChild(t);out.push(t);}
+      totalsEl.appendChild(tr); return out;
+    }
+    var divider=document.createElement("tr"); divider.className="divider";
+    var dtd=document.createElement("td"); dtd.colSpan=4; divider.appendChild(dtd); totalsEl.appendChild(divider);
+    var rSub  = totalRow("sum sub","Subtotal de consumo");
+    var rInv  = totalRow("sum layer","+ Investimento");
+    var rDon  = totalRow("sum layer","+ Doações / causas");
+    var rTotal= totalRow("sum gross","= Custo total mensal");
+    var rYear = totalRow("sum annual","= Custo anual");
+
+    // ---- legend ----
+    function buildLegend(){
+      legendEl.innerHTML="";
+      cats.forEach(function(c){
+        var b=document.createElement("button"); b.type="button";
+        b.className=c.on?"":"off";
+        b.innerHTML='<span class="swatch" style="background:'+c.color+'"></span>'+c.label;
+        b.addEventListener("click",function(){
+          c.on=!c.on;
+          var cb=rowsEl.querySelector('tr[data-id="'+c.id+'"] input[type=checkbox]');
+          if(cb) cb.checked=c.on;
+          render();
+        });
+        legendEl.appendChild(b);
+      });
+      [["Investimento","var(--c-invest)"],["Doações","var(--c-doacoes)"]].forEach(function(p){
+        var span=document.createElement("span"); span.className="fixed";
+        span.innerHTML='<span class="swatch" style="background:'+p[1]+'"></span>'+p[0];
+        legendEl.appendChild(span);
+      });
+    }
+
+    // ---- compute ----
+    function compute(){
+      var inv=parseInt(invEl.value,10)/100;
+      var don=parseInt(donEl.value,10)/100;
+      var out=[];
+      for(var s=0;s<3;s++){
+        var C=0;
+        cats.forEach(function(c){ if(c.on) C+=c.vals[s]; });
+        var invAmt=inv*C, donAmt=don*C;
+        out.push({C:C, inv:invAmt, don:donAmt, total:C+invAmt+donAmt});
+      }
+      return {rows:out, inv:inv, don:don};
+    }
+
+    // ---- render ----
+    function render(){
+      cats.forEach(function(c){
+        var trs=rowsEl.querySelectorAll('tr[data-id="'+c.id+'"]');
+        trs.forEach(function(tr){
+          var sub=tr.classList.contains("subitem");
+          var cls=[];
+          if(sub) cls.push("subitem");
+          else if(c.sub) cls.push("groupparent");
+          if(!c.on) cls.push("off");
+          if(c.collapsed) cls.push("collapsed");
+          tr.className=cls.join(" ");
+        });
+      });
+      var moradiaCat0=cats.find(function(c){return c.sub;});
+      if(moradiaCat0){ for(var ms=0;ms<3;ms++){ if(moradiaSumCells[ms]) moradiaSumCells[ms].textContent=dispFmt.format(moradiaCat0.vals[ms]); } }
+      buildLegend();
+
+      var R=compute();
+      root.querySelector(".invV").textContent=invEl.value+"%";
+      root.querySelector(".donV").textContent=donEl.value+"%";
+
+      for(var s=0;s<3;s++){
+        var r=R.rows[s];
+        rSub[s].textContent=dispFmt.format(r.C);
+        rInv[s].textContent=dispFmt.format(r.inv);
+        rDon[s].textContent=dispFmt.format(r.don);
+        rTotal[s].textContent=dispFmt.format(r.total);
+        rYear[s].textContent=dispFmt.format(r.total*12);
+      }
+
+      var ebEl=root.querySelector(".region-eyebrow");
+      var curTok=effCur==="BRL"?"R$":"US$";
+      var note=(effCur!==cfg.nativeCur) ? " · convertido @ US$ 1 = R$ "+STATE.rate.toFixed(2).replace(".",",") : "";
+      ebEl.textContent=cfg.city+" · "+curTok+"/mês · 2025–26"+note;
+
+      drawKpis(R);
+      drawChart(R);
+      drawStair(R);
+      drawDelta(R);
+      root.querySelector(".insight").innerHTML=cfg.insight(R, dispFmt, cats, cfg);
+    }
+
+    // ---- kpis ----
+    function drawKpis(R){
+      var base=R.rows[0].total;
+      kpisEl.innerHTML="";
+      for(var s=0;s<3;s++){
+        var r=R.rows[s];
+        var mult=base>0?(r.total/base):0;
+        var d=document.createElement("div");
+        d.className="kpi"+(s===0?" base":"");
+        var multHtml = s===0
+          ? '<div class="kpi-mult">referência</div>'
+          : '<div class="kpi-mult">'+mult.toFixed(1)+'×</div>';
+        d.innerHTML=
+          '<div class="kpi-scn">'+SCN[s]+'</div>'+
+          '<div class="kpi-total">'+dispFmt.format(r.total)+'</div>'+
+          multHtml;
+        kpisEl.appendChild(d);
+      }
+    }
+
+    // ---- chart ----
+    function drawChart(R){
+      var svg=root.querySelector(".chart"); svg.innerHTML="";
+      var W=560,H=440, padT=46, padB=58, padL=14, padR=14;
+      var plotH=H-padT-padB, plotW=W-padL-padR;
+      var maxGross=0; R.rows.forEach(function(r){ if(r.total>maxGross)maxGross=r.total; });
+      if(maxGross<=0) maxGross=1;
+      var scale=plotH/(maxGross*1.08);
+
+      var base=padT+plotH;
+      svg.appendChild(el("line",{x1:padL,y1:base,x2:W-padR,y2:base,stroke:"var(--line-2)","stroke-width":1}));
+
+      var n=3, slot=plotW/n, barW=Math.min(96, slot*0.56);
+      for(var s=0;s<3;s++){
+        var r=R.rows[s];
+        var cx=padL+slot*s+slot/2, x=cx-barW/2;
+        var y=base;
+
+        var segs=[];
+        cats.forEach(function(c){ if(c.on && c.vals[s]>0) segs.push({v:c.vals[s],color:c.color,name:c.label}); });
+        if(r.inv>0) segs.push({v:r.inv,color:"var(--c-invest)",name:"Investimento"});
+        if(r.don>0) segs.push({v:r.don,color:"var(--c-doacoes)",name:"Doações"});
+
+        // ghost: aluguel da casa inteira ancorado em Moradia (insight do rateio)
+        if(s===0){
+          var moradiaCat=cats.find(function(c){return c.id==="moradia";});
+          var aluguel=moradiaCat && moradiaCat.sub ? moradiaCat.sub[0].vals : (moradiaCat?moradiaCat.vals:null);
+          if(aluguel && aluguel[2]>0){
+            var fullHouse=aluguel[2], roomReal=aluguel[0];
+            var gw=34, ggap=8;
+            var gx=x-gw-ggap; if(gx<padL) gx=padL;
+            var gh=fullHouse*scale, gy=base-gh;
+            var rh=Math.max(1,roomReal*scale);
+            svg.appendChild(el("rect",{x:gx,y:base-rh,width:gw,height:rh,rx:2,fill:styleColor(moradiaCat.color),opacity:"0.85"}));
+            svg.appendChild(el("rect",{x:gx,y:gy,width:gw,height:gh,class:"ghostBox",rx:3}));
+            var gl=el("text",{x:gx,y:gy-6,"text-anchor":"start",class:"ghostLabel"});
+            gl.textContent="casa inteira "+dispFmt.format(fullHouse);
+            svg.appendChild(gl);
+          }
+        }
+
+        segs.forEach(function(sg){
+          var h=sg.v*scale;
+          if(h<0.5) return;
+          var ry=y-h;
+          var rect=el("rect",{x:x,y:ry,width:barW,height:Math.max(1,h-1),rx:2,fill:styleColor(sg.color),class:"seg"});
+          var tt=el("title"); tt.textContent=sg.name+": "+dispFmt.format(sg.v)+"/mês"; rect.appendChild(tt);
+          svg.appendChild(rect);
+          if(h>22){
+            var t=el("text",{x:cx,y:ry+h/2+4,"text-anchor":"middle","font-size":"11","font-family":"var(--mono)","fill":"#fff","font-weight":"600"});
+            t.textContent=dispFmt.format(sg.v);
+            svg.appendChild(t);
+          }
+          y-=h;
+        });
+
+        var topY=y;
+        svg.appendChild(el("line",{x1:x-4,y1:topY,x2:x+barW+4,y2:topY,class:"grossLine"}));
+        var glab=el("text",{x:cx,y:topY-9,"text-anchor":"middle",class:"grossLabel"});
+        glab.textContent=dispFmt.format(r.total);
+        svg.appendChild(glab);
+
+        var xl=el("text",{x:cx,y:base+22,"text-anchor":"middle",class:"barLabel"});
+        xl.textContent=SCN_TH[s]; svg.appendChild(xl);
+        var xs=el("text",{x:cx,y:base+38,"text-anchor":"middle",class:"barSub"});
+        xs.textContent=cfg.scnSub[s]; svg.appendChild(xs);
+      }
+    }
+
+    // ---- infográfico 1: escada do custo ao longo da vida ----
+    function drawStair(R){
+      var totals=[R.rows[0].total,R.rows[1].total,R.rows[2].total];
+      var maxT=Math.max(totals[0],totals[1],totals[2])||1;
+      var base=totals[0]||1;
+      var shades=["#9DD9CC","#4FAE97","#0E7C66"];
+      var html="";
+      for(var i=0;i<3;i++){
+        var t=totals[i];
+        var h=Math.max(6,Math.round(t/maxT*150));
+        var mult=t/base;
+        var jump=i>0?(t-totals[i-1]):0;
+        html+='<div class="step">'+
+          '<div class="step-col">'+
+            '<div class="step-val">'+dispFmt.format(t)+'</div>'+
+            '<div class="step-bar" style="height:'+h+'px;background:'+shades[i]+'"></div>'+
+          '</div>'+
+          '<div class="step-foot">'+
+            '<div class="step-name">'+SCN_TH[i]+'</div>'+
+            '<div class="step-mult">'+(i===0?'ponto de partida':mult.toFixed(1)+'×')+'</div>'+
+            (i>0?'<div class="step-jump">▲ +'+dispFmt.format(jump)+'/mês</div>':'')+
+          '</div>'+
+        '</div>';
+      }
+      root.querySelector(".stair").innerHTML=html;
+      var mult2=totals[2]/base;
+      root.querySelector(".stair-cap").innerHTML=
+        "De <b>"+dispFmt.format(totals[0])+"</b> morando sozinho a <b>"+dispFmt.format(totals[2])+"</b> com a casa cheia — <b>"+mult2.toFixed(1)+"×</b> mais caro. "+
+        "O custo não dispara por luxo: cada pessoa a mais deixa de ratear e passa a exigir a estrutura inteira (a casa, o plano, a escola).";
+    }
+
+    // ---- infográfico 2: o salto do 1º para o 2º filho ----
+    function drawDelta(R){
+      var deltas=[];
+      cats.forEach(function(c){ if(c.on){ var d=c.vals[2]-c.vals[1]; if(d>0) deltas.push({name:c.label,d:d,color:c.color}); } });
+      deltas.sort(function(a,b){return b.d-a.d;});
+      var total=deltas.reduce(function(a,x){return a+x.d;},0);
+      var max=deltas.length?deltas[0].d:1;
+      var html="";
+      deltas.forEach(function(x,i){
+        html+='<div class="delta-row'+(i===0?" top":"")+'">'+
+          '<div class="delta-name">'+x.name+'</div>'+
+          '<div class="delta-track"><div class="delta-fill" style="width:'+Math.max(3,Math.round(x.d/max*100))+'%;background:'+styleColor(x.color)+'"></div></div>'+
+          '<div class="delta-val">+'+dispFmt.format(x.d)+'</div>'+
+        '</div>';
+      });
+      root.querySelector(".delta").innerHTML = html || '<p class="story-empty">Com os valores atuais, nada aumenta do primeiro para o segundo filho.</p>';
+      var capEl=root.querySelector(".delta-cap");
+      if(deltas.length){
+        var top=deltas[0], pct=total>0?Math.round(top.d/total*100):0;
+        capEl.innerHTML="O segundo filho adiciona <b>+"+dispFmt.format(total)+"/mês</b> em consumo. O que mais pesa é <b>"+top.name+"</b> (+"+dispFmt.format(top.d)+", <b>"+pct+"%</b> do aumento) — é nele que mora a virada de um para dois.";
+      } else { capEl.innerHTML=""; }
+    }
+
+    // ---- wire ----
+    [invEl,donEl].forEach(function(e){ e.addEventListener("input",render); });
+    recalcMoradia();
+    setCurrency();
+    refreshInputs();
+    render();
+
+    return {
+      id:cfg.root,
+      cats:cats,
+      apply:function(){ setCurrency(); refreshInputs(); render(); },
+      rebuild:function(){ buildRows(); refreshInputs(); render(); },
+      rerender:render,
+      refreshLabel:function(id,label){
+        var i=root.querySelector('tr[data-id="'+id+'"] .cat-name-input');
+        if(i && i.value!==label) i.value=label;
+        render();
+      }
+    };
+  }
+
+  // ---- grupos: estrutura sincronizada entre as regiões (valores independentes) ----
+  var PALETTE=["#0EA5A0","#D97706","#DB2777","#65A30D","#4F46E5","#9333EA","#0891B2","#CA8A04","#DC2626","#475569"];
+  var groupSeq=0;
+  function addGroupAll(){
+    groupSeq++;
+    var used={}; if(regions[0]) regions[0].cats.forEach(function(c){used[c.color]=1;});
+    var color=PALETTE.find(function(p){return !used[p];})||PALETTE[groupSeq%PALETTE.length];
+    var id="custom-"+groupSeq;
+    regions.forEach(function(r){
+      r.cats.push({id:id, label:"Novo grupo", color:color, on:true, vals:[0,0,0]});
+      r.rebuild();
+    });
+  }
+  function removeGroupAll(id){
+    regions.forEach(function(r){
+      var i=r.cats.findIndex(function(c){return c.id===id;});
+      if(i>=0) r.cats.splice(i,1);
+      r.rebuild();
+    });
+  }
+  function renameAll(srcId,id,label){
+    regions.forEach(function(r){
+      var c=r.cats.find(function(x){return x.id===id;});
+      if(c) c.label=label;
+      if(r.id===srcId) r.rerender();   // região onde digita: não reconstrói (mantém foco)
+      else r.refreshLabel(id,label);
+    });
+  }
+
+  // ---- monta regiões + controles globais de moeda ----
+  var regions=REGIONS.map(makeRegion);
+  function applyAll(){ regions.forEach(function(r){ r.apply(); }); }
+
+  var curseg=document.getElementById("curseg");
+  curseg.querySelectorAll("button").forEach(function(b){
+    b.addEventListener("click",function(){
+      STATE.mode=b.dataset.mode;
+      curseg.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on",x===b); });
+      applyAll();
+    });
+  });
+  var rateInp=document.getElementById("rate");
+  rateInp.addEventListener("input",function(){
+    var v=parseFloat(rateInp.value);
+    if(!isNaN(v)&&v>0){ STATE.rate=v; applyAll(); }
+  });
+})();
+</script>
+
+</body></html>

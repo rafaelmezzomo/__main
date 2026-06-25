@@ -1,0 +1,43 @@
+{
+  "posts": [
+    {
+      "slug": "gestao-tempo",
+      "title": "Gestão de tempo: a semana típica com a família junto",
+      "summary": "Uma semana real mapeada hora a hora — trabalho, foco, família, logística — e o que os blocos revelam sobre as escolhas.",
+      "eyebrow": "PRODUTIVIDADE",
+      "tags": ["produtividade", "rotina", "família"],
+      "created": "2026-06-17",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "gestao-tempo/index.html",
+      "voice": { "origin": "claude" }
+    },
+    {
+      "slug": "custo-familia",
+      "title": "Custo de vida: do quarto à casa cheia — São Paulo × Vale do Silício",
+      "summary": "Quanto muda o custo de vida conforme a família cresce, comparando São Paulo e o Vale do Silício.",
+      "eyebrow": "DINHEIRO",
+      "tags": ["custo de vida", "família", "comparação"],
+      "created": "2026-06-15",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "custo-familia/Custo de vida — do quarto à casa cheia · Vale do Silício.html",
+      "voice": { "origin": "claude" }
+    },
+    {
+      "slug": "gpt-custo-familia",
+      "title": "Comparador de custo de vida: solteiro vs família",
+      "summary": "Uma calculadora interativa pra comparar os gastos de morar sozinho versus sustentar uma família.",
+      "eyebrow": "FERRAMENTA",
+      "tags": ["custo de vida", "calculadora", "família"],
+      "created": "2026-06-15",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "gpt-custo-familia/comparador_custo_vida_familia.html",
+      "voice": { "origin": "claude" }
+    }
+  ]
+}

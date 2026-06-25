@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestão de tempo — semana típica · família junto</title>
+<style>
+  :root{
+    --bg:#F5F7FA;
+    --surface:#FFFFFF;
+    --ink:#0E1726;
+    --ink-2:#475467;
+    --ink-3:#8A95A6;
+    --line:#E4E8EE;
+    --line-2:#D5DBE4;
+    --accent:#0E7C66;
+    --accent-soft:#E3F2EE;
+    --warn:#B42318;
+
+    /* categorias de tempo */
+    --c-trabalho:#3538CD;
+    --c-familia:#0E7C66;
+    --c-foco:#C2620B;
+    --c-pessoal:#7A3CD0;
+    --c-logistica:#667085;
+
+    --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding:28px 20px 56px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  /* header */
+  header{margin-bottom:24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 10px}
+  .doc-title{font-size:clamp(22px,3vw,30px);line-height:1.15;letter-spacing:-.015em;margin:0 0 8px;font-weight:680}
+  .lede{color:var(--ink-2);font-size:15px;max-width:72ch;margin:0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* barra de filtros */
+  .filters{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-start;margin-top:20px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+  .fgroup{display:flex;flex-direction:column;gap:9px}
+  .fgroup-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-2);border-radius:9px;cursor:pointer;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-2);padding:6px 11px;transition:border-color .12s,background .12s,color .12s}
+  .chip:hover{border-color:var(--ink-3)}
+  .chip .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .chip.off{color:var(--ink-3);background:var(--bg)}
+  .chip.off .sw{opacity:.28}
+  .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:9px;overflow:hidden;background:var(--surface)}
+  .seg button{background:none;border:none;cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);padding:6px 13px;border-right:1px solid var(--line-2)}
+  .seg button:last-child{border-right:none}
+  .seg button:hover{background:var(--bg)}
+  .seg button.on{background:var(--accent);color:#fff}
+
+  /* kpis */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 0}
+  .kpi{border:1px solid var(--line);border-radius:12px;padding:14px 15px;background:var(--surface);position:relative;overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--kc,var(--accent))}
+  .kpi .kpi-lbl{font-size:11px;color:var(--ink-3);font-weight:500;margin:0 0 8px;line-height:1.2}
+  .kpi .kpi-val{font-family:var(--mono);font-size:clamp(19px,2.4vw,25px);font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1}
+  .kpi .kpi-sub{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink-3);margin-top:6px}
+
+  /* layout principal */
+  .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;margin-top:22px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  .rightcol{display:flex;flex-direction:column;gap:22px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h2{font-size:12px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 4px;font-weight:600}
+  .card .h2sub{font-size:12.5px;color:var(--ink-3);margin:0 0 16px}
+
+  svg{width:100%;height:auto;display:block;font-family:var(--sans)}
+  .gridline{stroke:var(--line);stroke-width:1}
+  .hourlbl{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+  .daylbl{font-size:12px;font-weight:600;fill:var(--ink-2)}
+  .daylbl.weekend{fill:var(--accent)}
+  .blk{cursor:default;transition:opacity .15s}
+  .blk.dim{opacity:.12}
+  .blklbl{font-size:9.5px;fill:#fff;font-weight:600;pointer-events:none}
+  .barlbl{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+
+  /* tempo junto */
+  .junto{display:flex;flex-direction:column;gap:9px}
+  .junto-row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:11px;font-size:13px}
+  .junto-name{color:var(--ink-2);white-space:nowrap}
+  .junto-track{background:var(--bg);border:1px solid var(--line);border-radius:6px;height:18px;overflow:hidden}
+  .junto-fill{height:100%;background:var(--c-familia);border-radius:6px 0 0 6px;transition:width .25s}
+  .junto-val{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap}
+
+  /* legenda */
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+  .legend .item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2)}
+  .legend .item .sw{width:12px;height:12px;border-radius:3px}
+
+  /* story */
+  .story{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+  @media (max-width:760px){.story{grid-template-columns:1fr}}
+  .story-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column}
+  .story-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 8px}
+  .story-big{font-family:var(--mono);font-size:clamp(22px,3.4vw,32px);font-weight:700;letter-spacing:-.02em;margin:0 0 6px;color:var(--ink)}
+  .story-cap{font-size:13px;line-height:1.55;color:var(--ink-2);margin:0}
+  .story-cap b{color:var(--ink);font-weight:600}
+
+  /* editor de premissas */
+  .editor-card{margin-top:22px}
+  .editor-card textarea{width:100%;min-height:300px;font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink);background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:14px;resize:vertical}
+  .editor-card textarea:focus{outline:none;border-color:var(--accent);background:#fff}
+  .editor-actions{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:9px;padding:8px 16px;cursor:pointer}
+  .btn:hover{border-color:var(--ink-3)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .editor-status{font-size:12.5px;font-family:var(--mono);font-weight:600}
+  .editor-status.ok{color:var(--accent)}
+  .editor-status.err{color:var(--warn)}
+  .editor-help{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin:0 0 14px}
+  .editor-help code{font-family:var(--mono);font-size:11.5px;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;color:var(--ink)}
+
+  .read{background:var(--accent-soft);border:1px solid #CBE6DE;border-radius:12px;padding:18px 20px;margin-top:22px;font-size:13.5px;line-height:1.6;color:#0B5A4A}
+  .read b{color:#08402F}
+  .read p{margin:0 0 10px}.read p:last-child{margin:0}
+  footer{max-width:1180px;margin:24px auto 0;font-size:12px;color:var(--ink-3);line-height:1.6}
+
+  /* cabeçalho do card da grade + botão maximizar */
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .icon-btn{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:9px;padding:6px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none}
+  .icon-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+
+  /* overlay tela cheia da grade */
+  #maxOverlay{position:fixed;inset:0;z-index:1000;background:var(--bg);display:none;flex-direction:column;padding:18px 22px 22px}
+  #maxOverlay.open{display:flex}
+  .max-top{display:flex;align-items:center;gap:14px 16px;flex-wrap:wrap;margin-bottom:14px}
+  .max-top h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0;font-weight:600}
+  .max-spacer{flex:1 1 0;min-width:0}
+  .max-top .filters{margin-top:0}
+  .max-body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px}
+  .max-body #gridChart{flex:1;min-height:0;display:flex}
+  .max-body #gridChart svg{max-height:100%}
+
+  /* drawer de edição */
+  #maxDrawer{position:fixed;top:0;right:0;height:100%;width:min(620px,94vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(14,23,38,.14);transform:translateX(100%);transition:transform .22s ease;z-index:1100;display:flex;flex-direction:column;padding:20px;overflow:auto}
+  #maxDrawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .drawer-head h2{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0;font-weight:600}
+  #maxDrawer .editor-card{margin-top:0;border:none;padding:0;background:none}
+  #drawerScrim{position:fixed;inset:0;background:rgba(14,23,38,.32);z-index:1099;display:none}
+  #drawerScrim.open{display:block}
+
+  @media (max-width:760px){
+    #maxOverlay{padding:14px 14px 16px}
+    .card-head{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Gestão de tempo pessoal · 2026</p>
+    <h1 class="doc-title">A semana, em blocos — e onde a família se encontra</h1>
+    <p class="lede">Uma semana típica de <b>168 horas</b> sobre premissas explícitas: <b>sono das 23h30 às 7h30</b> (8h/dia), <b>2 slots de trabalho + 1 slot de foco cognitivo</b> por dia (MBA, Insper, Clube da Memória, jogo ou projeto pessoal), e a premissa âncora — <b>família tem rotina junto</b>: manhã, refeições, noite e fim de semana. Ligue/desligue categorias, pessoas e tipo de dia; e <b>edite suas próprias premissas no fim da página</b> ou maximize a grade — ao salvar, atualiza o <code>week.json</code> (servido) ou o navegador (offline).</p>
+    <div class="filters">
+      <div class="fgroup">
+        <span class="fgroup-lbl">Categorias</span>
+        <div class="chips" id="catChips"></div>
+      </div>
+      <div class="fgroup">
+        <span class="fgroup-lbl">Pessoas</span>
+        <div class="chips" id="pplChips"></div>
+      </div>
+      <div class="fgroup">
+        <span class="fgroup-lbl">Tipo de dia</span>
+        <div class="seg" id="daySeg">
+          <button type="button" data-d="all" class="on">Semana</button>
+          <button type="button" data-d="util">Dia útil</button>
+          <button type="button" data-d="fim">Fim de semana</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="card" id="gridCard">
+      <div class="card-head">
+        <h2>Grade semanal</h2>
+        <button type="button" id="maxBtn" class="icon-btn" title="Maximizar a grade">⤢ Maximizar</button>
+      </div>
+      <p class="h2sub">Cada coluna é um dia · altura do bloco = duração · passe o mouse para detalhes</p>
+      <div id="gridChart"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="rightcol">
+      <div class="card">
+        <h2>Distribuição por dia</h2>
+        <p class="h2sub">Horas empilhadas por categoria — a virada do dia útil para o fim de semana</p>
+        <div id="barsChart"></div>
+      </div>
+      <div class="card">
+        <h2>Tempo junto · todos presentes</h2>
+        <p class="h2sub">Horas/dia em que pai, mãe e filho estão no mesmo bloco</p>
+        <div class="junto" id="juntoChart"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="story" id="story"></div>
+
+  <div class="card editor-card">
+    <h2>Premissas — editar</h2>
+    <p class="h2sub">Ajuste o modelo da sua semana e clique em Aplicar. Servido via <code>node scripts/serve.js</code>, grava no <code>week.json</code>; offline, salva no navegador.</p>
+    <p class="editor-help">
+      Cada dia (<code>seg</code>…<code>dom</code>) é uma lista de blocos com <code>label</code>, <code>inicio</code>, <code>fim</code> (formato <code>"HH:MM"</code>, 24h), <code>cat</code> (uma chave de <code>categorias</code>) e <code>quem</code> (ids de <code>pessoas</code>). O sono pode virar a meia-noite (ex.: <code>"23:30"</code> → <code>"07:30"</code>). Os blocos de cada dia devem somar 24h. <b>Família junto</b> conta só blocos com todas as pessoas em <code>quem</code>.
+    </p>
+    <textarea id="editorTa" spellcheck="false"></textarea>
+    <div class="editor-actions">
+      <button type="button" id="applyBtn" class="btn primary">Aplicar</button>
+      <button type="button" id="resetBtn" class="btn">Restaurar padrão</button>
+      <button type="button" id="downloadBtn" class="btn" style="display:none">Baixar week.json</button>
+      <span id="editorStatus" class="editor-status"></span>
+    </div>
+  </div>
+
+  <div class="read">
+    <p><b>Como ler.</b> Este é um modelo de <b>semana típica</b>, não um registro do que aconteceu. Serve para enxergar a forma do tempo — onde ele já está protegido (família junto, foco cognitivo) e onde escorrega.</p>
+    <p>O indicador <b>família junto</b> só conta blocos em que <b>todas as pessoas</b> estão presentes — o tempo compartilhado de verdade, mais exigente do que só "tempo com a família".</p>
+  </div>
+</div>
+
+<footer>
+  Modelo pessoal de alocação de tempo · semana de 168h · premissas editáveis, salvas no <b>week.json</b> (servido) ou no navegador (offline). Tema visual reaproveitado dos estudos da pasta <b>/blog</b>.
+</footer>
+
+<!-- Overlay tela cheia da grade (controles e grade são movidos pra cá) -->
+<div id="maxOverlay" aria-hidden="true">
+  <div class="max-top">
+    <h2>Grade semanal</h2>
+    <div id="maxControls"></div>
+    <span class="max-spacer"></span>
+    <button type="button" id="maxEditBtn" class="btn">Editar premissas</button>
+    <button type="button" id="maxCloseBtn" class="btn primary">Fechar</button>
+  </div>
+  <div class="max-body" id="maxBody"></div>
+</div>
+<div id="drawerScrim"></div>
+<aside id="maxDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>Premissas</h2>
+    <button type="button" id="drawerCloseBtn" class="btn">Fechar</button>
+  </div>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+(function(){
+  "use strict";
+
+  const FAM = ["rafael","parceira","filho"]; // quem forma "família junto" no modelo padrão
+
+  // ===================== MODELO PADRÃO =====================
+  // blocos reutilizáveis (funções p/ gerar objetos independentes)
+  const sono8    = () => ({ label:"Sono", inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] }); // 8h
+  const sono75   = () => ({ label:"Sono", inicio:"00:00", fim:"07:30", cat:"logistica", quem:["rafael"] }); // 7,5h (noites com slot 3)
+  const slot3    = () => ({ label:"Trabalho — slot 3", inicio:"23:00", fim:"00:00", cat:"trabalho",  quem:["rafael"] });
+  const logNoite = () => ({ label:"Logística da casa",  inicio:"23:00", fim:"23:30", cat:"logistica", quem:["rafael"] });
+
+  // dia útil até 19h30. sono = bloco de sono; slot1 = rótulo do 1º bloco de trabalho.
+  function manha(slot1, sono){return [
+    sono,
+    { label:"Acordar / preparar",  inicio:"07:30", fim:"08:00", cat:"logistica", quem:["rafael"] },
+    { label:"Pré-escola: café + levar Nico", inicio:"08:00", fim:"09:30", cat:"familia", quem:FAM.slice() },
+    { label:slot1,                 inicio:"09:30", fim:"12:30", cat:"trabalho",  quem:["rafael"] },
+    { label:"Almoço",              inicio:"12:30", fim:"13:30", cat:"pessoal",   quem:["rafael"] },
+    { label:"Trabalho — slot 2",   inicio:"13:30", fim:"17:30", cat:"trabalho",  quem:["rafael"] },
+    { label:"Pós-escola: busca + brincar + jantar + banho", inicio:"17:30", fim:"19:30", cat:"familia", quem:FAM.slice() }
+  ];}
+  // noite de MBA (foco 19h30–23h) + cauda (slot 3 ou logística)
+  function noiteMBA(tail){return [
+    { label:"MBA", inicio:"19:30", fim:"23:00", cat:"foco", quem:["rafael"] },
+    tail
+  ];}
+  // Nico dormindo 19h30–21h, foco/algo 21h–23h, + cauda
+  function noiteDormirFoco(label, cat, tail){return [
+    { label:"Colocar Nico pra dormir", inicio:"19:30", fim:"21:00", cat:"familia", quem:["rafael","filho"] },
+    { label:label, inicio:"21:00", fim:"23:00", cat:cat, quem:["rafael"] },
+    tail
+  ];}
+
+  function buildDefault(){
+    return {
+      titulo: "Semana típica",
+      pessoas: [
+        { id:"rafael",   nome:"Rafael",   papel:"pai" },
+        { id:"parceira", nome:"Parceira", papel:"mãe" },
+        { id:"filho",    nome:"Nico",     papel:"filho", idade:4 }
+      ],
+      categorias: {
+        familia:   { nome:"Família junto",    cor:"var(--c-familia)" },
+        trabalho:  { nome:"Trabalho",         cor:"var(--c-trabalho)" },
+        foco:      { nome:"Foco cognitivo",   cor:"var(--c-foco)" },
+        pessoal:   { nome:"Pessoal / saúde",  cor:"var(--c-pessoal)" },
+        logistica: { nome:"Sono + logística", cor:"var(--c-logistica)" }
+      },
+      dias: {
+        seg: manha("Trabalho — slot 1", sono75()).concat(noiteMBA(slot3())),
+        ter: manha("Trabalho — slot 1", sono75()).concat(noiteDormirFoco("Flexível — trabalho / jogo / casal", "foco", slot3())),
+        qua: manha("Trabalho — slot 1", sono75()).concat(noiteMBA(slot3())),
+        qui: manha("Trabalho — slot 1", sono75()).concat(noiteDormirFoco("Clube da Memória", "foco", slot3())),
+        sex: manha("Stalo Labs — foco (manhã)", sono8()).concat(noiteDormirFoco("Tempo de casal / relax", "pessoal", logNoite())),
+        sab: [
+          { label:"Sono",                 inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] },
+          { label:"Café em família",      inicio:"07:30", fim:"09:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Tempo com Nico + fazer dormir", inicio:"09:00", fim:"11:00", cat:"familia", quem:["rafael","filho"] },
+          { label:"Treino",               inicio:"11:00", fim:"12:00", cat:"pessoal",   quem:["rafael"] },
+          { label:"Almoço em família",    inicio:"12:00", fim:"13:30", cat:"familia",   quem:FAM.slice() },
+          { label:"Descanso / soneca",    inicio:"13:30", fim:"15:00", cat:"pessoal",   quem:["rafael"] },
+          { label:"Passeio em família",   inicio:"15:00", fim:"18:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Jantar + banho",       inicio:"18:00", fim:"21:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Tempo de casal",       inicio:"21:00", fim:"23:00", cat:"pessoal",   quem:["rafael","parceira"] },
+          { label:"Logística da casa",    inicio:"23:00", fim:"23:30", cat:"logistica", quem:["rafael"] }
+        ],
+        dom: [
+          { label:"Sono",                 inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] },
+          { label:"Café em família",      inicio:"07:30", fim:"09:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Manhã em família",     inicio:"09:00", fim:"12:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Almoço em família",    inicio:"12:00", fim:"13:30", cat:"familia",   quem:FAM.slice() },
+          { label:"Descanso / leitura",   inicio:"13:30", fim:"15:00", cat:"pessoal",   quem:["rafael"] },
+          { label:"Tarde em família",     inicio:"15:00", fim:"18:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Jantar + banho",       inicio:"18:00", fim:"21:00", cat:"familia",   quem:FAM.slice() },
+          { label:"Planejar a semana",    inicio:"21:00", fim:"22:30", cat:"pessoal",   quem:["rafael","parceira"] },
+          { label:"Relax / logística",    inicio:"22:30", fim:"23:30", cat:"logistica", quem:["rafael"] }
+        ]
+      }
+    };
+  }
+  // =========================================================
+
+  const DIAS = [
+    {id:"seg",nome:"Seg",fim:false},{id:"ter",nome:"Ter",fim:false},
+    {id:"qua",nome:"Qua",fim:false},{id:"qui",nome:"Qui",fim:false},
+    {id:"sex",nome:"Sex",fim:false},{id:"sab",nome:"Sáb",fim:true},
+    {id:"dom",nome:"Dom",fim:true}
+  ];
+  const CAT_ORDER = ["logistica","trabalho","foco","pessoal","familia"]; // base -> topo nas barras
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const LS_KEY = "gestao-tempo-modelo-v1";
+
+  // estado vivo
+  let M, CATS, PPL, TODOS;
+  const state = { cats:new Set(), ppl:new Set(), dayType:"all" };
+
+  // ---------- helpers ----------
+  const clone = o => JSON.parse(JSON.stringify(o));
+  function toMin(hhmm){ const [h,m]=hhmm.split(":").map(Number); return h*60+m; }
+  function dur(b){ let d = toMin(b.fim) - toMin(b.inicio); if(d<=0) d += 1440; return d; }
+  function css(v){
+    if(!v || !v.startsWith("var(")) return v||"#888";
+    const name = v.slice(4,-1).trim();
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
+  }
+  function fmtH(min){ return (Math.round(min/60*10)/10).toString().replace(".",",")+"h"; }
+  function nomeCat(c){ return (CATS[c]&&CATS[c].nome) || c; }
+  function corCat(c){ return css(CATS[c] ? CATS[c].cor : "#888"); }
+  function nomePessoa(id){ const p=PPL.find(x=>x.id===id); return p?p.nome:id; }
+  function activeDays(){ return DIAS.filter(d=> state.dayType==="all" || (state.dayType==="util"&&!d.fim) || (state.dayType==="fim"&&d.fim)); }
+  function blkVisible(b){ return state.cats.has(b.cat) && b.quem.some(q=>state.ppl.has(q)); }
+  function isJunto(b){ return TODOS.length>0 && TODOS.every(p=>b.quem.includes(p)); }
+  function catKeysOrdered(){
+    const ks=Object.keys(CATS);
+    const ord=CAT_ORDER.filter(c=>ks.includes(c));
+    ks.forEach(c=>{ if(!ord.includes(c)) ord.push(c); });
+    return ord;
+  }
+
+  // ===================== KPI CARDS =====================
+  function renderKpis(){
+    const days = activeDays();
+    const nLbl = state.dayType==="util"?"/ 5 dias úteis":state.dayType==="fim"?"/ fim de semana":"/ semana";
+    const byCat={}; let acordado=0;
+    Object.keys(CATS).forEach(c=>byCat[c]=0);
+    days.forEach(d=>(M.dias[d.id]||[]).forEach(b=>{
+      const dm=dur(b); if(byCat[b.cat]!=null) byCat[b.cat]+=dm;
+      if(b.cat!=="logistica") acordado+=dm;
+    }));
+    const wrap=document.getElementById("kpis"); wrap.innerHTML="";
+    catKeysOrdered().reverse().forEach(c=>{ // familia primeiro
+      const isFam = (c==="familia");
+      const sub = isFam && acordado>0 ? Math.round(byCat[c]/acordado*100)+"% do tempo acordado" : nLbl;
+      const el=document.createElement("div"); el.className="kpi";
+      el.style.setProperty("--kc", corCat(c));
+      el.innerHTML=`<p class="kpi-lbl">${nomeCat(c)}</p><div class="kpi-val">${fmtH(byCat[c]||0)}</div><p class="kpi-sub">${sub}</p>`;
+      wrap.appendChild(el);
+    });
+  }
+
+  // ===================== GRADE SEMANAL (SVG) =====================
+  function renderGrid(){
+    const days = activeDays();
+    const W=860, H=620, padL=34, padT=22, padB=8;
+    const colW=(W-padL)/Math.max(days.length,1), plotH=H-padT-padB;
+    const y = m => padT + (m/1440)*plotH;
+    const svg=document.createElementNS(SVGNS,"svg");
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    for(let h=0; h<=24; h+=3){
+      const yy=y(h*60);
+      const ln=document.createElementNS(SVGNS,"line");
+      ln.setAttribute("x1",padL);ln.setAttribute("x2",W);ln.setAttribute("y1",yy);ln.setAttribute("y2",yy);
+      ln.setAttribute("class","gridline");svg.appendChild(ln);
+      const tx=document.createElementNS(SVGNS,"text");
+      tx.setAttribute("x",padL-6);tx.setAttribute("y",yy+3);tx.setAttribute("text-anchor","end");
+      tx.setAttribute("class","hourlbl");tx.textContent=String(h).padStart(2,"0")+"h";
+      svg.appendChild(tx);
+    }
+    days.forEach((d,i)=>{
+      const x0=padL+i*colW;
+      const lbl=document.createElementNS(SVGNS,"text");
+      lbl.setAttribute("x",x0+colW/2);lbl.setAttribute("y",14);lbl.setAttribute("text-anchor","middle");
+      lbl.setAttribute("class","daylbl"+(d.fim?" weekend":""));lbl.textContent=d.nome;
+      svg.appendChild(lbl);
+      (M.dias[d.id]||[]).forEach(b=>{
+        const s=toMin(b.inicio), e=toMin(b.fim);
+        const segs = ((e>s) ? [[s,e]] : [[s,1440],[0,e]]).filter(([a,z])=>z>a);
+        segs.forEach(([a,z])=>{
+          const g=document.createElementNS(SVGNS,"g");
+          g.setAttribute("class","blk"+(blkVisible(b)?"":" dim"));
+          const r=document.createElementNS(SVGNS,"rect");
+          const ry=y(a), rh=Math.max(2,y(z)-y(a));
+          r.setAttribute("x",x0+1.5);r.setAttribute("y",ry);
+          r.setAttribute("width",colW-3);r.setAttribute("height",rh);
+          r.setAttribute("rx",3);r.setAttribute("fill",corCat(b.cat));
+          if(isJunto(b)){ r.setAttribute("stroke","#fff");r.setAttribute("stroke-width",1.4); }
+          const ti=document.createElementNS(SVGNS,"title");
+          ti.textContent=`${b.label} · ${b.inicio}–${b.fim} (${fmtH(dur(b))}) · ${b.quem.map(nomePessoa).join(", ")}`;
+          r.appendChild(ti);g.appendChild(r);
+          if(rh>=16 && colW>54){
+            const t=document.createElementNS(SVGNS,"text");
+            t.setAttribute("x",x0+colW/2);t.setAttribute("y",ry+rh/2+3.5);
+            t.setAttribute("text-anchor","middle");t.setAttribute("class","blklbl");
+            const max=Math.floor(colW/6.5); let lab=b.label;
+            if(lab.length>max) lab=lab.slice(0,max-1)+"…";
+            t.textContent=lab;g.appendChild(t);
+          }
+          svg.appendChild(g);
+        });
+      });
+    });
+    const host=document.getElementById("gridChart");host.innerHTML="";host.appendChild(svg);
+  }
+
+  // ===================== BARRAS POR DIA =====================
+  function renderBars(){
+    const days = activeDays();
+    const W=420, H=240, padL=24, padT=10, padB=22;
+    const colW=(W-padL)/Math.max(days.length,1), plotH=H-padT-padB, maxMin=1440;
+    const svg=document.createElementNS(SVGNS,"svg");
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    [0,6,12,18,24].forEach(h=>{
+      const yy=padT+plotH-(h*60/maxMin)*plotH;
+      const ln=document.createElementNS(SVGNS,"line");
+      ln.setAttribute("x1",padL);ln.setAttribute("x2",W);ln.setAttribute("y1",yy);ln.setAttribute("y2",yy);
+      ln.setAttribute("class","gridline");svg.appendChild(ln);
+      const tx=document.createElementNS(SVGNS,"text");
+      tx.setAttribute("x",padL-5);tx.setAttribute("y",yy+3);tx.setAttribute("text-anchor","end");
+      tx.setAttribute("class","barlbl");tx.textContent=h;svg.appendChild(tx);
+    });
+    const order=catKeysOrdered();
+    days.forEach((d,i)=>{
+      const x0=padL+i*colW+colW*0.16, bw=colW*0.68; let acc=0;
+      order.forEach(c=>{
+        let sum=0;
+        (M.dias[d.id]||[]).forEach(b=>{ if(b.cat===c && blkVisible(b)) sum+=dur(b); });
+        if(sum<=0) return;
+        const hpx=(sum/maxMin)*plotH, yTop=padT+plotH-acc-hpx;
+        const r=document.createElementNS(SVGNS,"rect");
+        r.setAttribute("x",x0);r.setAttribute("y",yTop);r.setAttribute("width",bw);r.setAttribute("height",hpx);
+        r.setAttribute("fill",corCat(c));r.setAttribute("rx",2);
+        const ti=document.createElementNS(SVGNS,"title");
+        ti.textContent=`${d.nome} · ${nomeCat(c)}: ${fmtH(sum)}`;
+        r.appendChild(ti);svg.appendChild(r);
+        acc+=hpx;
+      });
+      const tx=document.createElementNS(SVGNS,"text");
+      tx.setAttribute("x",x0+bw/2);tx.setAttribute("y",H-7);tx.setAttribute("text-anchor","middle");
+      tx.setAttribute("class","daylbl"+(d.fim?" weekend":""));tx.setAttribute("font-size","10");
+      tx.textContent=d.nome;svg.appendChild(tx);
+    });
+    const host=document.getElementById("barsChart");host.innerHTML="";host.appendChild(svg);
+  }
+
+  // ===================== TEMPO JUNTO POR DIA =====================
+  function renderJunto(){
+    const days = activeDays(); let max=0;
+    const rows=days.map(d=>{
+      let m=0; (M.dias[d.id]||[]).forEach(b=>{ if(isJunto(b)) m+=dur(b); });
+      if(m>max)max=m; return {d,m};
+    });
+    const host=document.getElementById("juntoChart");host.innerHTML="";
+    rows.forEach(({d,m})=>{
+      const row=document.createElement("div");row.className="junto-row";
+      const w = max>0 ? (m/max*100) : 0;
+      row.innerHTML=`<span class="junto-name">${d.nome}</span>
+        <span class="junto-track"><span class="junto-fill" style="width:${w}%"></span></span>
+        <span class="junto-val">${fmtH(m)}</span>`;
+      if(d.fim) row.querySelector(".junto-name").style.color="var(--accent)";
+      host.appendChild(row);
+    });
+  }
+
+  // ===================== STORY CARDS =====================
+  function renderStory(){
+    let junto=0, trabalho=0, foco=0, acordado=0, totalSemana=0;
+    let melhorBloco={label:"",min:0};
+    DIAS.forEach(d=>(M.dias[d.id]||[]).forEach(b=>{
+      const dm=dur(b); totalSemana+=dm;
+      if(b.cat==="trabalho") trabalho+=dm;
+      if(b.cat==="foco") foco+=dm;
+      if(b.cat!=="logistica") acordado+=dm;
+      if(isJunto(b)){ junto+=dm; if(dm>melhorBloco.min) melhorBloco={label:b.label,min:dm}; }
+    }));
+    const pctJ = acordado>0?Math.round(junto/acordado*100):0;
+    const trabPct = totalSemana>0?Math.round(trabalho/totalSemana*100):0;
+    const cards=[
+      {k:"O esqueleto da semana", big:fmtH(junto), cap:`A família toda fica junta <b>${fmtH(junto)} por semana</b> — cerca de <b>${pctJ}% de todo o tempo acordado</b>. É o tempo compartilhado de verdade, com todos presentes.`},
+      {k:"A âncora do dia", big:melhorBloco.label||"—", cap:`O bloco junto mais longo é <b>${(melhorBloco.label||"—").toLowerCase()}</b>, com <b>${fmtH(melhorBloco.min)}</b>. Vale blindá-lo de reuniões e telas.`},
+      {k:"Foco cognitivo", big:fmtH(foco), cap:`Os slots de foco somam <b>${fmtH(foco)}</b> na semana — MBA, Insper, Clube da Memória, jogo ou projeto pessoal. É o tempo de aprender e construir fora do operacional.`},
+      {k:"Trabalho na semana", big:fmtH(trabalho), cap:`O trabalho ocupa <b>${fmtH(trabalho)}</b> — <b>${trabPct}% das 168h</b>. O fim de semana inverte: a maior parte vira família e descanso.`}
+    ];
+    const host=document.getElementById("story");host.innerHTML="";
+    cards.forEach(c=>{
+      const el=document.createElement("div");el.className="story-card";
+      el.innerHTML=`<p class="story-kicker">${c.k}</p><div class="story-big">${c.big}</div><p class="story-cap">${c.cap}</p>`;
+      host.appendChild(el);
+    });
+  }
+
+  // ===================== LEGENDA =====================
+  function renderLegend(){
+    const host=document.getElementById("legend");host.innerHTML="";
+    Object.keys(CATS).forEach(c=>{
+      const it=document.createElement("span");it.className="item";
+      it.innerHTML=`<span class="sw" style="background:${corCat(c)}"></span>${nomeCat(c)}`;
+      host.appendChild(it);
+    });
+    const it=document.createElement("span");it.className="item";
+    it.innerHTML=`<span class="sw" style="background:var(--c-familia);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line-2)"></span>contorno branco = todos juntos`;
+    host.appendChild(it);
+  }
+
+  // ===================== FILTROS UI =====================
+  function buildChips(){
+    const cc=document.getElementById("catChips"); cc.innerHTML="";
+    Object.keys(CATS).forEach(c=>{
+      const b=document.createElement("button");b.className="chip"+(state.cats.has(c)?"":" off");
+      b.innerHTML=`<span class="sw" style="background:${corCat(c)}"></span>${nomeCat(c)}`;
+      b.addEventListener("click",()=>{ toggleSet(state.cats,c); b.classList.toggle("off",!state.cats.has(c)); renderAll(); });
+      cc.appendChild(b);
+    });
+    const pc=document.getElementById("pplChips"); pc.innerHTML="";
+    PPL.forEach(p=>{
+      const b=document.createElement("button");b.className="chip"+(state.ppl.has(p.id)?"":" off");
+      b.textContent=p.nome;
+      b.addEventListener("click",()=>{ toggleSet(state.ppl,p.id); b.classList.toggle("off",!state.ppl.has(p.id)); renderAll(); });
+      pc.appendChild(b);
+    });
+  }
+  function toggleSet(set,v){ if(set.has(v)) set.delete(v); else set.add(v); }
+
+  function renderAll(){ renderKpis(); renderGrid(); renderBars(); renderJunto(); }
+
+  // ===================== MODELO: aplicar / persistir =====================
+  function setModel(m){
+    M=m; CATS=m.categorias||{}; PPL=m.pessoas||[]; TODOS=PPL.map(p=>p.id);
+    state.cats=new Set(Object.keys(CATS));
+    state.ppl=new Set(PPL.map(p=>p.id));
+    buildChips(); renderLegend(); renderStory(); renderAll();
+  }
+  function loadSaved(){ try{ const s=localStorage.getItem(LS_KEY); return s?JSON.parse(s):null; }catch(e){ return null; } }
+  function isServed(){ return location.protocol==="http:" || location.protocol==="https:"; }
+  function downloadJson(m){
+    try{
+      const blob=new Blob([JSON.stringify(m,null,2)+"\n"],{type:"application/json"});
+      const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="week.json";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }catch(e){}
+  }
+  // persiste o modelo; retorna texto do destino pra compor o status
+  async function saveModel(m){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(m)); }catch(e){}
+    if(isServed()){
+      try{
+        const r=await fetch("/api/blog-data",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({file:"gestao-tempo/week.json",data:m})});
+        return r.ok ? "salvo no week.json ✓" : "salvo no navegador (falha ao gravar o arquivo)";
+      }catch(e){ return "salvo no navegador (servidor indisponível)"; }
+    }
+    return "salvo no navegador — use “Baixar week.json” pra versionar";
+  }
+  function fillEditor(){ document.getElementById("editorTa").value=JSON.stringify(M,null,2); }
+  function status(msg,kind){ const el=document.getElementById("editorStatus"); el.textContent=msg; el.className="editor-status "+(kind||""); }
+
+  async function applyEditor(){
+    const ta=document.getElementById("editorTa");
+    let m;
+    try{ m=JSON.parse(ta.value); }
+    catch(e){ status("JSON inválido: "+e.message, "err"); return; }
+    if(!m || !m.categorias || !m.pessoas || !m.dias){ status("Faltam campos: categorias, pessoas ou dias.", "err"); return; }
+    // aviso (não bloqueia) se algum dia não fecha 24h
+    const fora=[];
+    DIAS.forEach(d=>{ const arr=m.dias[d.id]; if(Array.isArray(arr)){ let t=0; arr.forEach(b=>{let x=toMin(b.fim)-toMin(b.inicio);if(x<=0)x+=1440;t+=x;}); if(t!==1440) fora.push(d.nome+" ("+(t/60).toFixed(1)+"h)"); } });
+    setModel(m); fillEditor();
+    status("Aplicando…", "");
+    const where=await saveModel(m);
+    const base=fora.length ? ("Aplicado — atenção, não fecham 24h: "+fora.join(", ")) : "Premissas aplicadas";
+    status(base+" · "+where, fora.length?"err":"ok");
+  }
+  function resetEditor(){ localStorage.removeItem(LS_KEY); setModel(clone(DEFAULT)); fillEditor(); status("Restaurado para o padrão.", "ok"); }
+
+  // ===================== INIT =====================
+  const DEFAULT = buildDefault();
+  document.querySelectorAll("#daySeg button").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      state.dayType=btn.dataset.d;
+      document.querySelectorAll("#daySeg button").forEach(x=>x.classList.toggle("on",x===btn));
+      renderAll();
+    });
+  });
+  document.getElementById("applyBtn").addEventListener("click",applyEditor);
+  document.getElementById("resetBtn").addEventListener("click",resetEditor);
+  document.getElementById("downloadBtn").addEventListener("click",()=>downloadJson(M));
+
+  // ===================== MAXIMIZAR / DRAWER =====================
+  // Move nós existentes pro overlay/drawer e restaura ao fechar (sem duplicar estado).
+  const overlay=document.getElementById("maxOverlay");
+  const drawer=document.getElementById("maxDrawer");
+  const scrim=document.getElementById("drawerScrim");
+  let gridSlots=[], editorSlot=null;
+
+  function park(node){ const slot={node,parent:node.parentNode,next:node.nextSibling}; return slot; }
+  function unpark(slot){ slot.parent.insertBefore(slot.node, slot.next); }
+
+  function openMax(){
+    const filters=document.querySelector(".filters");
+    const grid=document.getElementById("gridChart");
+    const legend=document.getElementById("legend");
+    gridSlots=[park(filters),park(grid),park(legend)];
+    document.getElementById("maxControls").appendChild(filters);
+    document.getElementById("maxBody").appendChild(grid);
+    document.getElementById("maxBody").appendChild(legend);
+    overlay.classList.add("open"); overlay.setAttribute("aria-hidden","false");
+    renderAll();
+  }
+  function closeDrawer(){
+    if(editorSlot){ unpark(editorSlot); editorSlot=null; }
+    drawer.classList.remove("open"); drawer.setAttribute("aria-hidden","true");
+    scrim.classList.remove("open");
+  }
+  function closeMax(){
+    closeDrawer();
+    gridSlots.forEach(unpark); gridSlots=[];
+    overlay.classList.remove("open"); overlay.setAttribute("aria-hidden","true");
+  }
+  function openDrawer(){
+    const ed=document.querySelector(".editor-card");
+    editorSlot=park(ed);
+    document.getElementById("drawerBody").appendChild(ed);
+    drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false");
+    scrim.classList.add("open");
+  }
+
+  document.getElementById("maxBtn").addEventListener("click",openMax);
+  document.getElementById("maxCloseBtn").addEventListener("click",closeMax);
+  document.getElementById("maxEditBtn").addEventListener("click",openDrawer);
+  document.getElementById("drawerCloseBtn").addEventListener("click",closeDrawer);
+  scrim.addEventListener("click",closeDrawer);
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Escape") return;
+    if(drawer.classList.contains("open")) closeDrawer();
+    else if(overlay.classList.contains("open")) closeMax();
+  });
+
+  // ===================== CARREGAR =====================
+  (async function init(){
+    let model=null;
+    if(isServed()){
+      try{ const r=await fetch("week.json",{cache:"no-store"}); if(r.ok) model=await r.json(); }catch(e){}
+    } else {
+      document.getElementById("downloadBtn").style.display="";
+    }
+    if(!model) model=loadSaved();
+    if(!model) model=clone(DEFAULT);
+    setModel(model);
+    fillEditor();
+  })();
+})();
+</script>
+</body></html>
