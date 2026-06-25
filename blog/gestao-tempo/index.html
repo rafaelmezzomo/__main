@@ -18,8 +18,9 @@
     /* categorias de tempo */
     --c-trabalho:#3538CD;
     --c-familia:#0E7C66;
-    --c-foco:#C2620B;
+    --c-foco:#0EA5E9;
     --c-pessoal:#7A3CD0;
+    --c-saude:#D92D20;
     --c-logistica:#667085;
 
     --mono:ui-monospace,"SF Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
@@ -81,6 +82,10 @@
   .blk.dim{opacity:.12}
   .blklbl{font-size:9.5px;fill:#fff;font-weight:600;pointer-events:none}
   .barlbl{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+  /* faixa de leitura à direita (início→fim no hover) */
+  .hov-axis{pointer-events:none}
+  .hov-line{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:3 3;opacity:.65}
+  .hov-lbl{font-family:var(--mono);font-size:10.5px;font-weight:700;fill:var(--ink)}
 
   /* tempo junto */
   .junto{display:flex;flex-direction:column;gap:9px}
@@ -160,7 +165,7 @@
   <header>
     <p class="eyebrow">Gestão de tempo pessoal · 2026</p>
     <h1 class="doc-title">A semana, em blocos — e onde a família se encontra</h1>
-    <p class="lede">Uma semana típica de <b>168 horas</b> sobre premissas explícitas: <b>sono das 23h30 às 7h30</b> (8h/dia), <b>2 slots de trabalho + 1 slot de foco cognitivo</b> por dia (MBA, Insper, Clube da Memória, jogo ou projeto pessoal), e a premissa âncora — <b>família tem rotina junto</b>: manhã, refeições, noite e fim de semana. Ligue/desligue categorias, pessoas e tipo de dia; e <b>edite suas próprias premissas no fim da página</b> ou maximize a grade — ao salvar, atualiza o <code>week.json</code> (servido) ou o navegador (offline).</p>
+    <p class="lede">Uma semana típica de <b>168 horas</b> sobre premissas explícitas: <b>sono das 00h às 8h</b> (8h/dia), <b>família junto de manhã (8h–9h30) e no fim de tarde (17h30–19h30)</b>, dois slots de trabalho mais um terceiro nas terças e quintas, <b>almoço + treino</b> contando como saúde, e as noites de estudo — MBA seg/qua, Clube da Memória qui. O <b>fim de semana é da família</b>. Ligue/desligue categorias, pessoas e tipo de dia; e <b>edite suas próprias premissas no fim da página</b> ou maximize a grade — ao salvar, atualiza o <code>week.json</code> (servido) ou o navegador (offline).</p>
     <div class="filters">
       <div class="fgroup">
         <span class="fgroup-lbl">Categorias</span>
@@ -258,35 +263,28 @@
 (function(){
   "use strict";
 
-  const FAM = ["rafael","parceira","filho"]; // quem forma "família junto" no modelo padrão
+  const FAM = ["rafael","parceira","filho"]; // quem forma "família junto"
 
   // ===================== MODELO PADRÃO =====================
-  // blocos reutilizáveis (funções p/ gerar objetos independentes)
-  const sono8    = () => ({ label:"Sono", inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] }); // 8h
-  const sono75   = () => ({ label:"Sono", inicio:"00:00", fim:"07:30", cat:"logistica", quem:["rafael"] }); // 7,5h (noites com slot 3)
-  const slot3    = () => ({ label:"Trabalho — slot 3", inicio:"23:00", fim:"00:00", cat:"trabalho",  quem:["rafael"] });
-  const logNoite = () => ({ label:"Logística da casa",  inicio:"23:00", fim:"23:30", cat:"logistica", quem:["rafael"] });
-
-  // dia útil até 19h30. sono = bloco de sono; slot1 = rótulo do 1º bloco de trabalho.
-  function manha(slot1, sono){return [
-    sono,
-    { label:"Acordar / preparar",  inicio:"07:30", fim:"08:00", cat:"logistica", quem:["rafael"] },
-    { label:"Pré-escola: café + levar Nico", inicio:"08:00", fim:"09:30", cat:"familia", quem:FAM.slice() },
-    { label:slot1,                 inicio:"09:30", fim:"12:30", cat:"trabalho",  quem:["rafael"] },
-    { label:"Almoço",              inicio:"12:30", fim:"13:30", cat:"pessoal",   quem:["rafael"] },
-    { label:"Trabalho — slot 2",   inicio:"13:30", fim:"17:30", cat:"trabalho",  quem:["rafael"] },
-    { label:"Pós-escola: busca + brincar + jantar + banho", inicio:"17:30", fim:"19:30", cat:"familia", quem:FAM.slice() }
+  // base comum dos dias úteis (00:00–19:30)
+  function baseUtil(){ return [
+    { label:"Sono",                          inicio:"00:00", fim:"08:00", cat:"logistica", quem:["rafael"] },
+    { label:"Família — manhã",               inicio:"08:00", fim:"09:30", cat:"familia",   quem:FAM.slice() },
+    { label:"Trabalho — slot 1 (foco manhã)",inicio:"09:30", fim:"12:30", cat:"trabalho",  quem:["rafael"] },
+    { label:"Almoço + treino",               inicio:"12:30", fim:"14:00", cat:"saude",     quem:["rafael"] },
+    { label:"Trabalho — slot 2",             inicio:"14:00", fim:"17:30", cat:"trabalho",  quem:["rafael"] },
+    { label:"Família — fim de tarde",        inicio:"17:30", fim:"19:30", cat:"familia",   quem:FAM.slice() }
   ];}
-  // noite de MBA (foco 19h30–23h) + cauda (slot 3 ou logística)
-  function noiteMBA(tail){return [
-    { label:"MBA", inicio:"19:30", fim:"23:00", cat:"foco", quem:["rafael"] },
-    tail
-  ];}
-  // Nico dormindo 19h30–21h, foco/algo 21h–23h, + cauda
-  function noiteDormirFoco(label, cat, tail){return [
-    { label:"Colocar Nico pra dormir", inicio:"19:30", fim:"21:00", cat:"familia", quem:["rafael","filho"] },
-    { label:label, inicio:"21:00", fim:"23:00", cat:cat, quem:["rafael"] },
-    tail
+  const relaxNoite = () => ({ label:"Flexível / relax", inicio:"23:00", fim:"00:00", cat:"pessoal", quem:["rafael"] });
+  // fim de semana: âncoras (sono/relax) + família o dia todo
+  function fimDeSemana(){ return [
+    { label:"Sono",                     inicio:"00:00", fim:"08:00", cat:"logistica", quem:["rafael"] },
+    { label:"Família — manhã",          inicio:"08:00", fim:"09:30", cat:"familia",   quem:FAM.slice() },
+    { label:"Manhã em família",         inicio:"09:30", fim:"13:30", cat:"familia",   quem:FAM.slice() },
+    { label:"Tarde em família",         inicio:"13:30", fim:"17:30", cat:"familia",   quem:FAM.slice() },
+    { label:"Família — fim de tarde",   inicio:"17:30", fim:"19:30", cat:"familia",   quem:FAM.slice() },
+    { label:"Jantar / noite em família",inicio:"19:30", fim:"23:00", cat:"familia",   quem:FAM.slice() },
+    relaxNoite()
   ];}
 
   function buildDefault(){
@@ -298,41 +296,38 @@
         { id:"filho",    nome:"Nico",     papel:"filho", idade:4 }
       ],
       categorias: {
-        familia:   { nome:"Família junto",    cor:"var(--c-familia)" },
-        trabalho:  { nome:"Trabalho",         cor:"var(--c-trabalho)" },
-        foco:      { nome:"Foco cognitivo",   cor:"var(--c-foco)" },
-        pessoal:   { nome:"Pessoal / saúde",  cor:"var(--c-pessoal)" },
-        logistica: { nome:"Sono + logística", cor:"var(--c-logistica)" }
+        familia:   { nome:"Família junto",   cor:"var(--c-familia)" },
+        trabalho:  { nome:"Trabalho",        cor:"var(--c-trabalho)" },
+        foco:      { nome:"Foco cognitivo",  cor:"var(--c-foco)" },
+        saude:     { nome:"Saúde",           cor:"var(--c-saude)" },
+        pessoal:   { nome:"Pessoal / relax", cor:"var(--c-pessoal)" },
+        logistica: { nome:"Sono",            cor:"var(--c-logistica)" }
       },
       dias: {
-        seg: manha("Trabalho — slot 1", sono75()).concat(noiteMBA(slot3())),
-        ter: manha("Trabalho — slot 1", sono75()).concat(noiteDormirFoco("Flexível — trabalho / jogo / casal", "foco", slot3())),
-        qua: manha("Trabalho — slot 1", sono75()).concat(noiteMBA(slot3())),
-        qui: manha("Trabalho — slot 1", sono75()).concat(noiteDormirFoco("Clube da Memória", "foco", slot3())),
-        sex: manha("Stalo Labs — foco (manhã)", sono8()).concat(noiteDormirFoco("Tempo de casal / relax", "pessoal", logNoite())),
-        sab: [
-          { label:"Sono",                 inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] },
-          { label:"Café em família",      inicio:"07:30", fim:"09:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Tempo com Nico + fazer dormir", inicio:"09:00", fim:"11:00", cat:"familia", quem:["rafael","filho"] },
-          { label:"Treino",               inicio:"11:00", fim:"12:00", cat:"pessoal",   quem:["rafael"] },
-          { label:"Almoço em família",    inicio:"12:00", fim:"13:30", cat:"familia",   quem:FAM.slice() },
-          { label:"Descanso / soneca",    inicio:"13:30", fim:"15:00", cat:"pessoal",   quem:["rafael"] },
-          { label:"Passeio em família",   inicio:"15:00", fim:"18:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Jantar + banho",       inicio:"18:00", fim:"21:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Tempo de casal",       inicio:"21:00", fim:"23:00", cat:"pessoal",   quem:["rafael","parceira"] },
-          { label:"Logística da casa",    inicio:"23:00", fim:"23:30", cat:"logistica", quem:["rafael"] }
-        ],
-        dom: [
-          { label:"Sono",                 inicio:"23:30", fim:"07:30", cat:"logistica", quem:["rafael"] },
-          { label:"Café em família",      inicio:"07:30", fim:"09:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Manhã em família",     inicio:"09:00", fim:"12:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Almoço em família",    inicio:"12:00", fim:"13:30", cat:"familia",   quem:FAM.slice() },
-          { label:"Descanso / leitura",   inicio:"13:30", fim:"15:00", cat:"pessoal",   quem:["rafael"] },
-          { label:"Tarde em família",     inicio:"15:00", fim:"18:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Jantar + banho",       inicio:"18:00", fim:"21:00", cat:"familia",   quem:FAM.slice() },
-          { label:"Planejar a semana",    inicio:"21:00", fim:"22:30", cat:"pessoal",   quem:["rafael","parceira"] },
-          { label:"Relax / logística",    inicio:"22:30", fim:"23:30", cat:"logistica", quem:["rafael"] }
-        ]
+        seg: baseUtil().concat([
+          { label:"MBA", inicio:"19:30", fim:"23:00", cat:"foco", quem:["rafael"] },
+          relaxNoite()
+        ]),
+        ter: baseUtil().concat([
+          { label:"Trabalho — slot 3", inicio:"19:30", fim:"21:00", cat:"trabalho", quem:["rafael"] },
+          { label:"Flexível cognitivo (estudo / jogo)", inicio:"21:00", fim:"23:00", cat:"foco", quem:["rafael"] },
+          relaxNoite()
+        ]),
+        qua: baseUtil().concat([
+          { label:"MBA", inicio:"19:30", fim:"23:00", cat:"foco", quem:["rafael"] },
+          relaxNoite()
+        ]),
+        qui: baseUtil().concat([
+          { label:"Trabalho — slot 3", inicio:"19:30", fim:"21:00", cat:"trabalho", quem:["rafael"] },
+          { label:"Clube da Memória", inicio:"21:00", fim:"23:00", cat:"foco", quem:["rafael"] },
+          relaxNoite()
+        ]),
+        sex: baseUtil().concat([
+          { label:"Relax / tempo de casal", inicio:"19:30", fim:"23:00", cat:"pessoal", quem:["rafael","parceira"] },
+          relaxNoite()
+        ]),
+        sab: fimDeSemana(),
+        dom: fimDeSemana()
       }
     };
   }
@@ -344,7 +339,7 @@
     {id:"sex",nome:"Sex",fim:false},{id:"sab",nome:"Sáb",fim:true},
     {id:"dom",nome:"Dom",fim:true}
   ];
-  const CAT_ORDER = ["logistica","trabalho","foco","pessoal","familia"]; // base -> topo nas barras
+  const CAT_ORDER = ["logistica","trabalho","foco","saude","pessoal","familia"]; // base -> topo nas barras
   const SVGNS = "http://www.w3.org/2000/svg";
   const LS_KEY = "gestao-tempo-modelo-v1";
 
@@ -399,21 +394,38 @@
   // ===================== GRADE SEMANAL (SVG) =====================
   function renderGrid(){
     const days = activeDays();
-    const W=860, H=620, padL=34, padT=22, padB=8;
-    const colW=(W-padL)/Math.max(days.length,1), plotH=H-padT-padB;
+    const W=860, H=620, padL=34, padR=46, padT=22, padB=8;
+    const colW=(W-padL-padR)/Math.max(days.length,1), plotH=H-padT-padB;
+    const xR=W-padR;                      // x onde começa a faixa de leitura à direita
     const y = m => padT + (m/1440)*plotH;
     const svg=document.createElementNS(SVGNS,"svg");
     svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
     for(let h=0; h<=24; h+=3){
       const yy=y(h*60);
       const ln=document.createElementNS(SVGNS,"line");
-      ln.setAttribute("x1",padL);ln.setAttribute("x2",W);ln.setAttribute("y1",yy);ln.setAttribute("y2",yy);
+      ln.setAttribute("x1",padL);ln.setAttribute("x2",xR);ln.setAttribute("y1",yy);ln.setAttribute("y2",yy);
       ln.setAttribute("class","gridline");svg.appendChild(ln);
       const tx=document.createElementNS(SVGNS,"text");
       tx.setAttribute("x",padL-6);tx.setAttribute("y",yy+3);tx.setAttribute("text-anchor","end");
       tx.setAttribute("class","hourlbl");tx.textContent=String(h).padStart(2,"0")+"h";
       svg.appendChild(tx);
     }
+    // faixa de leitura: mostra início→fim do slot sob o cursor, à direita
+    const hov=document.createElementNS(SVGNS,"g");
+    hov.setAttribute("class","hov-axis");hov.style.display="none";
+    const hovLine=()=>{const l=document.createElementNS(SVGNS,"line");l.setAttribute("x1",padL);l.setAttribute("x2",xR);l.setAttribute("class","hov-line");return l;};
+    const hovText=()=>{const t=document.createElementNS(SVGNS,"text");t.setAttribute("x",xR+5);t.setAttribute("text-anchor","start");t.setAttribute("class","hov-lbl");return t;};
+    const lnTop=hovLine(), lnBot=hovLine(), txTop=hovText(), txBot=hovText();
+    hov.appendChild(lnTop);hov.appendChild(lnBot);hov.appendChild(txTop);hov.appendChild(txBot);
+    function showHov(a,z,ini,fim){
+      const yt=y(a), yb=y(z);
+      lnTop.setAttribute("y1",yt);lnTop.setAttribute("y2",yt);
+      lnBot.setAttribute("y1",yb);lnBot.setAttribute("y2",yb);
+      txTop.setAttribute("y",yt+3);txTop.textContent=ini;
+      txBot.setAttribute("y",yb+3);txBot.textContent=fim;
+      hov.style.display="";
+    }
+    const hideHov=()=>{ hov.style.display="none"; };
     days.forEach((d,i)=>{
       const x0=padL+i*colW;
       const lbl=document.createElementNS(SVGNS,"text");
@@ -443,10 +455,13 @@
             if(lab.length>max) lab=lab.slice(0,max-1)+"…";
             t.textContent=lab;g.appendChild(t);
           }
+          g.addEventListener("mouseenter",()=>showHov(a,z,b.inicio,b.fim));
+          g.addEventListener("mouseleave",hideHov);
           svg.appendChild(g);
         });
       });
     });
+    svg.appendChild(hov); // por cima de tudo
     const host=document.getElementById("gridChart");host.innerHTML="";host.appendChild(svg);
   }
 

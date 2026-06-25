@@ -1,706 +1,88 @@
 {
   "titulo": "Semana típica",
   "pessoas": [
-    {
-      "id": "rafael",
-      "nome": "Rafael",
-      "papel": "pai"
-    },
-    {
-      "id": "parceira",
-      "nome": "Parceira",
-      "papel": "mãe"
-    },
-    {
-      "id": "filho",
-      "nome": "Nico",
-      "papel": "filho",
-      "idade": 4
-    }
+    { "id": "rafael", "nome": "Rafael", "papel": "pai" },
+    { "id": "parceira", "nome": "Parceira", "papel": "mãe" },
+    { "id": "filho", "nome": "Nico", "papel": "filho", "idade": 4 }
   ],
   "categorias": {
-    "familia": {
-      "nome": "Família junto",
-      "cor": "var(--c-familia)"
-    },
-    "trabalho": {
-      "nome": "Trabalho",
-      "cor": "var(--c-trabalho)"
-    },
-    "foco": {
-      "nome": "Foco cognitivo",
-      "cor": "var(--c-foco)"
-    },
-    "pessoal": {
-      "nome": "Pessoal / saúde",
-      "cor": "var(--c-pessoal)"
-    },
-    "logistica": {
-      "nome": "Sono + logística",
-      "cor": "var(--c-logistica)"
-    }
+    "familia": { "nome": "Família junto", "cor": "var(--c-familia)" },
+    "trabalho": { "nome": "Trabalho", "cor": "var(--c-trabalho)" },
+    "foco": { "nome": "Foco cognitivo", "cor": "var(--c-foco)" },
+    "saude": { "nome": "Saúde", "cor": "var(--c-saude)" },
+    "pessoal": { "nome": "Pessoal / relax", "cor": "var(--c-pessoal)" },
+    "logistica": { "nome": "Sono", "cor": "var(--c-logistica)" }
   },
   "dias": {
     "seg": [
-      {
-        "label": "Sono",
-        "inicio": "00:00",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Acordar / preparar",
-        "inicio": "07:30",
-        "fim": "08:00",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pré-escola: café + levar Nico",
-        "inicio": "08:00",
-        "fim": "09:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 1",
-        "inicio": "09:30",
-        "fim": "12:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço",
-        "inicio": "12:30",
-        "fim": "13:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 2",
-        "inicio": "13:30",
-        "fim": "17:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pós-escola: busca + brincar + jantar + banho",
-        "inicio": "17:30",
-        "fim": "19:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "MBA",
-        "inicio": "19:30",
-        "fim": "23:00",
-        "cat": "foco",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 3",
-        "inicio": "23:00",
-        "fim": "00:00",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 1 (foco manhã)", "inicio": "09:30", "fim": "12:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Almoço + treino", "inicio": "12:30", "fim": "14:00", "cat": "saude", "quem": ["rafael"] },
+      { "label": "Trabalho — slot 2", "inicio": "14:00", "fim": "17:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "MBA", "inicio": "19:30", "fim": "23:00", "cat": "foco", "quem": ["rafael"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "ter": [
-      {
-        "label": "Sono",
-        "inicio": "00:00",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Acordar / preparar",
-        "inicio": "07:30",
-        "fim": "08:00",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pré-escola: café + levar Nico",
-        "inicio": "08:00",
-        "fim": "09:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 1",
-        "inicio": "09:30",
-        "fim": "12:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço",
-        "inicio": "12:30",
-        "fim": "13:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 2",
-        "inicio": "13:30",
-        "fim": "17:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pós-escola: busca + brincar + jantar + banho",
-        "inicio": "17:30",
-        "fim": "19:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Colocar Nico pra dormir",
-        "inicio": "19:30",
-        "fim": "21:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "filho"
-        ]
-      },
-      {
-        "label": "Flexível — trabalho / jogo / casal",
-        "inicio": "21:00",
-        "fim": "23:00",
-        "cat": "foco",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 3",
-        "inicio": "23:00",
-        "fim": "00:00",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 1 (foco manhã)", "inicio": "09:30", "fim": "12:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Almoço + treino", "inicio": "12:30", "fim": "14:00", "cat": "saude", "quem": ["rafael"] },
+      { "label": "Trabalho — slot 2", "inicio": "14:00", "fim": "17:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 3", "inicio": "19:30", "fim": "21:00", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Flexível cognitivo (estudo / jogo)", "inicio": "21:00", "fim": "23:00", "cat": "foco", "quem": ["rafael"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "qua": [
-      {
-        "label": "Sono",
-        "inicio": "00:00",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Acordar / preparar",
-        "inicio": "07:30",
-        "fim": "08:00",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pré-escola: café + levar Nico",
-        "inicio": "08:00",
-        "fim": "09:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 1",
-        "inicio": "09:30",
-        "fim": "12:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço",
-        "inicio": "12:30",
-        "fim": "13:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 2",
-        "inicio": "13:30",
-        "fim": "17:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pós-escola: busca + brincar + jantar + banho",
-        "inicio": "17:30",
-        "fim": "19:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "MBA",
-        "inicio": "19:30",
-        "fim": "23:00",
-        "cat": "foco",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 3",
-        "inicio": "23:00",
-        "fim": "00:00",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 1 (foco manhã)", "inicio": "09:30", "fim": "12:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Almoço + treino", "inicio": "12:30", "fim": "14:00", "cat": "saude", "quem": ["rafael"] },
+      { "label": "Trabalho — slot 2", "inicio": "14:00", "fim": "17:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "MBA", "inicio": "19:30", "fim": "23:00", "cat": "foco", "quem": ["rafael"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "qui": [
-      {
-        "label": "Sono",
-        "inicio": "00:00",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Acordar / preparar",
-        "inicio": "07:30",
-        "fim": "08:00",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pré-escola: café + levar Nico",
-        "inicio": "08:00",
-        "fim": "09:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 1",
-        "inicio": "09:30",
-        "fim": "12:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço",
-        "inicio": "12:30",
-        "fim": "13:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 2",
-        "inicio": "13:30",
-        "fim": "17:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pós-escola: busca + brincar + jantar + banho",
-        "inicio": "17:30",
-        "fim": "19:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Colocar Nico pra dormir",
-        "inicio": "19:30",
-        "fim": "21:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "filho"
-        ]
-      },
-      {
-        "label": "Clube da Memória",
-        "inicio": "21:00",
-        "fim": "23:00",
-        "cat": "foco",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 3",
-        "inicio": "23:00",
-        "fim": "00:00",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 1 (foco manhã)", "inicio": "09:30", "fim": "12:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Almoço + treino", "inicio": "12:30", "fim": "14:00", "cat": "saude", "quem": ["rafael"] },
+      { "label": "Trabalho — slot 2", "inicio": "14:00", "fim": "17:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 3", "inicio": "19:30", "fim": "21:00", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Clube da Memória", "inicio": "21:00", "fim": "23:00", "cat": "foco", "quem": ["rafael"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "sex": [
-      {
-        "label": "Sono",
-        "inicio": "23:30",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Acordar / preparar",
-        "inicio": "07:30",
-        "fim": "08:00",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pré-escola: café + levar Nico",
-        "inicio": "08:00",
-        "fim": "09:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Stalo Labs — foco (manhã)",
-        "inicio": "09:30",
-        "fim": "12:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço",
-        "inicio": "12:30",
-        "fim": "13:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Trabalho — slot 2",
-        "inicio": "13:30",
-        "fim": "17:30",
-        "cat": "trabalho",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Pós-escola: busca + brincar + jantar + banho",
-        "inicio": "17:30",
-        "fim": "19:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Colocar Nico pra dormir",
-        "inicio": "19:30",
-        "fim": "21:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "filho"
-        ]
-      },
-      {
-        "label": "Tempo de casal / relax",
-        "inicio": "21:00",
-        "fim": "23:00",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Logística da casa",
-        "inicio": "23:00",
-        "fim": "23:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Trabalho — slot 1 (foco manhã)", "inicio": "09:30", "fim": "12:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Almoço + treino", "inicio": "12:30", "fim": "14:00", "cat": "saude", "quem": ["rafael"] },
+      { "label": "Trabalho — slot 2", "inicio": "14:00", "fim": "17:30", "cat": "trabalho", "quem": ["rafael"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Relax / tempo de casal", "inicio": "19:30", "fim": "23:00", "cat": "pessoal", "quem": ["rafael", "parceira"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "sab": [
-      {
-        "label": "Sono",
-        "inicio": "23:30",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Café em família",
-        "inicio": "07:30",
-        "fim": "09:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Tempo com Nico + fazer dormir",
-        "inicio": "09:00",
-        "fim": "11:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "filho"
-        ]
-      },
-      {
-        "label": "Treino",
-        "inicio": "11:00",
-        "fim": "12:00",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Almoço em família",
-        "inicio": "12:00",
-        "fim": "13:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Descanso / soneca",
-        "inicio": "13:30",
-        "fim": "15:00",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Passeio em família",
-        "inicio": "15:00",
-        "fim": "18:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Jantar + banho",
-        "inicio": "18:00",
-        "fim": "21:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Tempo de casal",
-        "inicio": "21:00",
-        "fim": "23:00",
-        "cat": "pessoal",
-        "quem": [
-          "rafael",
-          "parceira"
-        ]
-      },
-      {
-        "label": "Logística da casa",
-        "inicio": "23:00",
-        "fim": "23:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Manhã em família", "inicio": "09:30", "fim": "13:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Tarde em família", "inicio": "13:30", "fim": "17:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Jantar / noite em família", "inicio": "19:30", "fim": "23:00", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ],
     "dom": [
-      {
-        "label": "Sono",
-        "inicio": "23:30",
-        "fim": "07:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Café em família",
-        "inicio": "07:30",
-        "fim": "09:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Manhã em família",
-        "inicio": "09:00",
-        "fim": "12:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Almoço em família",
-        "inicio": "12:00",
-        "fim": "13:30",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Descanso / leitura",
-        "inicio": "13:30",
-        "fim": "15:00",
-        "cat": "pessoal",
-        "quem": [
-          "rafael"
-        ]
-      },
-      {
-        "label": "Tarde em família",
-        "inicio": "15:00",
-        "fim": "18:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Jantar + banho",
-        "inicio": "18:00",
-        "fim": "21:00",
-        "cat": "familia",
-        "quem": [
-          "rafael",
-          "parceira",
-          "filho"
-        ]
-      },
-      {
-        "label": "Planejar a semana",
-        "inicio": "21:00",
-        "fim": "22:30",
-        "cat": "pessoal",
-        "quem": [
-          "rafael",
-          "parceira"
-        ]
-      },
-      {
-        "label": "Relax / logística",
-        "inicio": "22:30",
-        "fim": "23:30",
-        "cat": "logistica",
-        "quem": [
-          "rafael"
-        ]
-      }
+      { "label": "Sono", "inicio": "00:00", "fim": "08:00", "cat": "logistica", "quem": ["rafael"] },
+      { "label": "Família — manhã", "inicio": "08:00", "fim": "09:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Manhã em família", "inicio": "09:30", "fim": "13:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Tarde em família", "inicio": "13:30", "fim": "17:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Família — fim de tarde", "inicio": "17:30", "fim": "19:30", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Jantar / noite em família", "inicio": "19:30", "fim": "23:00", "cat": "familia", "quem": ["rafael", "parceira", "filho"] },
+      { "label": "Flexível / relax", "inicio": "23:00", "fim": "00:00", "cat": "pessoal", "quem": ["rafael"] }
     ]
   }
 }
