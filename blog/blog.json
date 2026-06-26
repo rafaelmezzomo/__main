@@ -38,6 +38,19 @@
       "status": "published",
       "path": "gpt-custo-familia/comparador_custo_vida_familia.html",
       "voice": { "origin": "claude" }
+    },
+    {
+      "slug": "google-maps-zoologico",
+      "title": "O caminho mais curto: quando o GPS otimiza tempo e ignora o resto",
+      "summary": "A rota mais rápida do GPS pode cortar por áreas de risco. Um mapa interativo sobre o que o caminho mais curto deixa de fora.",
+      "eyebrow": "MAPAS",
+      "tags": ["mapas", "são paulo", "rotas"],
+      "created": "2026-06-15",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "google-maps-zoologico/google-maps-rota-favela.html",
+      "voice": { "origin": "claude" }
     }
   ]
 }
