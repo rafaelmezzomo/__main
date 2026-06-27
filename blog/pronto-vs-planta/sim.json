@@ -1,0 +1,27 @@
+{
+  "titulo": "Pronto vs Planta",
+  "global": {
+    "meses_entrega": 60,
+    "desconto_aa": 0.105,
+    "valorizacao_aa": 0.06,
+    "incc_aa": 0.075
+  },
+  "pronto": {
+    "nome": "Pronto — Moema (usado + reforma)",
+    "area": 100,
+    "preco_m2": 10000,
+    "reforma_m2": 4000,
+    "condominio_m2_mes": 20,
+    "condominio_reajuste_aa": 0.05
+  },
+  "planta": {
+    "nome": "Na planta — Santo Amaro (novo)",
+    "area": 100,
+    "preco_m2": 18000,
+    "fluxo_mensal": 10000,
+    "fluxo_anual": 50000,
+    "fluxo_adicionais": 50000,
+    "aluguel_mes": 6000,
+    "aluguel_reajuste_aa": 0.075
+  }
+}

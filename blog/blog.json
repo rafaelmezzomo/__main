@@ -51,6 +51,19 @@
       "status": "published",
       "path": "google-maps-zoologico/google-maps-rota-favela.html",
       "voice": { "origin": "claude" }
+    },
+    {
+      "slug": "pronto-vs-planta",
+      "title": "Comprar pronto vs comprar na planta: a conta a valor presente",
+      "summary": "Simulador interativo: apto pronto + reforma (à vista) vs na planta (entrega em 5 anos), comparando o custo a valor presente com INCC, aluguel e custo de oportunidade.",
+      "eyebrow": "DINHEIRO",
+      "tags": ["imóveis", "finanças", "simulador"],
+      "created": "2026-06-26",
+      "updated": [],
+      "cover": null,
+      "status": "published",
+      "path": "pronto-vs-planta/index.html",
+      "voice": { "origin": "claude" }
     }
   ]
 }

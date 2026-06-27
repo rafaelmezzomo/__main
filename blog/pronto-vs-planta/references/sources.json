@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "n": 1,
+      "title": "INCC: o que é, como é calculado e sua influência no financiamento",
+      "url": "https://www.quintoandar.com.br/guias/dados-indices/incc/",
+      "fetched_at": "2026-06-26",
+      "local_file": "01-incc-saldo-devedor-quintoandar.md",
+      "quote": "A cada mês, o percentual de variação do INCC é aplicado sobre o valor que você ainda deve à construtora... primeiro o valor total da dívida é atualizado, e só depois sua parcela é descontada. Vale até a emissão do habite-se.",
+      "note": "Confirma que o INCC incide sobre TODO o saldo devedor, mensalmente, antes de abater a parcela, até a entrega."
+    },
+    {
+      "n": 2,
+      "title": "O que é e como calcular o INCC? (Trisul)",
+      "url": "https://www.trisul-sa.com.br/blog/incc-o-que-e-como-te-influencia-e-como-calcular/",
+      "fetched_at": "2026-06-26",
+      "local_file": "02-incc-calculo-trisul.md",
+      "quote": "É calculado aplicando-se o índice ao saldo devedor do imóvel... reajustar o saldo devedor durante a fase de construção. O INCC não é juros.",
+      "note": "Mecânica de cálculo + magnitude histórica (INCC-M ~6–7,5%/ano)."
+    }
+  ]
+}
