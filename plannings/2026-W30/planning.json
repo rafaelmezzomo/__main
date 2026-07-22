@@ -1,0 +1,70 @@
+{
+  "week": "2026-W30",
+  "period_label": "Sprint",
+  "sprint_weeks": ["2026-W30"],
+  "start_date": "2026-07-20",
+  "end_date": "2026-07-26",
+  "hours_available": 40,
+  "carryover_from": "2026-W26",
+  "projects": {
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-007",
+          "title": "Sprint de validação do loop BRE (MOAI) — grupo focal, tratamento IA, devolutiva individual",
+          "repo": "stalinho",
+          "estimated_hours": 24,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "doing",
+          "carryover": false,
+          "notes": "PRINCIPAL FOCO DA SPRINT. Sprint vendida ao cliente MOAI (Clube de Líderes). 2 de 5 dias já desenvolvidos, faltam 3 — entrega sexta 24/07. Escopo pivotado no kick-off com o CEO (20/jul): valida o loop do diagnóstico BRE (Entender/Tangibilizar/Direcionar) com grupo focal de ~10 clientes engajados, trata respostas com IA e devolve individualmente — provar o loop antes de escalar. PRD: stalinho/docs/planning/2026-07-21-moai-bre-sprint-validacao.md (fork do §9 fecha na terça). Não estende."
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-012",
+          "title": "Refazer a visão do app — reorganização da estrutura conforme TNM de quinta",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Reorganizar a visão/estrutura do app pra ficar mais organizado, conforme o que foi conversado na última TNM (quinta). Refinar escopo antes de codar."
+        },
+        {
+          "id": "mc-013",
+          "title": "Atualizar algoritmo do SART conforme feedback do Dr. Taya",
+          "repo": "sart",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "Quick win. Ajustar o algoritmo do SART incorporando o feedback do Dr. Taya. FEITO."
+        }
+      ]
+    },
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-017",
+          "title": "Scrap de fundo novo relevante para a Courageous Land",
+          "repo": "yang-gps",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fazer scrap/coleta de algum fundo novo relevante para a Courageous Land, alimentando o catálogo de fundos."
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false
+  }
+}
