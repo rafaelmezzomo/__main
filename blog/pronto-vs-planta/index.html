@@ -102,7 +102,7 @@
   <header>
     <p class="eyebrow">Decisão imobiliária · simulação</p>
     <h1 class="doc-title">Comprar pronto vs comprar na planta</h1>
-    <p class="lede">Duas formas de comprar o mesmo sonho com fluxos de caixa bem diferentes: um apartamento <b>pronto</b> (usado + reforma, pago à vista hoje) ou um <b>na planta</b> (entregue em 5 anos, pago aos poucos, com a parcela de chaves <b>quitada à vista na entrega</b>). A planta parcela o desembolso, mas cobra <b>aluguel</b> no período e corrige todo o saldo devedor pelo <b>INCC</b> mês a mês até a entrega<sup class="fn-ref"><a id="fnref-1" href="#fn-1">1</a></sup> — então a parcela de chaves chega maior do que o valor nominal. Esta simulação traz tudo a <b>valor presente</b> — descontando pelo seu custo de oportunidade — para mostrar qual sai mais barato de verdade. Todas as variáveis são editáveis; ao salvar, grava no <code>sim.json</code> (servido) ou no navegador (offline).</p>
+    <p class="lede">Duas formas de comprar o mesmo sonho com fluxos de caixa bem diferentes: um apartamento <b>pronto</b> (usado + reforma, pago à vista hoje) ou um <b>na planta</b> (entregue em 5 anos, pago aos poucos, com a parcela de chaves <b>quitada à vista na entrega</b>). A planta parcela o desembolso, mas cobra <b>aluguel</b> no período e corrige todo o saldo devedor pelo <b>INCC</b> mês a mês até a entrega<sup class="fn-ref"><a id="fnref-1" href="#fn-1">1</a></sup> — então a parcela de chaves chega maior do que o valor nominal. Esta simulação soma tudo que sai do bolso — o <b>desembolso total</b> — e projeta além da entrega, quando os <b>dois imóveis já pagam condomínio</b> (o usado de Moema mais caro por m² que o novo), pra capturar essa diferença no longo prazo. Todas as variáveis são editáveis; ao salvar, grava no <code>sim.json</code> (servido) ou no navegador (offline).</p>
   </header>
 
   <div class="grid2">
@@ -133,21 +133,21 @@
     <!-- COLUNA DE RESULTADOS -->
     <div class="col">
       <div class="card">
-        <h2>Veredito · custo a valor presente</h2>
-        <p class="h2sub">Menor valor presente = opção mais barata para ter 100% do imóvel na entrega.</p>
+        <h2>Veredito · desembolso total</h2>
+        <p class="h2sub">Menor desembolso total = opção mais barata para ter 100% do imóvel na entrega.</p>
         <div class="verdict" id="verdict"></div>
         <p class="diffline" id="diffline"></p>
       </div>
 
       <div class="card">
         <h2>Como o custo se forma</h2>
-        <p class="h2sub">Componentes nominais de cada cenário (o VP desconta pelo custo de oportunidade).</p>
+        <p class="h2sub">Tudo que sai do bolso em cada cenário até a entrega.</p>
         <div class="bd" id="breakdown"></div>
       </div>
 
       <div class="card">
         <h2>Desembolso acumulado</h2>
-        <p class="h2sub">Caixa que sai do bolso ao longo dos meses (inclui a quitação das chaves à vista na entrega).</p>
+        <p class="h2sub">Caixa que sai do bolso ao longo do horizonte (linha pontilhada = entrega; depois dela, a inclinação reflete o condomínio de cada imóvel).</p>
         <div id="chart"></div>
         <div class="legend">
           <div class="item"><span class="sw" style="background:var(--c-pronto)"></span>Pronto (à vista + condomínio)</div>
@@ -157,13 +157,13 @@
 
       <div class="card">
         <h2>Ano a ano</h2>
-        <p class="h2sub">Desembolso de cada cenário e o saldo devedor da planta (corrigido por INCC).</p>
+        <p class="h2sub">Desembolso de cada cenário, ano a ano. As chaves são quitadas à vista no ano 5.</p>
         <table class="yr" id="yrtable"></table>
       </div>
 
       <div class="card">
-        <h2>Na entrega</h2>
-        <p class="h2sub">Saldo a financiar, valor do imóvel valorizado e patrimônio líquido a valor presente.</p>
+        <h2>No fim do horizonte</h2>
+        <p class="h2sub">Valor de mercado do imóvel vs total desembolsado no fim do horizonte. Aluguel, condomínio e reforma são consumo e não viram patrimônio.</p>
         <div class="bd" id="entrega"></div>
       </div>
     </div>
@@ -176,7 +176,7 @@
         <a href="references/01-incc-saldo-devedor-quintoandar.md">texto salvo</a> · <a href="https://www.quintoandar.com.br/guias/dados-indices/incc/">QuintoAndar ↗</a> · <a href="references/02-incc-calculo-trisul.md">cálculo (Trisul)</a> · <a href="https://www.trisul-sa.com.br/blog/incc-o-que-e-como-te-influencia-e-como-calcular/">Trisul ↗</a>
         <a href="#fnref-1">↩</a></li>
     </ol>
-    <p class="note"><b>Premissas do modelo.</b> O INCC é aplicado mensalmente sobre todo o saldo devedor da planta (não sobre as parcelas já pagas); o saldo restante na entrega é a parcela de chaves, <b>quitada à vista</b> (sem financiamento) e já corrigida pelo INCC. O apto pronto é pago à vista em t0. Valor presente usa o custo de oportunidade como taxa de desconto. Fora do escopo desta v1: ITBI/escritura, IPTU e IR.</p>
+    <p class="note"><b>Premissas do modelo.</b> O INCC é aplicado mensalmente sobre todo o saldo devedor da planta (não sobre as parcelas já pagas); o saldo restante na entrega é a parcela de chaves, <b>quitada à vista</b> (sem financiamento) e já corrigida pelo INCC. O apto pronto é pago à vista em t0 e paga condomínio o horizonte todo. A planta paga aluguel e nenhum condomínio durante a obra; após a entrega, passa a pagar condomínio próprio e não mais aluguel. A métrica é o desembolso total (nominal). Fora do escopo desta v1: ITBI/escritura, IPTU e IR.</p>
   </div>
 </div>
 
@@ -193,9 +193,9 @@
   function buildDefault(){
     return {
       titulo:"Pronto vs Planta",
-      global:{ meses_entrega:60, desconto_aa:0.105, valorizacao_aa:0.06, incc_aa:0.075 },
+      global:{ meses_entrega:60, anos_pos_entrega:10, valorizacao_aa:0.06, incc_aa:0.075 },
       pronto:{ nome:"Pronto — Moema (usado + reforma)", area:100, preco_m2:10000, reforma_m2:4000, condominio_m2_mes:20, condominio_reajuste_aa:0.05 },
-      planta:{ nome:"Na planta — Santo Amaro (novo)", area:100, preco_m2:18000, fluxo_mensal:10000, fluxo_anual:50000, fluxo_adicionais:50000, aluguel_mes:6000, aluguel_reajuste_aa:0.075 }
+      planta:{ nome:"Na planta — Santo Amaro (novo)", area:100, preco_m2:18000, fluxo_mensal:10000, fluxo_anual:50000, fluxo_adicionais:50000, aluguel_mes:6000, aluguel_reajuste_aa:0.075, condominio_m2_mes:11, condominio_reajuste_aa:0.05 }
     };
   }
 
@@ -203,7 +203,7 @@
   const SPEC={
     global:[
       {k:"meses_entrega",lbl:"Entrega em",u:"meses",step:1},
-      {k:"desconto_aa",lbl:"Custo de oportunidade",u:"% a.a.",pct:true,step:0.1},
+      {k:"anos_pos_entrega",lbl:"Projetar após a entrega",u:"anos",step:1},
       {k:"valorizacao_aa",lbl:"Valorização do imóvel",u:"% a.a.",pct:true,step:0.1},
       {k:"incc_aa",lbl:"INCC",u:"% a.a.",pct:true,step:0.1}
     ],
@@ -220,71 +220,86 @@
       {k:"fluxo_mensal",lbl:"Parcela mensal (obra)",u:"R$/mês",step:500},
       {k:"fluxo_anual",lbl:"Reforço anual",u:"R$/ano",step:1000},
       {k:"fluxo_adicionais",lbl:"Adicionais (único)",u:"R$",step:1000},
-      {k:"aluguel_mes",lbl:"Aluguel",u:"R$/mês",step:100},
-      {k:"aluguel_reajuste_aa",lbl:"Reajuste do aluguel",u:"% a.a.",pct:true,step:0.5}
+      {k:"aluguel_mes",lbl:"Aluguel (até a entrega)",u:"R$/mês",step:100},
+      {k:"aluguel_reajuste_aa",lbl:"Reajuste do aluguel",u:"% a.a.",pct:true,step:0.5},
+      {k:"condominio_m2_mes",lbl:"Condomínio (pós-entrega)",u:"R$/m²·mês",step:1},
+      {k:"condominio_reajuste_aa",lbl:"Reajuste do condomínio",u:"% a.a.",pct:true,step:0.5}
     ]
   };
 
   let M;
   const clone=o=>JSON.parse(JSON.stringify(o));
+  // preenche campos que faltam (compat com modelos salvos antes de novas variáveis)
+  function withDefaults(m){ const d=buildDefault(); return {
+    titulo:(m&&m.titulo)||d.titulo,
+    global:Object.assign({},d.global,m&&m.global),
+    pronto:Object.assign({},d.pronto,m&&m.pronto),
+    planta:Object.assign({},d.planta,m&&m.planta)
+  };}
   const pmAA=aa=>Math.pow(1+aa,1/12)-1;
   const brl=v=>"R$ "+Math.round(v).toLocaleString("pt-BR");
   const pct=v=>(v*100).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
 
   // ===================== CÁLCULO =====================
   function compute(m){
-    const N=Math.max(1,Math.round(m.global.meses_entrega));
-    const id=pmAA(m.global.desconto_aa), incc=pmAA(m.global.incc_aa);
-    const anos=N/12, df=t=>Math.pow(1+id,t);
+    const N=Math.max(1,Math.round(m.global.meses_entrega));          // entrega (fim da obra)
+    const T=N+Math.max(0,Math.round(m.global.anos_pos_entrega||0)*12); // horizonte total
+    const incc=pmAA(m.global.incc_aa);
+    const anosT=T/12;
     const P=m.pronto, B=m.planta;
 
-    // PRONTO
+    // PRONTO — paga à vista em t0 e condomínio o horizonte todo
     const precoA=P.preco_m2*P.area, reformaA=P.reforma_m2*P.area, t0A=precoA+reformaA;
-    const condBase=P.condominio_m2_mes*P.area;
+    const condBaseA=P.condominio_m2_mes*P.area;
 
-    // PLANTA
-    const totalB=B.preco_m2*B.area;
-    let saldo=totalB, obraNominal=0;
+    // PLANTA — obra+aluguel até a entrega; depois condomínio próprio
+    const valorPlanta=B.preco_m2*B.area;
+    const condBaseB=B.condominio_m2_mes*B.area;
+    let saldo=valorPlanta, obraNominal=0, chaves=0;
 
-    let vpA=t0A, vpB=0, condTotal=0, aluguelTotal=0;
+    let condTotalA=0, condTotalB=0, aluguelTotal=0;
     const perMonth=[];
-    for(let t=1;t<=N;t++){
+    for(let t=1;t<=T;t++){
       const ano=Math.floor((t-1)/12);
-      const condT=condBase*Math.pow(1+P.condominio_reajuste_aa,ano);
-      const aluguelT=B.aluguel_mes*Math.pow(1+B.aluguel_reajuste_aa,ano);
-      let parcela=B.fluxo_mensal + (t%12===0?B.fluxo_anual:0) + (t===Math.round(N/2)?B.fluxo_adicionais:0);
-      // saldo devedor corrigido por INCC antes de abater a parcela
-      saldo=saldo*(1+incc);
-      if(parcela>saldo) parcela=saldo;
-      saldo-=parcela; obraNominal+=parcela;
-
-      condTotal+=condT; aluguelTotal+=aluguelT;
-      vpA+=condT/df(t);
-      vpB+=(parcela+aluguelT)/df(t);
-      perMonth.push({t,condT,aluguelT,parcela,saldo});
+      // pronto: condomínio sempre (já mora)
+      const condA=condBaseA*Math.pow(1+P.condominio_reajuste_aa,ano);
+      condTotalA+=condA;
+      // planta:
+      let parcela=0, aluguelT=0, condB=0, chavesPay=0;
+      if(t<=N){
+        // fase de obra: aluguel + parcela; INCC corrige todo o saldo devedor
+        aluguelT=B.aluguel_mes*Math.pow(1+B.aluguel_reajuste_aa,ano);
+        parcela=B.fluxo_mensal + (t%12===0?B.fluxo_anual:0) + (t===Math.round(N/2)?B.fluxo_adicionais:0);
+        saldo=saldo*(1+incc);
+        if(parcela>saldo) parcela=saldo;
+        saldo-=parcela; obraNominal+=parcela; aluguelTotal+=aluguelT;
+        if(t===N){ chaves=saldo; chavesPay=saldo; saldo=0; } // quita o restante à vista na entrega
+      } else {
+        // pós-entrega: já mora, paga condomínio próprio
+        condB=condBaseB*Math.pow(1+B.condominio_reajuste_aa,ano);
+        condTotalB+=condB;
+      }
+      perMonth.push({t,condA,parcela,aluguelT,condB,chavesPay});
     }
-    const chaves=saldo;                 // financiável na entrega (já com INCC)
-    vpB+=chaves/df(N);
-    const inccAcum=chaves-(totalB-obraNominal);
+    const inccAcum=chaves-(valorPlanta-obraNominal);
 
-    // valorização / patrimônio
-    const valorA=precoA*Math.pow(1+m.global.valorizacao_aa,anos);
-    const valorB=totalB*Math.pow(1+m.global.valorizacao_aa,anos);
-    const patA=valorA-vpA, patB=valorB-vpB;
+    const valorA=precoA*Math.pow(1+m.global.valorizacao_aa,anosT);
+    const valorB=valorPlanta*Math.pow(1+m.global.valorizacao_aa,anosT);
+
+    const totalA=t0A+condTotalA;
+    const totalB=obraNominal+aluguelTotal+chaves+condTotalB;
 
     // agregação anual
-    const nAnos=Math.ceil(N/12), years=[];
+    const nAnos=Math.ceil(T/12), years=[];
     for(let y=0;y<nAnos;y++){
-      let dA=0,dB=0,saldoFim=0;
-      perMonth.forEach(pm=>{ if(Math.floor((pm.t-1)/12)===y){ dA+=pm.condT; dB+=pm.parcela+pm.aluguelT; saldoFim=pm.saldo; } });
+      let dA=0,dB=0;
+      perMonth.forEach(pm=>{ if(Math.floor((pm.t-1)/12)===y){ dA+=pm.condA; dB+=pm.parcela+pm.aluguelT+pm.condB+pm.chavesPay; } });
       if(y===0) dA+=t0A;   // à vista entra no ano 1
-      years.push({ano:y+1,dA,dB,saldoFim});
+      years.push({ano:y+1,dA,dB});
     }
-    // chaves quitadas à vista na entrega: entram no desembolso do último ano e zeram o saldo
-    if(years.length){ years[years.length-1].dB+=chaves; years[years.length-1].saldoFim=0; }
 
-    return {N,t0A,precoA,reformaA,condTotal,totalB,obraNominal,aluguelTotal,chaves,inccAcum,
-            vpA,vpB,valorA,valorB,patA,patB,years,perMonth};
+    return {N,T,anosT,t0A,precoA,reformaA,condTotalA,condTotalB,valorPlanta,obraNominal,aluguelTotal,chaves,inccAcum,
+            totalA,totalB,valorA,valorB,years,perMonth};
   }
 
   // ===================== RENDER =====================
@@ -316,63 +331,61 @@
 
   function renderOutputs(){
     const r=compute(M);
-    const aWins=r.vpA<=r.vpB;
+    const totalA=r.totalA, totalB=r.totalB;
+    const aWins=totalA<=totalB;
 
     // veredito
     document.getElementById("verdict").innerHTML=`
       <div class="vc ${aWins?'win':''}" style="--vc:var(--c-pronto)">
-        <p class="vc-lbl">A · Pronto (valor presente)</p>
-        <div class="vc-val">${brl(r.vpA)}</div>
+        <p class="vc-lbl">A · Pronto (desembolso total)</p>
+        <div class="vc-val">${brl(totalA)}</div>
         ${aWins?'<span class="vc-badge">mais barato</span>':''}
       </div>
       <div class="vc ${aWins?'':'win'}" style="--vc:var(--c-planta)">
-        <p class="vc-lbl">B · Na planta (valor presente)</p>
-        <div class="vc-val">${brl(r.vpB)}</div>
+        <p class="vc-lbl">B · Na planta (desembolso total)</p>
+        <div class="vc-val">${brl(totalB)}</div>
         ${aWins?'':'<span class="vc-badge">mais barato</span>'}
       </div>`;
-    const diff=Math.abs(r.vpA-r.vpB), base=Math.max(r.vpA,r.vpB);
+    const diff=Math.abs(totalA-totalB), base=Math.max(totalA,totalB);
     document.getElementById("diffline").innerHTML=
-      `Diferença a valor presente: <b>${brl(diff)}</b> (${pct(diff/base)}) a favor do <b>${aWins?'pronto':'na planta'}</b>.`;
+      `Diferença no desembolso total: <b>${brl(diff)}</b> (${pct(diff/base)}) a favor do <b>${aWins?'pronto':'na planta'}</b>.`;
 
     // breakdown
     document.getElementById("breakdown").innerHTML=`
       <div>
         <p class="blocktitle"><span class="scn-dot" style="background:var(--c-pronto)"></span>Pronto</p>
         <div class="row"><span class="k">À vista (preço + reforma)</span><span class="v">${brl(r.t0A)}</span></div>
-        <div class="row"><span class="k">Condomínio no período</span><span class="v">${brl(r.condTotal)}</span></div>
-        <div class="row subtotal"><span class="k">Total desembolsado (nominal)</span><span class="v">${brl(r.t0A+r.condTotal)}</span></div>
-        <div class="row total"><span class="k">Valor presente</span><span class="v">${brl(r.vpA)}</span></div>
+        <div class="row"><span class="k">Condomínio (horizonte todo)</span><span class="v">${brl(r.condTotalA)}</span></div>
+        <div class="row total"><span class="k">Total desembolsado</span><span class="v">${brl(totalA)}</span></div>
       </div>
       <div>
         <p class="blocktitle"><span class="scn-dot" style="background:var(--c-planta)"></span>Na planta</p>
         <div class="row"><span class="k">Obra paga (nominal)</span><span class="v">${brl(r.obraNominal)}</span></div>
-        <div class="row"><span class="k">Aluguel no período</span><span class="v">${brl(r.aluguelTotal)}</span></div>
+        <div class="row"><span class="k">Aluguel (até a entrega)</span><span class="v">${brl(r.aluguelTotal)}</span></div>
         <div class="row" style="border-bottom:none"><span class="k">Chaves à vista na entrega</span><span class="v">${brl(r.chaves)}</span></div>
         <div class="subnote">└ inclui +${brl(r.inccAcum)} de INCC sobre o saldo devedor</div>
-        <div class="row subtotal"><span class="k">Total desembolsado (nominal)</span><span class="v">${brl(r.obraNominal+r.aluguelTotal+r.chaves)}</span></div>
-        <div class="row total"><span class="k">Valor presente</span><span class="v">${brl(r.vpB)}</span></div>
+        <div class="row"><span class="k">Condomínio (pós-entrega)</span><span class="v">${brl(r.condTotalB)}</span></div>
+        <div class="row total"><span class="k">Total desembolsado</span><span class="v">${brl(totalB)}</span></div>
       </div>`;
 
     // tabela anual
-    let th=`<thead><tr><th>Ano</th><th>Desemb. pronto</th><th>Desemb. planta</th><th>Saldo planta (fim)</th></tr></thead>`;
-    let tb="<tbody>"+r.years.map(y=>`<tr><td>Ano ${y.ano}</td><td>${brl(y.dA)}</td><td>${brl(y.dB)}</td><td>${brl(y.saldoFim)}</td></tr>`).join("")+"</tbody>";
+    let th=`<thead><tr><th>Ano</th><th>Desemb. pronto</th><th>Desemb. planta</th></tr></thead>`;
+    let tb="<tbody>"+r.years.map(y=>`<tr><td>Ano ${y.ano}</td><td>${brl(y.dA)}</td><td>${brl(y.dB)}</td></tr>`).join("")+"</tbody>";
     document.getElementById("yrtable").innerHTML=th+tb;
 
     // entrega
     document.getElementById("entrega").innerHTML=`
       <div>
         <p class="blocktitle"><span class="scn-dot" style="background:var(--c-pronto)"></span>Pronto</p>
-        <div class="row"><span class="k">Pago na entrega (chaves)</span><span class="v">${brl(0)}</span></div>
-        <div class="row"><span class="k">Saldo a financiar</span><span class="v">${brl(0)}</span></div>
+        <div class="row"><span class="k">Total desembolsado</span><span class="v">${brl(totalA)}</span></div>
         <div class="row"><span class="k">Valor do imóvel (valorizado)</span><span class="v">${brl(r.valorA)}</span></div>
-        <div class="row total"><span class="k">Patrimônio líq. (VP)</span><span class="v">${brl(r.patA)}</span></div>
+        <div class="row total"><span class="k">Resultado (valor − custo)</span><span class="v">${brl(r.valorA-totalA)}</span></div>
       </div>
       <div>
         <p class="blocktitle"><span class="scn-dot" style="background:var(--c-planta)"></span>Na planta</p>
-        <div class="row"><span class="k">Pago na entrega (chaves, c/ INCC)</span><span class="v">${brl(r.chaves)}</span></div>
-        <div class="row"><span class="k">Saldo a financiar</span><span class="v">${brl(0)}</span></div>
+        <div class="row"><span class="k">Total desembolsado</span><span class="v">${brl(totalB)}</span></div>
         <div class="row"><span class="k">Valor do imóvel (valorizado)</span><span class="v">${brl(r.valorB)}</span></div>
-        <div class="row total"><span class="k">Patrimônio líq. (VP)</span><span class="v">${brl(r.patB)}</span></div>
+        <div class="row total"><span class="k">Resultado (valor − custo)</span><span class="v">${brl(r.valorB-totalB)}</span></div>
       </div>`;
 
     renderChart(r);
@@ -380,13 +393,12 @@
 
   function renderChart(r){
     const W=820,H=240,padL=64,padR=12,padT=12,padB=26;
-    const N=r.N;
-    // acumulados
+    const T=r.T;
+    // acumulados ao longo de todo o horizonte (inclui chaves à vista e condomínio pós-entrega)
     let accA=r.t0A, accB=0; const ptsA=[[0,accA]], ptsB=[[0,0]];
-    r.perMonth.forEach(pm=>{ accA+=pm.condT; accB+=pm.parcela+pm.aluguelT; ptsA.push([pm.t,accA]); ptsB.push([pm.t,accB]); });
-    accB+=r.chaves; ptsB.push([N,accB]);   // quitação das chaves à vista na entrega (salto no fim)
+    r.perMonth.forEach(pm=>{ accA+=pm.condA; accB+=pm.parcela+pm.aluguelT+pm.condB+pm.chavesPay; ptsA.push([pm.t,accA]); ptsB.push([pm.t,accB]); });
     const maxY=Math.max(accA,accB,1);
-    const x=t=>padL+(t/N)*(W-padL-padR);
+    const x=t=>padL+(t/T)*(W-padL-padR);
     const y=v=>H-padB-(v/maxY)*(H-padT-padB);
     const svg=document.createElementNS(SVGNS,"svg"); svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
     // grid Y
@@ -395,11 +407,16 @@
       const ln=document.createElementNS(SVGNS,"line"); ln.setAttribute("x1",padL);ln.setAttribute("x2",W-padR);ln.setAttribute("y1",yy);ln.setAttribute("y2",yy);ln.setAttribute("class","axis");svg.appendChild(ln);
       const tx=document.createElementNS(SVGNS,"text"); tx.setAttribute("x",padL-8);tx.setAttribute("y",yy+3);tx.setAttribute("text-anchor","end");tx.setAttribute("class","axislbl");tx.textContent=(v/1000).toLocaleString("pt-BR",{maximumFractionDigits:0})+"k";svg.appendChild(tx);
     }
-    // X labels por ano
-    for(let a=0;a<=Math.round(N/12);a++){
-      const t=a*12; if(t>N)break;
+    // X labels por ano (passo adaptativo p/ não poluir)
+    const totAnos=Math.round(T/12), passo=totAnos>12?5:(totAnos>6?2:1);
+    for(let a=0;a<=totAnos;a+=passo){
+      const t=a*12; if(t>T)break;
       const tx=document.createElementNS(SVGNS,"text"); tx.setAttribute("x",x(t));tx.setAttribute("y",H-8);tx.setAttribute("text-anchor","middle");tx.setAttribute("class","axislbl");tx.textContent=a+"a";svg.appendChild(tx);
     }
+    // marca a entrega das chaves
+    const xe=x(r.N);
+    const ent=document.createElementNS(SVGNS,"line"); ent.setAttribute("x1",xe);ent.setAttribute("x2",xe);ent.setAttribute("y1",padT);ent.setAttribute("y2",H-padB);ent.setAttribute("class","axis");ent.setAttribute("stroke-dasharray","3 3");svg.appendChild(ent);
+    const etx=document.createElementNS(SVGNS,"text"); etx.setAttribute("x",xe);etx.setAttribute("y",padT+9);etx.setAttribute("text-anchor","middle");etx.setAttribute("class","axislbl");etx.textContent="entrega";svg.appendChild(etx);
     const poly=(pts,color)=>{ const p=document.createElementNS(SVGNS,"polyline"); p.setAttribute("points",pts.map(([t,v])=>x(t)+","+y(v)).join(" ")); p.setAttribute("fill","none");p.setAttribute("stroke",color);p.setAttribute("stroke-width",2.4);p.setAttribute("stroke-linejoin","round");svg.appendChild(p); };
     poly(ptsA,getComputedStyle(document.documentElement).getPropertyValue("--c-pronto").trim());
     poly(ptsB,getComputedStyle(document.documentElement).getPropertyValue("--c-planta").trim());
@@ -437,7 +454,7 @@
     else { document.getElementById("downloadBtn").style.display=""; }
     if(!model){ try{ const s=localStorage.getItem(LS_KEY); if(s) model=JSON.parse(s); }catch(e){} }
     if(!model) model=clone(DEFAULT);
-    M=model; renderFields(); renderOutputs();
+    M=withDefaults(model); renderFields(); renderOutputs();
   })();
 })();
 </script>

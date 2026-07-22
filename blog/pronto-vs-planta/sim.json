@@ -2,8 +2,8 @@
   "titulo": "Pronto vs Planta",
   "global": {
     "meses_entrega": 60,
-    "desconto_aa": 0.105,
-    "valorizacao_aa": 0.06,
+    "anos_pos_entrega": 10,
+    "valorizacao_aa": 0.04,
     "incc_aa": 0.075
   },
   "pronto": {
@@ -22,6 +22,8 @@
     "fluxo_anual": 50000,
     "fluxo_adicionais": 50000,
     "aluguel_mes": 6000,
-    "aluguel_reajuste_aa": 0.075
+    "aluguel_reajuste_aa": 0.075,
+    "condominio_m2_mes": 11,
+    "condominio_reajuste_aa": 0.05
   }
 }
