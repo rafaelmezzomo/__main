@@ -18,11 +18,23 @@
   .week-switcher {
     display: flex;
     align-items: center;
-    gap: 0;
+    justify-content: center;
+    gap: 8px;
     background: #010409;
     border-bottom: 1px solid #30363d;
     padding: 0 24px;
     height: 36px;
+  }
+  .week-tabs-window {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 220px));
+    align-items: stretch;
+    height: 100%;
+  }
+  .week-tab-slot {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
   }
   .week-tab {
     padding: 8px 16px;
@@ -54,7 +66,6 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    margin-left: auto;
   }
   .week-nav-btn {
     background: none;
@@ -691,6 +702,48 @@ const WEEKS = {
         { id: "sl-006", title: "Aprofundar Hermes/Stalinho — pesquisa", repo: "stalinho", estimated_hours: 4, priority: "white", notes: "Sem entrega de produto — apenas continuar a pesquisa e aprofundamento em Hermes + Stalinho" }
       ]}
     }
+  },
+  "2026-W30": {
+    week: "2026-W30",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W30"],
+    start_date: "2026-07-20",
+    end_date: "2026-07-26",
+    hours_available: 40,
+    projects: {
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-007", title: "Sprint de validação do loop BRE (MOAI) — grupo focal, tratamento IA, devolutiva individual", repo: "stalinho", estimated_hours: 24, priority: "red", notes: "PRINCIPAL FOCO DA SPRINT. Sprint vendida ao cliente MOAI (Clube de Líderes). 2 de 5 dias feitos, faltam 3 — entrega sexta 24/07. Escopo pivotado no kick-off com o CEO (20/jul): valida o loop do diagnóstico BRE (Entender/Tangibilizar/Direcionar) com grupo focal de ~10 clientes engajados, trata respostas com IA e devolve individualmente. PRD: stalinho/docs/planning/2026-07-21-moai-bre-sprint-validacao.md. Não estende.", default_status: "doing" }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-012", title: "Refazer a visão do app — reorganização da estrutura conforme TNM de quinta", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Reorganizar a visão/estrutura do app pra ficar mais organizado, conforme o que foi conversado na última TNM (quinta). Refinar escopo antes de codar." },
+        { id: "mc-013", title: "Atualizar algoritmo do SART conforme feedback do Dr. Taya", repo: "sart", estimated_hours: 2, priority: "green", notes: "Quick win. Ajustar o algoritmo do SART incorporando o feedback do Dr. Taya. FEITO.", default_status: "done" }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-017", title: "Scrap de fundo novo relevante para a Courageous Land", repo: "yang-gps", estimated_hours: 4, priority: "yellow", notes: "Fazer scrap/coleta de algum fundo novo relevante para a Courageous Land, alimentando o catálogo de fundos." }
+      ]}
+    }
+  },
+  "2026-W32": {
+    week: "2026-W32",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W32"],
+    start_date: "2026-08-03",
+    end_date: "2026-08-09",
+    hours_available: 40,
+    projects: {
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-008", title: "Limpar reuniões passadas", repo: "stalolabs-MOAI", estimated_hours: 2, priority: "green", notes: "Quick win. Limpeza das reuniões passadas do projeto MOAI. FEITO. Projeto MOAI encerrado.", default_status: "done" },
+        { id: "sl-009", title: "Implementar novo modelo de ata", repo: "stalolabs-MOAI", estimated_hours: 4, priority: "yellow", notes: "Novo modelo de ata para as reuniões. FEITO. Projeto MOAI encerrado.", default_status: "done" },
+        { id: "sl-010", title: "Criar scaffold do projeto", repo: "stalolabs-MOAI", estimated_hours: 4, priority: "yellow", notes: "Fazer no final da semana. Criar o scaffold/estrutura base do projeto. Refinar escopo antes de codar." }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-015", title: "Refatorar a sequência de telas do Palácio da Memória", repo: "memory-club", estimated_hours: 16, priority: "red", notes: "FOCO PRINCIPAL DA SPRINT. Tarefa grande — refatorar o fluxo/sequência de telas do Palácio da Memória. Refinar escopo (quebrar em telas) antes de codar." },
+        { id: "mc-016", title: "Criar sistema Clube da Memória — acesso pago à feature + aulas do Palácio", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Agendar (depende da refatoração das telas). Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Definir modelo de acesso/paywall antes de codar." }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-018", title: "Adicionar novo fundo — scrap + processamento + inclusão na base", repo: "yang-gps", estimated_hours: 6, priority: "yellow", notes: "Adicionar um novo fundo à base: scrap dos dados, processamento e inclusão na base de fundos." }
+      ]}
+    }
   }
 };
 
@@ -799,55 +852,62 @@ function renderWeekSwitcher() {
   const el = document.getElementById('week-switcher');
   el.innerHTML = '';
 
-  for (const wk of WEEK_ORDER) {
-    const data = WEEKS[wk];
-    const isCurrent = wk === currentWeekKey;
-    const isLatest = wk === WEEK_ORDER[WEEK_ORDER.length - 1];
-
-    const tab = document.createElement('div');
-    tab.className = `week-tab ${isCurrent ? 'active' : ''}`;
-
-    const startParts = data.start_date.split('-');
-    const endParts = data.end_date.split('-');
-    const dateLabel = `${startParts[2]}/${startParts[1]} - ${endParts[2]}/${endParts[1]}`;
-
-    let badge = '';
-    if (isLatest) {
-      badge = '<span class="tab-badge current">atual</span>';
-    } else if (data.retro && data.retro.completed) {
-      badge = '<span class="tab-badge past">✓</span>';
-    }
-
-    tab.innerHTML = `${wk} <span style="color:#6e7681;font-size:11px">${dateLabel}</span> ${badge}`;
-    tab.addEventListener('click', () => switchWeek(wk));
-    el.appendChild(tab);
-  }
-
-  // Nav buttons
-  const nav = document.createElement('div');
-  nav.className = 'week-nav';
+  const idx = WEEK_ORDER.indexOf(currentWeekKey);
 
   const prevBtn = document.createElement('button');
   prevBtn.className = 'week-nav-btn';
   prevBtn.innerHTML = '&#9664;';
-  prevBtn.disabled = currentWeekKey === WEEK_ORDER[0];
+  prevBtn.disabled = idx <= 0;
   prevBtn.addEventListener('click', () => {
-    const idx = WEEK_ORDER.indexOf(currentWeekKey);
     if (idx > 0) switchWeek(WEEK_ORDER[idx - 1]);
   });
+  el.appendChild(prevBtn);
+
+  // Janela de 5 slots com a semana selecionada sempre no slot central
+  const win = document.createElement('div');
+  win.className = 'week-tabs-window';
+
+  for (let offset = -2; offset <= 2; offset++) {
+    const slot = document.createElement('div');
+    slot.className = 'week-tab-slot';
+    const wk = WEEK_ORDER[idx + offset];
+
+    if (wk) {
+      const data = WEEKS[wk];
+      const isCurrent = offset === 0;
+      const isLatest = wk === WEEK_ORDER[WEEK_ORDER.length - 1];
+
+      const tab = document.createElement('div');
+      tab.className = `week-tab ${isCurrent ? 'active' : ''}`;
+
+      const startParts = data.start_date.split('-');
+      const endParts = data.end_date.split('-');
+      const dateLabel = `${startParts[2]}/${startParts[1]} - ${endParts[2]}/${endParts[1]}`;
+
+      let badge = '';
+      if (isLatest) {
+        badge = '<span class="tab-badge current">atual</span>';
+      } else if (data.retro && data.retro.completed) {
+        badge = '<span class="tab-badge past">✓</span>';
+      }
+
+      tab.innerHTML = `${wk} <span style="color:#6e7681;font-size:11px">${dateLabel}</span> ${badge}`;
+      tab.addEventListener('click', () => switchWeek(wk));
+      slot.appendChild(tab);
+    }
+
+    win.appendChild(slot);
+  }
+  el.appendChild(win);
 
   const nextBtn = document.createElement('button');
   nextBtn.className = 'week-nav-btn';
   nextBtn.innerHTML = '&#9654;';
-  nextBtn.disabled = currentWeekKey === WEEK_ORDER[WEEK_ORDER.length - 1];
+  nextBtn.disabled = idx >= WEEK_ORDER.length - 1;
   nextBtn.addEventListener('click', () => {
-    const idx = WEEK_ORDER.indexOf(currentWeekKey);
     if (idx < WEEK_ORDER.length - 1) switchWeek(WEEK_ORDER[idx + 1]);
   });
-
-  nav.appendChild(prevBtn);
-  nav.appendChild(nextBtn);
-  el.appendChild(nav);
+  el.appendChild(nextBtn);
 }
 
 function switchWeek(weekKey) {
