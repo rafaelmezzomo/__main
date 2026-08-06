@@ -17,7 +17,7 @@
 - [ ] [yp-010] Entrevista com usuária — prep + sessão (yang-gps) — 2h *(carryover)*
 - [x] [yp-013] Reformulação UX matching + estratégia (grid checkável, picker de fundos, fix ID Fundo Clima, polling de estratégia) (yang-gps-frontend) — 8h
 - [x] [yp-015] Fix long polling — resultado pronto no backend não atualiza o front (/match e /strategy) (yang-gps-frontend) — 3h
-- [ ] [yp-016] Internacionalização (i18n) do GPS Carbono — frontend multi-idioma (yang-gps-frontend) — 12h
+- [x] [yp-016] Internacionalização (i18n) do GPS Carbono — frontend multi-idioma (yang-gps-frontend) — 12h
 
 ## 🟡 Agendar
 - [x] [mc-011] Segundo minigame novo — fechar 2 minigames (Torre + 1) (memory-club) — 4h

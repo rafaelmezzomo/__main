@@ -45,6 +45,17 @@
           "status": "done",
           "carryover": false,
           "notes": "Quick win. Ajustar o algoritmo do SART incorporando o feedback do Dr. Taya. FEITO."
+        },
+        {
+          "id": "mc-014",
+          "title": "Substituir vídeos locais da landing por YouTube (embed)",
+          "repo": "memory-club",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Custo de bandwidth alto no Amplify: 68 GB de data transfer out = US$10.21 no mês, dominado por 3 vídeos servidos direto de public/landing/ (treino-memoria.mp4 42MB com autoPlay sem preload/poster + tiktok-video-1 11MB + tiktok-video-2 5.8MB ~59MB por visita). Refs em src/components/LandingPage.jsx linhas 150, 259, 262. Solução acordada: hospedar no YouTube e trocar as tags <video> por embed, tirando a mídia pesada do egress do Amplify. Alternativa/complemento se não for embed: comprimir via ffmpeg (H.264 720p crf 28) + preload=none + lazy-load."
         }
       ]
     },

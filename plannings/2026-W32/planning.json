@@ -1,0 +1,105 @@
+{
+  "week": "2026-W32",
+  "period_label": "Sprint",
+  "sprint_weeks": [
+    "2026-W32"
+  ],
+  "start_date": "2026-08-03",
+  "end_date": "2026-08-09",
+  "hours_available": 40,
+  "carryover_from": "2026-W30",
+  "projects": {
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-008",
+          "title": "Limpar reuniões passadas",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "Quick win. Limpeza das reuniões passadas do projeto MOAI. FEITO. Projeto MOAI encerrado."
+        },
+        {
+          "id": "sl-009",
+          "title": "Implementar novo modelo de ata",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Novo modelo de ata para as reuniões. FEITO. Projeto MOAI encerrado."
+        },
+        {
+          "id": "sl-010",
+          "title": "Criar scaffold do projeto",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fazer no final da semana. Criar o scaffold/estrutura base do projeto. Refinar escopo antes de codar."
+        }
+      ]
+    },
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-015",
+          "title": "Refatorar a sequência de telas do Palácio da Memória",
+          "repo": "memory-club",
+          "estimated_hours": 16,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "FOCO PRINCIPAL DA SPRINT. Tarefa grande — refatorar o fluxo/sequência de telas do Palácio da Memória. Refinar escopo (quebrar em telas) antes de codar."
+        },
+        {
+          "id": "mc-016",
+          "title": "Criar sistema Clube da Memória — acesso pago à feature + aulas do Palácio",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "doing",
+          "carryover": false,
+          "notes": "Agendar (depende da refatoração das telas). Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Definir modelo de acesso/paywall antes de codar."
+        }
+      ]
+    },
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-018",
+          "title": "Adicionar novo fundo — scrap + processamento + inclusão na base",
+          "repo": "yang-gps",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Adicionar um novo fundo à base: scrap dos dados, processamento e inclusão na base de fundos."
+        },
+        {
+          "id": "yp-019",
+          "title": "Kickoff Projeto Courageous Land",
+          "repo": "yang-gps",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "doing",
+          "carryover": false,
+          "notes": "Agenda proposta já criada. Backlog: criar apresentação de onboarding para a semana que vem — prazo até domingo (09/08) para passar ao time da Yang."
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false
+  }
+}

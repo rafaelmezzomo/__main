@@ -1,7 +1,10 @@
 {
   "week": "2026-W25",
   "period_label": "Sprint",
-  "sprint_weeks": ["2026-W25", "2026-W26"],
+  "sprint_weeks": [
+    "2026-W25",
+    "2026-W26"
+  ],
   "start_date": "2026-06-15",
   "end_date": "2026-06-28",
   "hours_available": 80,
@@ -93,7 +96,7 @@
           "estimated_hours": 12,
           "actual_hours": null,
           "priority": "red",
-          "status": "doing",
+          "status": "done",
           "carryover": false,
           "notes": "PIVOT: reverte a decisão de pt-BR-only (commit 02e6543 / yp-007) e volta a priorizar i18n. Feature grande, em implementação. Arquitetura desenhada no doc 2026-06-19-i18n-arquitetura.md. Virou a prioridade do resto do sprint (até 28/06)."
         }
@@ -143,9 +146,25 @@
       "hours_estimated": 49,
       "hours_actual": 36,
       "by_project": {
-        "yangplanet": { "hours_estimated": 41, "hours_actual": 25, "tasks_done": 5, "tasks_total": 8, "note": "yp-016 i18n em andamento" },
-        "stalolabs": { "hours_estimated": 4, "hours_actual": 2, "tasks_done": 0, "tasks_total": 1 },
-        "memory-club": { "hours_estimated": 4, "hours_actual": 9, "tasks_done": 1, "tasks_total": 1 }
+        "yangplanet": {
+          "hours_estimated": 41,
+          "hours_actual": 25,
+          "tasks_done": 5,
+          "tasks_total": 8,
+          "note": "yp-016 i18n em andamento"
+        },
+        "stalolabs": {
+          "hours_estimated": 4,
+          "hours_actual": 2,
+          "tasks_done": 0,
+          "tasks_total": 1
+        },
+        "memory-club": {
+          "hours_estimated": 4,
+          "hours_actual": 9,
+          "tasks_done": 1,
+          "tasks_total": 1
+        }
       }
     }
   }
