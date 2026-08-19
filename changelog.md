@@ -1,5 +1,58 @@
 # Changelog Diário
 
+## 2026-08-18 (terça)
+
+### Clube da Memória — `memory-club` + `memory-pulse`
+
+**Caso Tainara (CX ao vivo):**
+- Usuária fez as 3 fases do RAM em 11min e travou no gate: código de login enviado e nunca visto; reenvio aos 32s caiu no cooldown de 5min do servidor com a UI dizendo "reenviado" sem enviar nada
+- Resultado dela recuperável: o gate salva tudo em `localStorage['ram_session']` (sem TTL) antes do login — email de resgate enviado do Gmail pessoal com o caminho "Entrar com Google"
+- Varredura achou o 2º caso: `marcelo@aristeuonline.com.br` (13/08), domínio NXDOMAIN — SES contou Send sem Delivery, sem bounce, sem alarme
+- Aprendizado registrado (memória + planning): resultado do usuário se grava antes do gate, nunca depois → mc-026/027/028
+
+**Mailer de CX (`./mailer` no memory-pulse, gitignored):**
+- Templates JSON na voz do Clube (revisada com tom "Oi X, tudo bem?"), render HTML igual aos transacionais, guardas (dry-run default, dedupe, destinatário precisa existir no Cognito), ledger local + espelho na tabela `cx-emails` (criada hoje)
+- Enviados: #004 nickolassouza23 e #005 vilacaduds (template treino-de-hoje); CTA corrigida pra `/academia` nos próximos
+
+**Memory Pulse (commits `ce01d8e` no memory-club, `0145f65` no memory-pulse):**
+- Rota `GET /admin/emails`: todo envio do SES numa lista (transacionais via logs de auditoria + CX via `cx-emails`), aba Emails com busca, filtro automático/CX e accordion com corpo + link 360
+- Rota `GET /admin/product` + aba Produto v2: período livre (presets + datas, dias em BRT), séries padronizadas em usuários únicos, primeiro RAM nominal, minigames por jogo com score médio, treino do Palácio por baralho, associações PO, treino diário real (carimbos por slot do `plays` — melhor que o proxy de 48h)
+- Fix de fuso que deslocava os gráficos em 1 dia (front pedia período em UTC + `fmtDate` parseava dia puro como meia-noite UTC)
+
+### Decisões / Notas
+- Descoberto que `plays[slot].lastPlayedAt` existe no `progress-daily-training`: "quem treinou hoje" agora é real
+- 13 usuários fizeram RAM na semana e os 13 eram primeiro teste (zero recorrentes) — dado a acompanhar
+- Sessões de RAM gravam `durationMs = 0`; o cockpit mostra 0s honesto em vez de fallback
+- Plano aprovado da skill de exceções (11 detectores E1-E11) ficou pendente de implementação → mc-031
+
+## 2026-08-09 (domingo)
+
+### Clube da Memória — `memory-club` (17 commits)
+
+**Modo PRO + Hotmart (kickoff do lançamento de 3ª feira):**
+- Gate server-side `member-pro` no Palácio da Memória + capítulo Hotmart
+- Badge PRO no header (preto) + página `/pro` com os benefícios
+- Planning em cima da API do Hotmart: leitura completa da API, definição do fluxo de venda (comprar → role `pro` no Cognito), espelhar dados do Hotmart localmente, e migração dos ~80 alunos já pagantes para PRO
+- Retomada da planning de risco de cópia dos jogos: mover lógica sensível pra server side
+
+**RAM Score / Stats:**
+- Redesenho da página de stats focada no RAM Score; pill do header com ícone de cérebro e tokens de tema
+- Revisão de resultado antigo pelo histórico funciona de ponta a ponta (busca sessão pelo id da URL)
+- Cor do gráfico ajustada de amarelo pro roxo da marca; clicar no score leva pro detalhe do resultado
+
+**Jogos / Navegação:**
+- Homes de jogo (`/cartas`, `/numeros-jogo`) com título e MainNav; home do Números Livre no estilo do Cartas (sem streak semanal)
+- Aba Palácio abre direto na trilha de Cartas; hub vira mini item no header; título "Aprendendo o Palácio da Memória" no topo da trilha
+- Leque do Cartas mostra 3 cartas válidas da fase com rank novo na frente; aba Ranking no histórico do Speed Cards; cérebro de progresso como ícone das fases do Números
+- Fixes mobile: editor deslocado no eixo x, chip do castelo quebrando linha, pause do Encaixe-Sombra centralizado
+
+### __main
+- Nova prioridade na sprint atual: ver certificado digital do Memory Club
+
+### Decisões / Notas
+- Lançamento definido: 3ª feira (2026-08-11) sai o primeiro vídeo compartilhando o app, já pronto pra vender — o essencial é habilitar o modo PRO no Cognito após pagamento; cancelamento fica pra um segundo passo
+- Credenciais do Hotmart guardadas como env vars na AWS (nada salvo localmente)
+
 ## 2026-06-04 (quinta)
 
 ### Clube da Memória — `memory-club` (5 commits, branch `release/v1.0-unificacao`)

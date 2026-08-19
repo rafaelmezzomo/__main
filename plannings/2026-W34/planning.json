@@ -1,0 +1,156 @@
+{
+  "week": "2026-W34",
+  "period_label": "Sprint",
+  "sprint_weeks": [
+    "2026-W34"
+  ],
+  "start_date": "2026-08-17",
+  "end_date": "2026-08-23",
+  "hours_available": 40,
+  "carryover_from": "2026-W33",
+  "projects": {
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-021",
+          "title": "Gravar payload bruto de todos os webhooks Hotmart",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": 1,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": true,
+          "notes": "Antecipado pra 11/08 (W33, dia do lançamento). Tabela hotmart-events append-only gravando todo evento autenticado antes de qualquer filtro (eventId do payload como chave, retries idempotentes, payload bruto completo). Painel Hotmart guarda só 60 dias; a tabela guarda pra sempre (auditoria, replay, sinais de Club pra jornada/Memory Pulse). Deployado em sandbox + prod. Pendente: assinar TODOS os eventos (Club, assinatura, carrinho) na config prod-memory-club do painel."
+        },
+        {
+          "id": "mc-022",
+          "title": "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Pós-terça. Portar fórmulas de scoring pro ram-post-session (trials brutos já chegam; divergência >5% marca suspicious) + bounds de plausibilidade em post-user-progress e post-digit-progress. Ver Plannings/#29."
+        },
+        {
+          "id": "mc-025",
+          "title": "Memory Pulse — cockpit admin (vendas + uso, usuário 360)",
+          "repo": "memory-club",
+          "estimated_hours": 16,
+          "actual_hours": 6,
+          "priority": "yellow",
+          "status": "doing",
+          "carryover": true,
+          "notes": "Pós-lançamento. Spec fechada em Plannings/#78 do memory-club: repo privado separado memory-pulse (frontend) + lambda admin-api no stack minigames com check server-side do grupo admin. v1 somente leitura: funil de vendas, cockpit de produto, usuário 360. Backend (~6h) antes do frontend (~10h). Update 18/08: rotas /admin/emails e /admin/product entregues e deployadas (ce01d8e). Aba Emails (busca, filtro automatico/CX, accordion com corpo e link 360) e Produto v2 (periodo livre em BRT, series em usuarios unicos, primeiro RAM nominal, minigames por jogo com score medio, palacio por baralho, associacoes PO, treino diario real por slot do plays). Commit 0145f65 no memory-pulse."
+        },
+        {
+          "id": "mc-023",
+          "title": "Espelho completo dos dados Hotmart via API REST",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Planning próprio: credencial OAuth + sync job (EventBridge) puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho; backfill + reconciliação diária (Hotmart só guarda 60 dias de eventos). Progresso de vídeo alimenta a jornada da home."
+        },
+        {
+          "id": "mc-026",
+          "title": "Salvar o RAM fase a fase, sem exigir conta",
+          "repo": "memory-club",
+          "estimated_hours": 5,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "doing",
+          "carryover": false,
+          "notes": "Aprendizado do caso de 18/08: o resultado de cada fase e informacao valiosa e hoje so existe se a pessoa conseguir logar. O createSession so dispara depois de oidc.isAuthenticated (TestSimulator.tsx:214-292), entao todo abandono no gate apaga o teste inteiro. Uma visitante fez as 3 fases em 11 min, travou no gate por email nao entregue, e o resultado (Token Search 510, SART 760, span 6) so sobreviveu no replay do Clarity. Gravar cada fase no fechamento dela por visitorId, estendendo a lambda publica ram-funnel (ja valida visitorId por regex e tem allowlist de step). No /ram-funnel/claim, promover os scores para uma sessao real em ram-sessions sob o userId. Update 18/08: lambda ram-progress criada, commitada (1458092) e deployada; wiring do template no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edicao)."
+        },
+        {
+          "id": "mc-027",
+          "title": "Cooldown de reenvio honesto no login por codigo",
+          "repo": "memory-club",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "A UI destrava \"Enviar de novo\" em 30s (EmailCodeForm.tsx:17), o servidor so reenvia depois de 5 min (otp.mjs:23). Na janela entre os dois nenhum email sai e a UI diz \"Codigo reenviado. Olhe tambem no spam.\" O create-auth-challenge ja sabe (challengeMetadata: COOLDOWN), o dado so nao chega ao cliente. Propagar o tempo restante e alinhar o contador. A dica de spam deve aparecer ja na primeira tela do codigo. Causa raiz do unico gate de login exercitado em producao em 18/08, que falhou."
+        },
+        {
+          "id": "mc-028",
+          "title": "Aquecer o envio de email do Clube",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Dominio memoria.club verificado no SES em 11/08 (7 dias de reputacao), volume de 3 emails/dia, DMARC em p=none, remetente vitor@memoria.club. DKIM e MAIL FROM customizado ja corretos e o SES reporta 3 Send / 3 Delivery / 0 Bounce, entao a entrega falhou na classificacao do Gmail, nao no envio. Trocar para remetente de produto, subir o DMARC quando o volume estabilizar, e criar alarme para sent sem Delivery."
+        },
+        {
+          "id": "mc-029",
+          "title": "Caso Tainara: usuaria travada no gate do RAM por codigo nao entregue",
+          "repo": "memory-club",
+          "estimated_hours": null,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Nao planejada. Investigacao completa: fez as 3 fases do RAM em 11min (18/08 10:41-10:53), conta criada, codigo enviado e nunca entregue; reenvio caiu no cooldown de 5min do servidor com a UI dizendo 'reenviado' (bug mc-027). Resultado recuperavel via localStorage['ram_session'] no aparelho dela. Email de resgate enviado do Gmail pessoal com caminho 'Entrar com Google'. Segundo caso achado: marcelo@aristeuonline.com.br, dominio NXDOMAIN, sem canal de retorno. Gerou mc-026/027/028."
+        },
+        {
+          "id": "mc-030",
+          "title": "Mailer de CX + templates + tabela cx-emails",
+          "repo": "memory-pulse",
+          "estimated_hours": null,
+          "actual_hours": 3,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Nao planejada. ./mailer no memory-pulse (.local, gitignored): templates JSON na voz do Clube (codigo-nao-chegou, treino-de-hoje), render HTML identico aos transacionais, guardas (dry-run default, dedupe por template+email, destinatario precisa existir no Cognito), ledger local + espelho na tabela cx-emails (criada 18/08). Enviados: caso #004 nickolassouza23 e #005 vilacaduds (treino-de-hoje, CTA corrigida pra /academia nos proximos). Tom de voz revisado com Rafael (Oi X, tudo bem? / Vitor)."
+        },
+        {
+          "id": "mc-031",
+          "title": "Skill de relatorio diario com aba de excecoes (11 detectores)",
+          "repo": "memory-pulse",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Plano aprovado 18/08 (plan file um-parendizado-no-ram): promover resumo-diario a skill com scripts/excecoes.py, 11 detectores E1-E11 validados contra producao (codigo sem login, cooldown, Send sem Delivery, dominio inexistente, email duplicado no Cognito, federada nao linkada, conta orfa, travou no gate, viu resultado e nao entrou, erros de auth, UNCONFIRMED), ledger de casos com status e templates de email. Implementacao ficou pendente; o mailer (mc-030) ja saiu."
+        }
+      ]
+    },
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-022",
+          "title": "Landscape de financiamento: remover USAID/iCS/Petrobras e revisar valores",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 2,
+          "actual_hours": 1,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "Fase 1 do planning de fontes de financiamento. Removidas as 3 grants inviáveis (incluindo todas as linhas com Petrobras no CSV: ProFloresta+ e FIP Transição Energética). bndes-programs 200->130M sem ProFloresta+, caixa-fsa 9->10M, finep 372->378M reconciliado com o CSV. As 8 fontes-alvo marcadas com targetForMapping. 55 -> 52 agentes, build ok. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md"
+        },
+        {
+          "id": "yp-023",
+          "title": "Fase 2: estruturar as 8 novas fontes como fundos mapeados",
+          "repo": "yang-gps",
+          "estimated_hours": 20,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. Conversar com o Rafael sobre o método de coleta (scraping vs curadoria manual vs ingestão de PDF) ANTES de começar. Resolver as open questions do doc: valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId."
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false
+  }
+}
