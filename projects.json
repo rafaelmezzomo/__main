@@ -13,7 +13,7 @@
     {
       "id": "memory-club",
       "name": "Clube da Memória",
-      "repos": ["memory-club", "sart"]
+      "repos": ["memory-club", "sart", "memory-pulse"]
     }
   ]
 }
