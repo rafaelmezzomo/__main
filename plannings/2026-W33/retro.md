@@ -6,16 +6,20 @@
 > reconciliados.
 
 ## Métricas
-- Tarefas: **17/27 concluídas (63%)** — 2 em andamento, 8 abertas
-- Horas: **59h real vs 75h estimado** — mas 31h dessas 59h nunca foram estimadas (não estavam no planning)
-- Utilização: **59h / 40h disponíveis (148%)**
+- Tarefas: **23/27 concluídas (85%)** — 4 abertas
+- Horas: **59h com horas registradas vs 75h estimado** — 31h dessas 59h nunca foram estimadas (não estavam no planning), e 6 tarefas foram fechadas sem horas registradas
+- Utilização: **≥59h / 40h disponíveis (≥148%)**
 
 | Projeto | Est. | Real | % Tempo | Conclusão |
 |---------|------|------|---------|-----------|
-| **Clube da Memória** | 46h | 52h | 88% | 12/18 |
-| **Yang Planet** | 15h | 4h | 7% | 1/4 |
+| **Clube da Memória** | 46h | 52h | 88% | 16/18 |
+| **Yang Planet** | 15h | 4h | 7% | 3/4 |
 | **Stalo Labs** | 14h | 3h | 5% | 4/5 |
-| **Total** | **75h** | **59h** | 100% | **17/27** |
+| **Total** | **75h** | **59h** | 100% | **23/27** |
+
+> Em 19/08, na sessão de planning, seis tarefas foram fechadas no board sem horas registradas
+> (`mc-016`, `mc-019`, `mc-024`, `mc-030`, `yp-020`, `yp-021`), levando a conclusão de 63% para 85%.
+> O real de 59h é portanto um piso, não o número final.
 
 **Commits na janela 10–16/08:** memory-club 83 · memory-pulse 3 · stalolabs-MOAI 2 · yang-gps 0 · yang-gps-frontend 0 · stalolabs 0 · stalinho 0
 
@@ -98,21 +102,17 @@ são tomadas em cima de um número errado.
 
 ---
 
-## Carryover → W34
+## Carryover → Sprint 19/08–28/08
 
-Todas ficaram abertas no W33 e **nenhuma existe hoje no `planning.json` do W34** — sumiram do board
-em vez de virarem carryover explícito:
+Sobraram quatro, todas absorvidas pelo sprint 2026-W35 (19/08–28/08) montado em 19/08:
 
-- **`mc-016`** Acesso pago à feature + aulas do Palácio (8h) — *doing*, carryover crônico desde o W32
-- **`mc-030`** SES em produção: production access (2h) — *doing*, travado na fila da AWS; `link-email` fica fail closed em prod até aprovar
-- **`mc-018`** Email/WhatsApp de boas-vindas (4h) — 🔴, depende do `mc-017` que já fechou
-- **`mc-019`** Terminar frontend do Luna (6h) — 🔴
-- **`mc-024`** Certificado digital do Clube (2h) — 🔴
-- **`mc-032`** Redesign da landing: vitrine do produto (spec fechada em #87) — ⚪
-- **`yp-018`** Adicionar novo fundo — scrap + processamento (6h) — carryover do W32
-- **`yp-020`** Reunião kickoff com cliente (2h) — 🔴
-- **`yp-021`** Framework para reunião (3h)
-- **`sl-011`** Exportar relatório em PDF (4h)
+- **`mc-018`** Email/WhatsApp de boas-vindas (4h) — 🔴, entra na frente "cauda do lançamento"
+- **`mc-032`** Redesign da landing: vitrine do produto (spec fechada em #87) — vira a frente "crescimento", 10h
+- **`yp-018`** Adicionar novo fundo — scrap + processamento (6h) — ⚪ backlog, provavelmente absorvida pelo método do `yp-023`
+- **`sl-011`** Exportar relatório em PDF (4h) — ⚪ backlog, Stalo Labs ficou fora do sprint por decisão
+
+As outras seis que estavam abertas no fim da semana (`mc-016`, `mc-019`, `mc-024`, `mc-030`,
+`yp-020`, `yp-021`) foram fechadas no board em 19/08.
 
 ⚠️ **Colisão de IDs:** `mc-026` a `mc-031` existem no W33 **e** no W34 apontando pra tarefas
 diferentes (W33 `mc-026` = OTP no link-email; W34 `mc-026` = salvar o RAM fase a fase). Isso quebra

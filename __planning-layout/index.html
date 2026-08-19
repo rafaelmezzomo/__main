@@ -754,7 +754,7 @@ const WEEKS = {
     hours_available: 40,
     retro: {
       completed: true,
-      tasks_done: 17,
+      tasks_done: 23,
       tasks_total: 27,
       hours_estimated: 75,
       hours_actual: 59,
@@ -765,17 +765,17 @@ const WEEKS = {
     projects: {
       "memory-club": { name: "Clube da Memória", tasks: [
         { id: "mc-017", title: "Ativar fluxo Pro Hotmart em produção (deploy + webhook + teste e2e)", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Concluído em 10/08. Deploy SAM com hottok, Webhook 2.0 registrado no painel Hotmart (produto X100979240S) e teste ponta a ponta validado: compra teste -> hotmart-purchases -> /pro/verify -> Palácio liberado + fluxo link-email. Fluxo de venda pronto pro vídeo de terça. Ver Plannings/#77.", default_status: "done" },
-        { id: "mc-024", title: "Ver certificado digital do Clube da Memória", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Verificar/providenciar o certificado digital do Clube da Memória." },
+        { id: "mc-024", title: "Ver certificado digital do Clube da Memória", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Verificar/providenciar o certificado digital do Clube da Memória. Marcada como concluída no board em 19/08, sem horas registradas.", default_status: "done" },
         { id: "mc-018", title: "Enviar email/WhatsApp de boas-vindas", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Disparo de boas-vindas por email e WhatsApp ao confirmar novo membro. Depende de [mc-017]. Definir provider (email/WhatsApp) e trigger antes de codar." },
-        { id: "mc-019", title: "Terminar frontend do Luna (principal)", repo: "memory-club", estimated_hours: 6, priority: "red", notes: "Finalizar o frontend do Luna no app principal. Refinar o que falta (checklist de telas/estados) antes de codar." },
-        { id: "mc-016", title: "Criar sistema Clube da Memória — acesso pago à feature + aulas do Palácio", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Carryover do W32. Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Conecta com [mc-017] (validação de membro). Definir modelo de acesso/paywall antes de codar.", default_status: "doing" },
+        { id: "mc-019", title: "Terminar frontend do Luna (principal)", repo: "memory-club", estimated_hours: 6, priority: "red", notes: "Finalizar o frontend do Luna no app principal. Refinar o que falta (checklist de telas/estados) antes de codar. Marcada como concluída no board em 19/08, sem horas registradas.", default_status: "done" },
+        { id: "mc-016", title: "Criar sistema Clube da Memória — acesso pago à feature + aulas do Palácio", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Carryover do W32. Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Conecta com [mc-017] (validação de membro). Definir modelo de acesso/paywall antes de codar. Marcada como concluída no board em 19/08, sem horas registradas.", default_status: "done" },
         { id: "mc-020", title: "Gate Pro server-side nos endpoints do Palácio", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Concluído em 09/08 (commit 4df6265). Check de member-pro (pro-users) ativo em palace-post-session, palace-get-stats, palace-get-sessions, post-palace-image-upload e post-palace-image-confirm; 403 sem role. get-memory-palace segue aberto pro overlay de recall dos fluxos gratuitos. Fecha o contorno do X do paywall antes do vídeo de terça.", default_status: "done" },
         { id: "mc-025", title: "Sandbox e2e isolado do fluxo Pro Hotmart + triage", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Concluído em 10/08. Stack SAM isolado (memory-club-minigames-sandbox, sufixo -sbx via parâmetro NameSuffix) sem tocar nas 79 compras reais. Webhook 2.0 registrado apontando pro sandbox, hottok capturado e setado. Ciclo completo validado: compra teste -> hotmart-purchases-sbx (approved) -> /pro/verify -> member-pro -> paywall link-email -> Palácio liberado; chargeback -> revoked -> role removida. Testado no localhost com .env.sandbox.local (npm run dev -- --mode sandbox). Gerou tickets #79-#82.", default_status: "done" },
         { id: "mc-026", title: "Prova de posse do email no /pro/link-email (segurança)", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Concluído em 11/08 (Plannings/#83, fecha o #81). OTP de 6 dígitos por SES: /pro/request-email-code (hash SHA-256 na tabela pro-email-codes com TTL, cooldown por email, rate limit por usuário, sempre responde sent:true) + link-email exigindo o código (5 erros, uso único, timingSafeEqual). Fecha o roubo de compra por email adivinhado e o oráculo de enumeração. Front com passo de código no paywall (autofill iOS). Deployado no sandbox; deploy de prod com SESSender=vitor@memoria.club pendente (Rafael roda o sam deploy). Testes de envio validados no Gmail.", default_status: "done" },
         { id: "mc-027", title: "Gate duro de UI do paywall do Palácio (Fase 3)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Concluído em 11/08 (Plannings/#79, commit 5bce47a). Loading mostra spinner, trilha só renderiza com confirmed, X navega pra home; onConfirmed pós-compra é o único caminho pro conteúdo. Corrigido no hub E na rota direta da trilha (StartScreen), onde o mesmo bypass existia. Fecha o contorno citado em [mc-020].", default_status: "done" },
         { id: "mc-028", title: "Webhook: não regredir approved -> pending (ordenação de eventos)", repo: "memory-club", estimated_hours: 2, priority: "yellow", notes: "Concluído em 11/08 (Plannings/#80, commit a3cff44). ConditionExpression no update: pending nunca sobrescreve approved nem revoked; evento atrasado responde 200 skipped:stale-pending (Hotmart não reenvia). Revoked segue final e vence approved. Regra documentada em docs/hotmart.md.", default_status: "done" },
         { id: "mc-029", title: "Confirmar ack esperado da Webhook 2.0 Hotmart", repo: "memory-club", estimated_hours: 1, priority: "white", notes: "Investigado em 11/08 (Plannings/#82). Doc pública inconclusiva (páginas JS); fontes secundárias confirmam que '200 - Processado' é o sucesso, sem corpo de ack específico. Conclusão provisória: 'Reprocessamento requerido' é artefato do simulador. Follow-up registrado no ticket: conferir o painel com a primeira compra real; se persistir, ticket no suporte Hotmart.", default_status: "done" },
-        { id: "mc-030", title: "SES em produção: domínio memoria.club + production access", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Infra do envio de email (suporta [mc-026] e [mc-018]). Feito em 11/08: identidade memoria.club verificada no SES us-east-2 (Easy DKIM RSA_2048 SUCCESS), MAIL FROM mail.memoria.club, 6 registros DNS no name.com (3 CNAMEs DKIM + MX/TXT SPF + DMARC), remetente 'Clube da Memória <vitor@memoria.club>', 2 emails de teste validados no Gmail (código OTP e boas-vindas+código). Production access SUBMETIDO (fila AWS ~24h) — enquanto pende, conta em sandbox só envia pra destinatários verificados; link-email em prod fica fail closed até aprovar. Conferir o ~all no TXT SPF do name.com.", default_status: "doing" },
+        { id: "mc-030", title: "SES em produção: domínio memoria.club + production access", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Infra do envio de email (suporta [mc-026] e [mc-018]). Feito em 11/08: identidade memoria.club verificada no SES us-east-2 (Easy DKIM RSA_2048 SUCCESS), MAIL FROM mail.memoria.club, 6 registros DNS no name.com (3 CNAMEs DKIM + MX/TXT SPF + DMARC), remetente 'Clube da Memória <vitor@memoria.club>', 2 emails de teste validados no Gmail (código OTP e boas-vindas+código). Production access SUBMETIDO (fila AWS ~24h) — enquanto pende, conta em sandbox só envia pra destinatários verificados; link-email em prod fica fail closed até aprovar. Conferir o ~all no TXT SPF do name.com.", default_status: "done" },
         { id: "mc-031", title: "Polish de UI: RAM Score, editor do Palácio e paywall", repo: "memory-club", estimated_hours: 3, priority: "green", notes: "Concluído em 11/08, leva de correções pontuais pedidas em revisão visual. RAM Score: padding do popover, legenda do ponto tocado na curva sem card próprio, tag completo/simples sempre visível (título + legenda), resultado do RAM sem texto cortado (.ds-panel sem box-sizing:border-box) e rodapé unificado (CTA + WhatsApp/GPT como ícones). Editor do Palácio: não cabia no iPhone SE (mesmo bug de box-sizing), back button invisível/descentralizado e CTA sem indicar o número/carta atual. Paywall: botão de suporte no WhatsApp em todos os passos e corrigido ficar atrás do menu de níveis (z-index empatado). Nav: 'Palácio' virou 'Curso' (ícone de livro) e saiu o pill de streak da home. Causa raiz comum a três bugs: sart/legacy.css tinha um button{} cru que vazava pra qualquer botão do Clube sem width/margin — escopado às classes do SART. Ver Plannings/#84 (memory-club) pra avaliação de segurança das imagens do Palácio no S3, aberta como follow-up, não código.", default_status: "done" },
         { id: "mc-032", title: "Redesign da landing: de página de vendas do curso pra vitrine do produto", repo: "memory-club", estimated_hours: null, priority: "white", notes: "Spec de produto fechada em Plannings/#87 (memory-club). Landing atual é 100% pitch do curso (Hotmart/Vítor Fujiyama); passa a virar vitrine da plataforma inteira (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch completo do curso condensado e movido pro /pro via 'Ver mais detalhes'. Ponto em aberto: /pro hoje é rota autenticada, precisa virar pública pra landing linkar. Próximo passo é uma sessão de planejamento de implementação (componentes React/CSS) antes de codar." },
         { id: "mc-033", title: "Login próprio sem senha por código de email (#85/#88)", repo: "memory-club", estimated_hours: null, priority: "red", notes: "Não planejada — reconstruída na retro a partir do git (commits 11–13/08). Cognito custom auth com código de 6 dígitos por email substituindo usuário/senha: protótipo /lab com copy por faixa de score, apelido público obrigatório do jogador com blacklist por userId, aceite dos termos de uso no login com permissão de email, rede de proteção do login antigo (usuário/senha), resgate de conta errada na tela de resultado do RAM, passo do código com duas saídas (reenviar/voltar) e identidade visual do Clube nos emails de código. Cooldown antes do rate limit e trava de 15s no botão. Merges #59, #60, #61.", default_status: "done" },
@@ -784,8 +784,8 @@ const WEEKS = {
         { id: "mc-036", title: "Consolidação do design system + release v1.4", repo: "memory-club", estimated_hours: null, priority: "yellow", notes: "Não planejada — reconstruída na retro a partir do git (commits 12–13/08, merges #61 e #62). Cor de texto consolidada em preto/branco a 70% de opacidade com títulos em 100% (#91), tema light como default persistido no Dynamo (#89), estrelas de qualidade por fase no lugar dos níveis em Cartas e Números (anel roxo no dark, 4 segmentos, cinza sem progresso), seta de voltar pra /jogos nas homes de jogo, clicar na fase ativa inicia o jogo, cache de request pra palace-stats e RAM history, header do Cartas medido dinamicamente, CTA do desktop com max-width, polish do paywall (logo no topo, fundo branco fixo, gancho numa linha, 'Já sou aluno' abaixo do CTA) e limpeza do recall do Palácio.", default_status: "done" }
       ]},
       "yangplanet": { name: "Yang Planet", tasks: [
-        { id: "yp-020", title: "Reunião kickoff com cliente", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Reunião de kickoff com o cliente. Preparar pauta antes." },
-        { id: "yp-021", title: "Framework para reunião", repo: "yang-gps", estimated_hours: 3, priority: "yellow", notes: "Criar um framework/estrutura padrão para conduzir reuniões com cliente. Suporta o kickoff [yp-020]." },
+        { id: "yp-020", title: "Reunião kickoff com cliente", repo: "yang-gps", estimated_hours: 2, priority: "red", notes: "Reunião de kickoff com o cliente. Preparar pauta antes. Marcada como concluída no board em 19/08, sem horas registradas.", default_status: "done" },
+        { id: "yp-021", title: "Framework para reunião", repo: "yang-gps", estimated_hours: 3, priority: "yellow", notes: "Criar um framework/estrutura padrão para conduzir reuniões com cliente. Suporta o kickoff [yp-020]. Marcada como concluída no board em 19/08, sem horas registradas.", default_status: "done" },
         { id: "yp-019", title: "Kickoff Projeto Courageous Land", repo: "yang-gps", estimated_hours: 4, priority: "yellow", notes: "Carryover do W32. Continuar onboarding/apresentação do projeto Courageous Land.", default_status: "done" },
         { id: "yp-018", title: "Adicionar novo fundo — scrap + processamento + inclusão na base", repo: "yang-gps", estimated_hours: 6, priority: "yellow", notes: "Carryover do W32. Adicionar um novo fundo à base: scrap dos dados, processamento e inclusão na base de fundos." }
       ]},
@@ -795,6 +795,60 @@ const WEEKS = {
         { id: "sl-013", title: "Criar scaffold do backend", repo: "stalolabs", estimated_hours: 4, priority: "yellow", notes: "Criar o scaffold/estrutura base do backend. Refinar escopo antes de codar. Retro W33: marcada done sem commit na janela 10-16/08 e sem horas registradas — provavelmente executada antes do sprint.", default_status: "done" },
         { id: "sl-014", title: "Atualizar email para Flávio", repo: "stalolabs", estimated_hours: 1, priority: "green", notes: "Quick win. Atualizar o email para o Flávio. Retro W33: marcada done sem commit na janela 10-16/08 e sem horas registradas — provavelmente executada antes do sprint.", default_status: "done" },
         { id: "sl-015", title: "Stalinho/MOAI: lista de reuniões do Granola + doc dos requests Anthropic", repo: "stalolabs-MOAI", estimated_hours: null, priority: "yellow", notes: "Não planejada — reconstruída na retro a partir do git (2 commits em 12/08). Lista de reuniões do Granola com scroll, multi-seleção e check de já transcrita, mais a documentação dos nossos requests na Anthropic. Única atividade do Stalo Labs com commit na janela do sprint.", default_status: "done" }
+      ]}
+    }
+  },
+  "2026-W34": {
+    week: "2026-W34",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W34"],
+    start_date: "2026-08-17",
+    end_date: "2026-08-23",
+    hours_available: 40,
+    projects: {
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-021", title: "Gravar payload bruto de todos os webhooks Hotmart", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Antecipado pra 11/08 (W33, dia do lançamento). Tabela hotmart-events append-only gravando todo evento autenticado antes de qualquer filtro (eventId do payload como chave, retries idempotentes, payload bruto completo). Painel Hotmart guarda só 60 dias; a tabela guarda pra sempre (auditoria, replay, sinais de Club pra jornada/Memory Pulse). Deployado em sandbox + prod. Pendente: assinar TODOS os eventos (Club, assinatura, carrinho) na config prod-memory-club do painel.", default_status: "done" },
+        { id: "mc-022", title: "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Pós-terça. Portar fórmulas de scoring pro ram-post-session (trials brutos já chegam; divergência >5% marca suspicious) + bounds de plausibilidade em post-user-progress e post-digit-progress. Ver Plannings/#29." },
+        { id: "mc-025", title: "Memory Pulse — cockpit admin (vendas + uso, usuário 360)", repo: "memory-club", estimated_hours: 16, priority: "yellow", notes: "Pós-lançamento. Spec fechada em Plannings/#78 do memory-club: repo privado separado memory-pulse (frontend) + lambda admin-api no stack minigames com check server-side do grupo admin. v1 somente leitura: funil de vendas, cockpit de produto, usuário 360. Backend (~6h) antes do frontend (~10h). Update 18/08: rotas /admin/emails e /admin/product entregues e deployadas (ce01d8e). Aba Emails (busca, filtro automatico/CX, accordion com corpo e link 360) e Produto v2 (periodo livre em BRT, series em usuarios unicos, primeiro RAM nominal, minigames por jogo com score medio, palacio por baralho, associacoes PO, treino diario real por slot do plays). Commit 0145f65 no memory-pulse.", default_status: "doing" },
+        { id: "mc-023", title: "Espelho completo dos dados Hotmart via API REST", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Planning próprio: credencial OAuth + sync job (EventBridge) puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho; backfill + reconciliação diária (Hotmart só guarda 60 dias de eventos). Progresso de vídeo alimenta a jornada da home." },
+        { id: "mc-026", title: "Salvar o RAM fase a fase, sem exigir conta", repo: "memory-club", estimated_hours: 5, priority: "red", notes: "Aprendizado do caso de 18/08: o resultado de cada fase e informacao valiosa e hoje so existe se a pessoa conseguir logar. O createSession so dispara depois de oidc.isAuthenticated (TestSimulator.tsx:214-292), entao todo abandono no gate apaga o teste inteiro. Uma visitante fez as 3 fases em 11 min, travou no gate por email nao entregue, e o resultado (Token Search 510, SART 760, span 6) so sobreviveu no replay do Clarity. Gravar cada fase no fechamento dela por visitorId, estendendo a lambda publica ram-funnel (ja valida visitorId por regex e tem allowlist de step). No /ram-funnel/claim, promover os scores para uma sessao real em ram-sessions sob o userId. Update 18/08: lambda ram-progress criada, commitada (1458092) e deployada; wiring do template no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edicao).", default_status: "doing" },
+        { id: "mc-027", title: "Cooldown de reenvio honesto no login por codigo", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "A UI destrava \"Enviar de novo\" em 30s (EmailCodeForm.tsx:17), o servidor so reenvia depois de 5 min (otp.mjs:23). Na janela entre os dois nenhum email sai e a UI diz \"Codigo reenviado. Olhe tambem no spam.\" O create-auth-challenge ja sabe (challengeMetadata: COOLDOWN), o dado so nao chega ao cliente. Propagar o tempo restante e alinhar o contador. A dica de spam deve aparecer ja na primeira tela do codigo. Causa raiz do unico gate de login exercitado em producao em 18/08, que falhou." },
+        { id: "mc-028", title: "Aquecer o envio de email do Clube", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Dominio memoria.club verificado no SES em 11/08 (7 dias de reputacao), volume de 3 emails/dia, DMARC em p=none, remetente vitor@memoria.club. DKIM e MAIL FROM customizado ja corretos e o SES reporta 3 Send / 3 Delivery / 0 Bounce, entao a entrega falhou na classificacao do Gmail, nao no envio. Trocar para remetente de produto, subir o DMARC quando o volume estabilizar, e criar alarme para sent sem Delivery." },
+        { id: "mc-029", title: "Caso Tainara: usuaria travada no gate do RAM por codigo nao entregue", repo: "memory-club", estimated_hours: null, priority: "red", notes: "Nao planejada. Investigacao completa: fez as 3 fases do RAM em 11min (18/08 10:41-10:53), conta criada, codigo enviado e nunca entregue; reenvio caiu no cooldown de 5min do servidor com a UI dizendo 'reenviado' (bug mc-027). Resultado recuperavel via localStorage['ram_session'] no aparelho dela. Email de resgate enviado do Gmail pessoal com caminho 'Entrar com Google'. Segundo caso achado: marcelo@aristeuonline.com.br, dominio NXDOMAIN, sem canal de retorno. Gerou mc-026/027/028.", default_status: "done" },
+        { id: "mc-030", title: "Mailer de CX + templates + tabela cx-emails", repo: "memory-pulse", estimated_hours: null, priority: "red", notes: "Nao planejada. ./mailer no memory-pulse (.local, gitignored): templates JSON na voz do Clube (codigo-nao-chegou, treino-de-hoje), render HTML identico aos transacionais, guardas (dry-run default, dedupe por template+email, destinatario precisa existir no Cognito), ledger local + espelho na tabela cx-emails (criada 18/08). Enviados: caso #004 nickolassouza23 e #005 vilacaduds (treino-de-hoje, CTA corrigida pra /academia nos proximos). Tom de voz revisado com Rafael (Oi X, tudo bem? / Vitor).", default_status: "done" },
+        { id: "mc-031", title: "Skill de relatorio diario com aba de excecoes (11 detectores)", repo: "memory-pulse", estimated_hours: 4, priority: "yellow", notes: "Plano aprovado 18/08 (plan file um-parendizado-no-ram): promover resumo-diario a skill com scripts/excecoes.py, 11 detectores E1-E11 validados contra producao (codigo sem login, cooldown, Send sem Delivery, dominio inexistente, email duplicado no Cognito, federada nao linkada, conta orfa, travou no gate, viu resultado e nao entrou, erros de auth, UNCONFIRMED), ledger de casos com status e templates de email. Implementacao ficou pendente; o mailer (mc-030) ja saiu." }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-022", title: "Landscape de financiamento: remover USAID/iCS/Petrobras e revisar valores", repo: "yang-gps-frontend", estimated_hours: 2, priority: "green", notes: "Fase 1 do planning de fontes de financiamento. Removidas as 3 grants inviáveis (incluindo todas as linhas com Petrobras no CSV: ProFloresta+ e FIP Transição Energética). bndes-programs 200->130M sem ProFloresta+, caixa-fsa 9->10M, finep 372->378M reconciliado com o CSV. As 8 fontes-alvo marcadas com targetForMapping. 55 -> 52 agentes, build ok. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md", default_status: "done" },
+        { id: "yp-023", title: "Fase 2: estruturar as 8 novas fontes como fundos mapeados", repo: "yang-gps", estimated_hours: 20, priority: "yellow", notes: "FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. Conversar com o Rafael sobre o método de coleta (scraping vs curadoria manual vs ingestão de PDF) ANTES de começar. Resolver as open questions do doc: valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId." }
+      ]}
+    }
+  },
+  "2026-W35": {
+    week: "2026-W35",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W34", "2026-W35"],
+    start_date: "2026-08-19",
+    end_date: "2026-08-28",
+    hours_available: 56,
+    projects: {
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-026", title: "Salvar o RAM fase a fase, sem exigir conta", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. Restam ~2h das 5h estimadas — a lambda ram-progress já foi criada, commitada (1458092) e deployada, e o wiring do template entrou no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edição). Fecha o buraco do caso Tainara: hoje o resultado de cada fase só existe se a pessoa conseguir logar.", default_status: "doing" },
+        { id: "mc-027", title: "Cooldown de reenvio honesto no login por código", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. A UI destrava 'Enviar de novo' em 30s e o servidor só reenvia em 5min — na janela entre os dois nenhum email sai e a UI mente. Causa raiz do único gate de login exercitado em produção em 18/08, que falhou. Propagar o tempo restante do challengeMetadata e alinhar o contador; dica de spam já na primeira tela." },
+        { id: "mc-028", title: "Aquecer o envio de email do Clube", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Frente: cauda do lançamento. SES reporta 3 Send / 3 Delivery / 0 Bounce, então a falha é classificação do Gmail, não envio. Trocar pra remetente de produto, subir o DMARC quando o volume estabilizar, alarme para sent sem Delivery." },
+        { id: "mc-018", title: "Enviar email/WhatsApp de boas-vindas", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar." },
+        { id: "mc-025", title: "Memory Pulse — cockpit admin (vendas + uso, usuário 360)", repo: "memory-pulse", estimated_hours: 10, priority: "yellow", notes: "Frente: instrumentação. Restam ~10h das 16h estimadas (6h feitas entre W33 e W34). Já entregues: cockpit read-only v1, aba de aquisição, rotas /admin/emails e /admin/product (ce01d8e), aba Emails e Produto v2. Falta fechar o usuário 360 e o funil de vendas. Ver Plannings/#78.", default_status: "doing" },
+        { id: "mc-031", title: "Skill de relatório diário com aba de exceções (11 detectores)", repo: "memory-pulse", estimated_hours: 4, priority: "yellow", notes: "Frente: instrumentação. Objetivo do sprint é parar de descobrir problema por replay do Clarity — o caso Tainara só apareceu porque alguém foi olhar. Detectores viram alarme." },
+        { id: "mc-032", title: "Redesign da landing: de página de vendas do curso pra vitrine do produto", repo: "memory-club", estimated_hours: 10, priority: "yellow", notes: "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes." },
+        { id: "mc-022", title: "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog — fora do sprint por decisão no planning de 19/08 (integridade de dados não entrou nas 3 frentes escolhidas). Portar fórmulas de scoring pro ram-post-session + bounds de plausibilidade. Ver Plannings/#29." },
+        { id: "mc-023", title: "Espelho completo dos dados Hotmart via API REST", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos." }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-023", title: "Fase 2: estruturar as 8 novas fontes como fundos mapeados", repo: "yang-gps", estimated_hours: 20, priority: "yellow", notes: "Única frente do Yang no sprint, depois de duas semanas quase paradas. FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. RESOLVER ANTES DE COMEÇAR: método de coleta (scraping vs curadoria manual vs ingestão de PDF) e as open questions do doc — valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md" },
+        { id: "yp-018", title: "Adicionar novo fundo — scrap + processamento + inclusão na base", repo: "yang-gps", estimated_hours: 6, priority: "white", notes: "Backlog — carryover desde o W32. Provavelmente absorvido pelo método que sair do [yp-023]; reavaliar depois que a Fase 2 destravar." }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-011", title: "Exportar relatório em PDF", repo: "stalolabs", estimated_hours: 4, priority: "white", notes: "Backlog — Stalo Labs ficou FORA do sprint por decisão no planning de 19/08. Registrado pra não sumir do board como aconteceu no W33. Carryover crônico." }
       ]}
     }
   }
@@ -1719,16 +1773,20 @@ const RETROS_MD = {
 > reconciliados.
 
 ## Métricas
-- Tarefas: **17/27 concluídas (63%)** — 2 em andamento, 8 abertas
-- Horas: **59h real vs 75h estimado** — mas 31h dessas 59h nunca foram estimadas (não estavam no planning)
-- Utilização: **59h / 40h disponíveis (148%)**
+- Tarefas: **23/27 concluídas (85%)** — 4 abertas
+- Horas: **59h com horas registradas vs 75h estimado** — 31h dessas 59h nunca foram estimadas (não estavam no planning), e 6 tarefas foram fechadas sem horas registradas
+- Utilização: **≥59h / 40h disponíveis (≥148%)**
 
 | Projeto | Est. | Real | % Tempo | Conclusão |
 |---------|------|------|---------|-----------|
-| **Clube da Memória** | 46h | 52h | 88% | 12/18 |
-| **Yang Planet** | 15h | 4h | 7% | 1/4 |
+| **Clube da Memória** | 46h | 52h | 88% | 16/18 |
+| **Yang Planet** | 15h | 4h | 7% | 3/4 |
 | **Stalo Labs** | 14h | 3h | 5% | 4/5 |
-| **Total** | **75h** | **59h** | 100% | **17/27** |
+| **Total** | **75h** | **59h** | 100% | **23/27** |
+
+> Em 19/08, na sessão de planning, seis tarefas foram fechadas no board sem horas registradas
+> (\`mc-016\`, \`mc-019\`, \`mc-024\`, \`mc-030\`, \`yp-020\`, \`yp-021\`), levando a conclusão de 63% para 85%.
+> O real de 59h é portanto um piso, não o número final.
 
 **Commits na janela 10–16/08:** memory-club 83 · memory-pulse 3 · stalolabs-MOAI 2 · yang-gps 0 · yang-gps-frontend 0 · stalolabs 0 · stalinho 0
 
@@ -1811,21 +1869,17 @@ são tomadas em cima de um número errado.
 
 ---
 
-## Carryover → W34
+## Carryover → Sprint 19/08–28/08
 
-Todas ficaram abertas no W33 e **nenhuma existe hoje no \`planning.json\` do W34** — sumiram do board
-em vez de virarem carryover explícito:
+Sobraram quatro, todas absorvidas pelo sprint 2026-W35 (19/08–28/08) montado em 19/08:
 
-- **\`mc-016\`** Acesso pago à feature + aulas do Palácio (8h) — *doing*, carryover crônico desde o W32
-- **\`mc-030\`** SES em produção: production access (2h) — *doing*, travado na fila da AWS; \`link-email\` fica fail closed em prod até aprovar
-- **\`mc-018\`** Email/WhatsApp de boas-vindas (4h) — 🔴, depende do \`mc-017\` que já fechou
-- **\`mc-019\`** Terminar frontend do Luna (6h) — 🔴
-- **\`mc-024\`** Certificado digital do Clube (2h) — 🔴
-- **\`mc-032\`** Redesign da landing: vitrine do produto (spec fechada em #87) — ⚪
-- **\`yp-018\`** Adicionar novo fundo — scrap + processamento (6h) — carryover do W32
-- **\`yp-020\`** Reunião kickoff com cliente (2h) — 🔴
-- **\`yp-021\`** Framework para reunião (3h)
-- **\`sl-011\`** Exportar relatório em PDF (4h)
+- **\`mc-018\`** Email/WhatsApp de boas-vindas (4h) — 🔴, entra na frente "cauda do lançamento"
+- **\`mc-032\`** Redesign da landing: vitrine do produto (spec fechada em #87) — vira a frente "crescimento", 10h
+- **\`yp-018\`** Adicionar novo fundo — scrap + processamento (6h) — ⚪ backlog, provavelmente absorvida pelo método do \`yp-023\`
+- **\`sl-011\`** Exportar relatório em PDF (4h) — ⚪ backlog, Stalo Labs ficou fora do sprint por decisão
+
+As outras seis que estavam abertas no fim da semana (\`mc-016\`, \`mc-019\`, \`mc-024\`, \`mc-030\`,
+\`yp-020\`, \`yp-021\`) foram fechadas no board em 19/08.
 
 ⚠️ **Colisão de IDs:** \`mc-026\` a \`mc-031\` existem no W33 **e** no W34 apontando pra tarefas
 diferentes (W33 \`mc-026\` = OTP no link-email; W34 \`mc-026\` = salvar o RAM fase a fase). Isso quebra

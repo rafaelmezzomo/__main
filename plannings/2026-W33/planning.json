@@ -29,9 +29,9 @@
           "estimated_hours": 2,
           "actual_hours": null,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Verificar/providenciar o certificado digital do Clube da Memória."
+          "notes": "Verificar/providenciar o certificado digital do Clube da Memória. Marcada como concluída no board em 19/08, sem horas registradas."
         },
         {
           "id": "mc-018",
@@ -51,9 +51,9 @@
           "estimated_hours": 6,
           "actual_hours": null,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Finalizar o frontend do Luna no app principal. Refinar o que falta (checklist de telas/estados) antes de codar."
+          "notes": "Finalizar o frontend do Luna no app principal. Refinar o que falta (checklist de telas/estados) antes de codar. Marcada como concluída no board em 19/08, sem horas registradas."
         },
         {
           "id": "mc-016",
@@ -62,9 +62,9 @@
           "estimated_hours": 8,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "doing",
+          "status": "done",
           "carryover": true,
-          "notes": "Carryover do W32. Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Conecta com [mc-017] (validação de membro). Definir modelo de acesso/paywall antes de codar."
+          "notes": "Carryover do W32. Usuários pagantes passam a ter acesso à feature do Palácio da Memória e às aulas. Conecta com [mc-017] (validação de membro). Definir modelo de acesso/paywall antes de codar. Marcada como concluída no board em 19/08, sem horas registradas."
         },
         {
           "id": "mc-020",
@@ -139,7 +139,7 @@
           "estimated_hours": 2,
           "actual_hours": 2,
           "priority": "red",
-          "status": "doing",
+          "status": "done",
           "carryover": false,
           "notes": "Infra do envio de email (suporta [mc-026] e [mc-018]). Feito em 11/08: identidade memoria.club verificada no SES us-east-2 (Easy DKIM RSA_2048 SUCCESS), MAIL FROM mail.memoria.club, 6 registros DNS no name.com (3 CNAMEs DKIM + MX/TXT SPF + DMARC), remetente 'Clube da Memória <vitor@memoria.club>', 2 emails de teste validados no Gmail (código OTP e boas-vindas+código). Production access SUBMETIDO (fila AWS ~24h) — enquanto pende, conta em sandbox só envia pra destinatários verificados; link-email em prod fica fail closed até aprovar. Conferir o ~all no TXT SPF do name.com."
         },
@@ -220,9 +220,9 @@
           "estimated_hours": 2,
           "actual_hours": null,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Reunião de kickoff com o cliente. Preparar pauta antes."
+          "notes": "Reunião de kickoff com o cliente. Preparar pauta antes. Marcada como concluída no board em 19/08, sem horas registradas."
         },
         {
           "id": "yp-021",
@@ -231,9 +231,9 @@
           "estimated_hours": 3,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "todo",
+          "status": "done",
           "carryover": false,
-          "notes": "Criar um framework/estrutura padrão para conduzir reuniões com cliente. Suporta o kickoff [yp-020]."
+          "notes": "Criar um framework/estrutura padrão para conduzir reuniões com cliente. Suporta o kickoff [yp-020]. Marcada como concluída no board em 19/08, sem horas registradas."
         },
         {
           "id": "yp-019",
@@ -320,6 +320,16 @@
     }
   },
   "retro": {
-    "completed": true
+    "completed": true,
+    "metrics": {
+      "tasks_done": 23,
+      "tasks_total": 27,
+      "hours_estimated": 75,
+      "hours_actual": 59,
+      "hours_available": 40
+    },
+    "what_went_well": "O lançamento do Pro saiu no prazo e inteiro: gate server-side, gate duro de UI, OTP de posse de email e ordenação de eventos do webhook entraram antes do vídeo, não como dívida. O sandbox e2e isolado validou o ciclo completo (inclusive chargeback) sem tocar nas 79 compras reais e gerou 4 tickets fechados na mesma semana. E ainda sobrou velocidade: login sem senha, funil de aquisição do RAM, Memory Pulse e release v1.4.",
+    "what_blocked_me": "Yang Planet e Stalo Labs pararam — zero commits em 7 dias; o Yang só voltou a se mexer em 17/08. E o planning descolou da execução: o board dizia 24h e 12 tarefas, o git dizia 83 commits e ~59h. Quatro entregas grandes do Clube e a única atividade real do Stalo nunca viraram card.",
+    "what_to_change": "Registrar o que nasce no meio. Trabalho não planejado que come o sprint entra no planning.json no mesmo dia, com horas. Enquanto o board não registra, a retro vira arqueologia de git e a priorização da semana seguinte é feita em cima de um número errado."
   }
 }

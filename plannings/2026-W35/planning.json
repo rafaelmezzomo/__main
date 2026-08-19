@@ -1,0 +1,161 @@
+{
+  "week": "2026-W35",
+  "period_label": "Sprint",
+  "sprint_weeks": [
+    "2026-W34",
+    "2026-W35"
+  ],
+  "start_date": "2026-08-19",
+  "end_date": "2026-08-28",
+  "hours_available": 56,
+  "carryover_from": "2026-W34",
+  "projects": {
+    "memory-club": {
+      "tasks": [
+        {
+          "id": "mc-026",
+          "title": "Salvar o RAM fase a fase, sem exigir conta",
+          "repo": "memory-club",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "done",
+          "carryover": true,
+          "notes": "Frente: cauda do lançamento. Restam ~2h das 5h estimadas — a lambda ram-progress já foi criada, commitada (1458092) e deployada, e o wiring do template entrou no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edição). Fecha o buraco do caso Tainara: hoje o resultado de cada fase só existe se a pessoa conseguir logar."
+        },
+        {
+          "id": "mc-027",
+          "title": "Cooldown de reenvio honesto no login por código",
+          "repo": "memory-club",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frente: cauda do lançamento. A UI destrava 'Enviar de novo' em 30s e o servidor só reenvia em 5min — na janela entre os dois nenhum email sai e a UI mente. Causa raiz do único gate de login exercitado em produção em 18/08, que falhou. Propagar o tempo restante do challengeMetadata e alinhar o contador; dica de spam já na primeira tela."
+        },
+        {
+          "id": "mc-028",
+          "title": "Aquecer o envio de email do Clube",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frente: cauda do lançamento. SES reporta 3 Send / 3 Delivery / 0 Bounce, então a falha é classificação do Gmail, não envio. Trocar pra remetente de produto, subir o DMARC quando o volume estabilizar, alarme para sent sem Delivery."
+        },
+        {
+          "id": "mc-018",
+          "title": "Enviar email/WhatsApp de boas-vindas",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar."
+        },
+        {
+          "id": "mc-025",
+          "title": "Memory Pulse — cockpit admin (vendas + uso, usuário 360)",
+          "repo": "memory-pulse",
+          "estimated_hours": 10,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "doing",
+          "carryover": true,
+          "notes": "Frente: instrumentação. Restam ~10h das 16h estimadas (6h feitas entre W33 e W34). Já entregues: cockpit read-only v1, aba de aquisição, rotas /admin/emails e /admin/product (ce01d8e), aba Emails e Produto v2. Falta fechar o usuário 360 e o funil de vendas. Ver Plannings/#78."
+        },
+        {
+          "id": "mc-031",
+          "title": "Skill de relatório diário com aba de exceções (11 detectores)",
+          "repo": "memory-pulse",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frente: instrumentação. Objetivo do sprint é parar de descobrir problema por replay do Clarity — o caso Tainara só apareceu porque alguém foi olhar. Detectores viram alarme."
+        },
+        {
+          "id": "mc-032",
+          "title": "Redesign da landing: de página de vendas do curso pra vitrine do produto",
+          "repo": "memory-club",
+          "estimated_hours": 10,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes."
+        },
+        {
+          "id": "mc-022",
+          "title": "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Backlog — fora do sprint por decisão no planning de 19/08 (integridade de dados não entrou nas 3 frentes escolhidas). Portar fórmulas de scoring pro ram-post-session + bounds de plausibilidade. Ver Plannings/#29."
+        },
+        {
+          "id": "mc-023",
+          "title": "Espelho completo dos dados Hotmart via API REST",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos."
+        }
+      ]
+    },
+    "yangplanet": {
+      "tasks": [
+        {
+          "id": "yp-023",
+          "title": "Fase 2: estruturar as 8 novas fontes como fundos mapeados",
+          "repo": "yang-gps",
+          "estimated_hours": 20,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Única frente do Yang no sprint, depois de duas semanas quase paradas. FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. RESOLVER ANTES DE COMEÇAR: método de coleta (scraping vs curadoria manual vs ingestão de PDF) e as open questions do doc — valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md"
+        },
+        {
+          "id": "yp-018",
+          "title": "Adicionar novo fundo — scrap + processamento + inclusão na base",
+          "repo": "yang-gps",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Backlog — carryover desde o W32. Provavelmente absorvido pelo método que sair do [yp-023]; reavaliar depois que a Fase 2 destravar."
+        }
+      ]
+    },
+    "stalolabs": {
+      "tasks": [
+        {
+          "id": "sl-011",
+          "title": "Exportar relatório em PDF",
+          "repo": "stalolabs",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": true,
+          "notes": "Backlog — Stalo Labs ficou FORA do sprint por decisão no planning de 19/08. Registrado pra não sumir do board como aconteceu no W33. Carryover crônico."
+        }
+      ]
+    }
+  },
+  "retro": {
+    "completed": false
+  }
+}
