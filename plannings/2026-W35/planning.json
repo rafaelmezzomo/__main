@@ -54,7 +54,7 @@
           "priority": "red",
           "status": "todo",
           "carryover": true,
-          "notes": "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar."
+          "notes": "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar. Frente growth: ativação (funil A) — boas-vindas puxa pro treino diário, não pra venda."
         },
         {
           "id": "mc-025",
@@ -84,10 +84,10 @@
           "repo": "memory-club",
           "estimated_hours": 10,
           "actual_hours": null,
-          "priority": "yellow",
-          "status": "todo",
+          "priority": "red",
+          "status": "doing",
           "carryover": true,
-          "notes": "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes."
+          "notes": "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes. Frente growth onda 1 (funil A) + decidir rota da página de venda (/curso) pro funil B. Ver docs/estudos/growth-plan-clube-2026-Q3.md. Spec da estrutura: Plannings/#92-MAIN_PAGE_HUB_DAS_INICIATIVAS.md (evolui o #87). Implementado pelo Claude em 20/08 (estrutura do #92): hero RAM, duas frentes, seção RAM, playground, teaser Pro, canais, CTA final; pitch do curso 100% no /pro (PainPoints e Pricing exportados pro ProPitch). Falta: foto do Taya em public/landing/taya-avatar.png, revisão de copy do Rafael, teste visual mobile, commit. Pitch v2 (20/08, estilo Educato/RevisionDojo): hero de resultado, barra de prova (270k/2M/1º lugar), como funciona em 3 passos, seção de ciência com o Taya, FAQ da vitrine. Estudo: __main/docs/estudos/landing-referencias-pitch.md."
         },
         {
           "id": "mc-022",
@@ -110,6 +110,50 @@
           "status": "todo",
           "carryover": true,
           "notes": "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos."
+        },
+        {
+          "id": "mc-033",
+          "title": "Dar destino aos posts semanais (growth funil A)",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Definir CTA e UTM por canal: Taya terça → /ram; Fuji → alternar /ram e bio de venda. Medir por referrerHost/UTM no ram-funnel. Ver growth-plan-clube-2026-Q3.md."
+        },
+        {
+          "id": "mc-034",
+          "title": "Desenhar funil C: jornada de conversão in-app free→Pro",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Spec PM, sem código: mapear momentos de impacto (checkpoint RAM, conclusão semanal, gate do Palácio) e onde entra o paywall (D3-D7, nunca no cadastro). Copy no padrão do gate."
+        },
+        {
+          "id": "mc-035",
+          "title": "Share do resultado RAM com UTM (loop de aquisição)",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Backlog da onda 1: botão de share no resultado (imagem/link com UTM) + evento ram_share. Entra se sobrar hora."
+        },
+        {
+          "id": "mc-036",
+          "title": "Fundação de rotas públicas (fatia 1 do #93): /pro público + 3 jogos abertos + gate de salvar",
+          "repo": "memory-club",
+          "estimated_hours": 14,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "doing",
+          "carryover": false,
+          "notes": "Implementado pelo Claude em 20/08: rotas públicas (/pro, torre-controle, encaixe-sombra, garcom-maluco), useProStatus anon, ProPage dois estados, useExitTarget, persistência anônima por visitorId, MinigameSaveGate + useClaimOnAuth, lambda minigame-progress + tabela no template.yaml. Falta: deploy SAM, teste manual dos fluxos (anônimo → salvar → claim; Google/reload), commit. Fatia 2 (20/08): pitch completo migrado pro /pro (ProPitch reusa seções da landing; quem não é Pro vê a venda, Pro vê os benefícios) — destrava o mc-032."
         }
       ]
     },
@@ -141,6 +185,17 @@
     },
     "stalolabs": {
       "tasks": [
+        {
+          "id": "sl-012",
+          "title": "Prompt caching no resumir-reuniao (−70% do custo de LLM)",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 3,
+          "actual_hours": 3,
+          "priority": "green",
+          "status": "done",
+          "carryover": false,
+          "notes": "NÃO planejada — entrou no sprint em 21/08 a partir de uma auditoria da tabela cockpit-llm-logs (US$ 2,88 em 14 dias, 99,2% em input). Num conselho de 4h30 o transcript de ~87k tokens ia 9x pra API. blocoUserMsg() virou dois blocos de conteúdo com cache_control no transcript, e a 1a empresa passou a rodar sozinha pra gravar o cache antes das (N-1) lerem. Medido end-to-end: 60% de economia com 4 empresas, ~70% com 8 (US$ 0,70 -> ~US$ 0,21 por conselho). Junto: contabilidade de custo corrigida (input_tokens vira so o resto nao-cacheado) e a Lambda ganhou o temperature: 0 que so o core mandava. Docs em CLAUDE.md, discovery/docs/chamadas-llm.md e na pagina /arquitetura. Sem commit — branch feat/granola-listing com trabalho da lista do Granola em voo."
+        },
         {
           "id": "sl-011",
           "title": "Exportar relatório em PDF",

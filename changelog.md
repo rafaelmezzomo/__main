@@ -1,5 +1,90 @@
 # Changelog Diário
 
+## 2026-08-21 (sexta)
+
+### Stalo Labs — `stalolabs-MOAI` (branch `feat/granola-listing`, commits `b55e793` e `8d84b70`, sem push)
+
+**Auditoria de custo de LLM (`cockpit-llm-logs`, us-east-1, `--profile stalolabs`):**
+- 57 chamadas / 14 dias: US$ 2,88 · 2,76M tokens de input · 23k de output · 1 erro (12/08, sem crédito na Anthropic)
+- Tudo em Haiku 4.5 — Sonnet nunca foi usado em prod
+- **99,2% do custo é input.** Output são 23k tokens no total: a conta é inteiramente "reenviar transcript"
+- Por skill: `resumir-reuniao-ato` US$ 1,95 (29 chamadas) · `extrair-empresas` US$ 0,72 (12) · `resumir-reuniao` US$ 0,16 (3) · `gerar-encaminhamento-cs` US$ 0,06 (13)
+- Causa estrutural: num conselho de 4h30 o transcript (~87k tokens) é mandado **9 vezes** — 1× pra `extrair-empresas` + 8× pra `resumir-reuniao-ato`, um agente por empresa
+
+**Prompt caching no `resumir-reuniao` (a correção):**
+- `blocoUserMsg()` deixou de devolver string e passou a devolver **dois blocos de conteúdo**: `[0]` resumo do Granola + transcript (com `cache_control: ephemeral`), `[1]` empresa · roster · escopo · pedido do JSON. O cache casa por **prefixo**, então o nome da empresa — que antes aparecia no meio da mensagem, no `escopo` — teve que ir pro fim
+- O `system` (SKILL.md) renderiza antes das mensagens e entra no prefixo cacheado sem custo extra
+- **A primeira empresa passou a rodar sozinha, de propósito:** o cache só fica legível depois que a primeira resposta começa, então o `Promise.allSettled` de N faria as N pagarem o prompt inteiro. Virou `1 gravação → (N−1) leituras em paralelo`. Custa ~7s de latência a mais
+- Cache **só liga com N > 1** (`empresas.length > 1`): gravar custa 1,25× o input, então numa empresa só seria 25% de prejuízo. `/api/resumir` (bloco único) segue sem cache
+- Espelhado nos dois runtimes (`vite.config.ts` e `lambdas/resumir/index.mjs`), como manda o invariante do núcleo puro
+
+**Contabilidade de tokens (o efeito colateral que quase passou):**
+- Com cache ligado, `input_tokens` da API passa a ser só o **resto não-cacheado**. Sem mexer no cálculo, o contador do CX mostraria ~500 tokens num conselho de 145k e o custo apareceria ~60% menor do que a economia real
+- `models.ts`: `costOfUsage()` / `promptTokens()` / `usoDe()` + `CACHE_WRITE_MULT` (1,25) e `CACHE_READ_MULT` (0,1). `costOf()` (que só somava in/out) foi removido e os 4 call sites do front migrados
+- Lambda: `custoUsd()` passou a receber o objeto `usage` inteiro; telemetria agora grava `cache_write_tokens` e `cache_read_tokens` em `cockpit-llm-logs`
+
+**Verificação (medida, não estimada):**
+- End-to-end no middleware dev, 4 empresas, transcript de 92k chars: `input=550 · cache_write=38.148 · cache_read=114.444 · output=412`, 4/4 empresas ok → 1 gravação + 3 leituras, **60% de economia** nesse cenário
+- Com 8 empresas e o ratio real (output minúsculo perto do input) fica em **~70%**: `resumir-reuniao` sai de US$ 0,70 pra ~US$ 0,21 por conselho; o conselho inteiro de ~US$ 0,83 pra ~US$ 0,35
+- `/api/resumir` (bloco único) testado: 5 campos corretos e zero tokens de cache, como esperado
+- `tsc --noEmit` limpo, `vite build` limpo, `node --check` na Lambda OK
+
+**Bug lateral corrigido:** a Lambda não mandava `temperature: 0` — só o `resumir-core.ts` mandava. Prod estava rodando com o default da API, violando o invariante documentado de que "dev e prod resumem idêntico". Alinhado.
+
+**UX do cockpit — as 5 fricções dos CSs (commit `b55e793`):**
+- **Home** era só uma barra de busca que não listava nada sem filtro, com a lista do Granola atrás de um botão no canto. Virou duas abas abrindo em "Reuniões", com a lista inline (`GranolaLista`, extraída do dialog); a aba "Conselhos" mostra o histórico sem exigir filtro
+- **Fim do wizard:** o CTA da lista cria o conselho e navega direto (`registrar-conselho.ts`, um só lugar pros dois caminhos). Tipo, conselheiro, CS e modelo de ata foram pras propriedades da página, que se auto-salvam com debounce de 800ms. De ~6 cliques pra 2
+- **Revisão sem sanfona:** os 5 campos ficam todos abertos em textareas que crescem (`AutoTextarea`) e o CTA confirma a empresa inteira — de ~40 cliques por conselho pra 1 por empresa. A tela de confirmação das empresas também passou a listar todas de uma vez
+- **Feedback de cópia:** `ToastProvider` próprio (sem dependência nova). Toda cópia termina em aviso, **inclusive a que falha** — antes `copyText` devolvia `false` e não acontecia nada na tela
+- **PDF no lugar do `.md`:** `window.print()` sobre um documento dedicado (`resumo-imprimivel.tsx` + `@media print`), da empresa ou do conselho inteiro. O `.md` (frontmatter YAML, serve pra versionar ata) foi pro menu "⋯"
+- Da carta da Luana (19/08) entraram só os itens de jornada: senha do time persiste em `localStorage` com "Sair" nos Ajustes, e o encaminhamento virou editável/persistido (`Empresa.encaminhamento`) com seletor dos 4 formatos da skill
+- Sidebar colapsável no desktop (faixa de 48px, **no fluxo**, nunca `fixed`) e, no mobile, o título saiu de baixo do botão de menu
+
+**Bug do erro invisível:** `gerarResumos` setava `status='resumos'` **antes** do `setErro`, então o estágio desmontava e o banner nunca aparecia — com a chave sem crédito o CX caía numa tela de resumos vazia sem explicação. Agora só avança se ao menos uma empresa voltou ok.
+
+**Regressão própria, corrigida na mesma leva:** matar o wizard deixou o modelo de ata inalcançável (todo conselho da lista nascia no padrão). Voltou como dialog de confirmação antes de gerar, e **trava** a partir de `resumos` — `CAMPOS` e `CAMPOS_ATO` não compartilham nenhum id, então trocar depois esconderia as notas e um "Re-transcrever" (`e.notas = {}`) as apagaria de vez.
+
+**Recall do resumo — o bloco se acha pela PESSOA, não pela empresa (commit `8d84b70`):**
+- Sintoma: 4 das 8 empresas de um conselho real voltaram vazias. Não era dado faltando — **duas rodadas do mesmo transcript, mesmo modelo, deram resultados diferentes pra mesma empresa**
+- Causa numa frase do `blocoUserMsg`: *"Encontre e use SÓ o trecho da empresa X. Se ela não aparecer, retorne os N campos vazios."*
+- Medido no transcript (964 falas): **"Reproduzindo Talentos" aparece 0 vezes**, EcoFesta 2, Estalo Leves 1 — enquanto Alan aparece 20, Marcela 9, Wellington 5. Ninguém diz razão social numa reunião. O agente procurava a empresa, não achava e **obedecia**. As 4 empresas que nunca falharam eram as com a pessoa bem citada
+- Correções: (1) localizador vira o roster, com aviso de que a empresa pode não ser citada; (2) o resumo do Granola vira **ÍNDICE** e não "contexto de apoio" — ele já vem `### Marcela: Escala 6x1 e NR1 Psicossocial`, um mapa pronto de quem apresentou o quê; (3) os timestamps, que vinham **todos iguais** (964 segmentos, 1 valor distinto → `[00:00:00]` em toda linha), viram âncora `[#n]`; (4) o prompt avisa que os falantes vêm anônimos (`Speaker A`…`I`)
+- **Verificado rodando contra o transcript real**, mesmo Haiku e mesmo `ataModelo: 'ato'`: Reproduzindo Talentos 0 → 4 campos, EcoFesta 1 → 4, Dinamismo 4 → 5. **De 4/6 blocos pra 6/6.** Estalo Leves e MOAI seguem vazias e está certo — o índice do Granola lista 6 apresentações e nenhuma é deles
+- Conteúdo conferido contra os fatos do resumo (340 leads, R$4k de fixo, supervisor a R$9k, ClickUp) — não é preenchimento inventado. Custo do teste: **US$ 0,15**
+
+**Debug do Granola (dados medidos, úteis pra próxima):**
+- Reunião `not_RDN1CTxRb8Katj` "MOAI: Conselho Marcos Cunha": 173k chars, 964 falas, **~43k tokens**, 9 vozes
+- **Diarização existe mas é anônima:** `Speaker A`…`Speaker I`, todos `source: microphone`, nenhum com `name`. Confirma o item 1 da carta da Luana — só o gravador resolve, não é problema de prompt
+- **Vocabulário do modelo ATA 2 ato não existe na reunião:** "big deal" 0 ocorrências, "ponto forte" 0, "poderia melhorar" 0, "feedback" 1. Por isso `bigDeal` volta vazio em quase todas — é o modelo de ata errado pro rito Fast Track, não falha de extração
+
+### Decisões / Notas
+- **O `.env` local aponta pro middleware do Vite, não pra produção:** `VITE_API_BASE` vazio → mesma origem; o CRUD dev grava em `.conselhos-dev.json` (gitignored) e não existe caminho de DynamoDB no `vite.config.ts`. Testar em localhost **não** toca o banco do cliente. O que é real em dev: as chamadas pagas à Anthropic e a leitura da conta de serviço do Granola
+- `extrair-empresas` (US$ 0,72 no período) fica **sem** cache de propósito: roda com um SKILL diferente e é chamada única, então não compartilha prefixo com ninguém — cache ali seria só o custo de gravação
+- Mínimo cacheável do Haiku 4.5 é **4096 tokens** (não 1024 como nos modelos Opus/Sonnet). Prefixo menor não cacheia e não dá erro — o `cache_creation_input_tokens` só volta zero
+- AWS CLI: perfil `stalolabs` estava sem região; setado `us-east-1` (onde vive o stack `cockpit-moai`). Conta 662212752492, user `stalolabs-cli`
+- `cockpit-llm-logs` tem TTL de 90 dias — é telemetria de protótipo, não arquivo histórico. Auditoria de custo tem que ser feita dentro dessa janela
+- O trabalho de caching acabou entrando junto com o de UX nos commits `b55e793`/`8d84b70`: os dois mexem nos mesmos arquivos (`resumir-core.ts`, `index.mjs`, `Arquitetura.tsx`) e separar deixaria commit que não builda
+
+## 2026-08-20 (quinta)
+
+### Clube da Memória — `memory-club` (branch `release/v1.4.1-growth`, commits locais, sem push)
+
+**Higiene de dados: telemetria vs teste cognitivo (commits `658d96f` e `1d471b4`):**
+- Investigação partiu de 6 `ram_test_done` no `app-events` sem linha nova na `ram-sessions`: era o treino diário emitindo os mesmos nomes de evento do teste RAM real, diferenciando só por `props.source` — invisível no GSI `byDay`, que não projeta `props`
+- `658d96f`: `DailyGameRunner` agora emite `daily_game_start`/`daily_game_done` em vez de `ram_test_*`. Forward-only; antes de 2026-08-20 os `ram_test_*` misturam teste real e treino
+- `1d471b4`: os três leitores da `ram-sessions` checavam `gameType === 'ramCompleto'`, mas a tabela sempre gravou `'ram_completo'` (`RamHistoryContent.tsx`, `apiService.ts`, `admin-api/index.mjs`). Leitura alinhada ao dado; nenhuma escrita ou migração
+- Verificada a separação prova × treino: RAM Score só entra na `ram-sessions` pelo fluxo do teste real (mesmo quando o slot do dia é o RAM); score de miniteste do treino fica no `progress-daily-training`; minigames na `minigame-sessions`
+
+**⚠️ Ficar atento após o deploy (possíveis bugs pra alguém):**
+- Filtros/funis salvos no Clarity que usem `ram_test_start`/`ram_test_done` param de contar o treino diário (é o desejado, mas séries vão cair) — conferir se algum dashboard depende disso
+- O ponto diferenciado de "bateria completa" no histórico (`isFullRam`) passa a aparecer pra quem tem sessão `ram_completo` — 3 usuários afetados, conferir se a curva renderiza bem com o ponto novo
+- A lambda `admin-api` precisa de deploy junto com o front; se só o front subir, o cockpit segue contando `ram_completo` pelo fallback `ramScore != null` (funciona, só fica inconsistente)
+- Análises ad hoc por dia no `app-events`: emendar `ram_test_*` (pré-20/08) com `daily_game_*` (pós) antes de comparar série de treino
+
+### Decisões / Notas
+- 68 linhas legadas de minigame (19–26/06) dentro da `ram-sessions` ficam onde estão: todos os leitores filtram por `gameType`/`ramScore`, só documentado (CLAUDE.md do memory-pulse `d702954`)
+- Consultas de operação agora vão direto no DynamoDB (`--profile rafaelmezzomo`, us-east-2): ~5x mais barato e ~3x mais rápido que ler o cockpit pelo browser; GA4 segue só via cockpit (WIF sem chave estática, decisão de manter)
+
 ## 2026-08-18 (terça)
 
 ### Clube da Memória — `memory-club` + `memory-pulse`
