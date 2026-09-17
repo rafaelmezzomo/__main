@@ -283,6 +283,7 @@
     font-weight: 500;
     font-size: 11px;
   }
+  .card-project.mba { background: #16294d; color: #4f8ff7; }
   .card-project.yangplanet { background: #1f3a1f; color: #56d364; }
   .card-project.memory-club { background: #3d2e00; color: #e3b341; }
   .card-project.stalolabs { background: #1c2d4f; color: #79c0ff; }
@@ -335,6 +336,9 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    text-decoration: none;
+    font-family: inherit;
+    line-height: 20px;
   }
   .changelog-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
 
@@ -428,6 +432,49 @@
   .modal-value { font-size: 14px; color: #c9d1d9; line-height: 1.5; }
   .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+  /* Formulário de nova tarefa */
+  .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .add-field { display: block; }
+  .add-field.add-full { grid-column: 1 / -1; }
+  .add-field .modal-label { display: block; }
+  .add-form input, .add-form select, .add-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #c9d1d9;
+    font: inherit;
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+  .add-form textarea { resize: vertical; line-height: 1.5; }
+  .add-form input:focus, .add-form select:focus, .add-form textarea:focus {
+    outline: none;
+    border-color: #1f6feb;
+  }
+  .add-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .add-submit {
+    background: #238636;
+    border: 1px solid #2ea043;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 8px 18px;
+  }
+  .add-submit:hover { background: #2ea043; }
+  .add-submit:disabled { opacity: 0.6; cursor: default; }
+  .add-error { color: #ffa198; font-size: 13px; margin-right: auto; }
+  @media (max-width: 560px) { .add-form { grid-template-columns: 1fr; } }
+
   .modal-status-btns { display: flex; gap: 6px; margin-top: 4px; }
   .modal-status-btn {
     padding: 5px 14px;
@@ -483,6 +530,8 @@
   <h1 id="board-title">Planning</h1>
   <div class="meta" style="display:flex;align-items:center;gap:12px">
     <span><span id="date-range"></span> &middot; <strong id="hours-used">0h</strong> / <span id="hours-total">40h</span></span>
+    <button class="changelog-btn" id="add-task-toggle">&#43; Nova tarefa</button>
+    <a class="changelog-btn" href="/effort/" target="_blank" rel="noopener">&#128200; Dedica&ccedil;&atilde;o</a>
     <button class="changelog-btn" id="retros-toggle">&#128202; Retrospectivas</button>
     <button class="changelog-btn" id="changelog-toggle">&#9776; Changelog</button>
   </div>
@@ -560,6 +609,60 @@
       <button class="modal-close" id="modal-close">&times;</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Nova tarefa</h2>
+      <button class="modal-close" id="add-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="add-form" class="add-form">
+        <label class="add-field add-full">
+          <span class="modal-label">T&iacute;tulo</span>
+          <input type="text" name="title" required autocomplete="off" placeholder="O que precisa ser feito">
+        </label>
+        <label class="add-field">
+          <span class="modal-label">Projeto</span>
+          <select name="project" id="add-project"></select>
+        </label>
+        <label class="add-field">
+          <span class="modal-label">Reposit&oacute;rio</span>
+          <input type="text" name="repo" autocomplete="off" placeholder="opcional">
+        </label>
+        <label class="add-field">
+          <span class="modal-label">Prioridade</span>
+          <select name="priority">
+            <option value="red">&#128308; Fazer Agora</option>
+            <option value="yellow" selected>&#128993; Agendar</option>
+            <option value="green">&#128994; Quick Win</option>
+            <option value="white">&#9898; Backlog</option>
+          </select>
+        </label>
+        <label class="add-field">
+          <span class="modal-label">Status</span>
+          <select name="status">
+            <option value="todo" selected>Todo</option>
+            <option value="doing">Doing</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+        <label class="add-field">
+          <span class="modal-label">Horas estimadas</span>
+          <input type="number" name="estimated_hours" min="0" step="0.5" placeholder="opcional">
+        </label>
+        <label class="add-field add-full">
+          <span class="modal-label">Notas</span>
+          <textarea name="notes" rows="4" placeholder="contexto, prazo, depend&ecirc;ncias"></textarea>
+        </label>
+        <div class="add-actions">
+          <span class="add-error" id="add-error"></span>
+          <button type="submit" class="add-submit" id="add-submit">Criar tarefa</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -831,24 +934,142 @@ const WEEKS = {
     start_date: "2026-08-19",
     end_date: "2026-08-28",
     hours_available: 56,
+    retro: {
+      completed: true,
+      tasks_done: 14,
+      tasks_total: 23,
+      hours_estimated: 133,
+      hours_actual: 85,
+      what_went_well: "O sprint entregou CONTINUAMENTE: tres versoes na main em dois dias (v1.5.1, v1.5.2, v1.5.3), mais a landing nova e tres minigames (Espelho Oculto, Cores Velozes, Cromofila). Nada ficou esperando outra coisa pra subir — o contraste exato com a W36, que teve volume de commit parecido (79 aqui, 88 la) e nao colocou nada no ar. O outro acerto foi de metodo: diagnosticar por escrito antes de corrigir. Os docs #95 (minigames) e #96 (fluxo RAM) viraram listas numeradas de defeitos, com cada commit fechando um item — foi o que permitiu tocar seis jogos sem regressao. Na Stalo, o prompt caching nao planejado derrubou ~70% do custo de LLM por conselho.",
+      what_blocked: "O experimento das tres landings nunca produziu resultado. A, B e C foram construidas, a C mudou o funil de proposito, e o beta estava registrado no #97 — mas na W36 o redesign substituiu aqueles CTAs e a revisao registrou no #109 que 'a variante C morreu', pedindo confirmacao que ate hoje ninguem deu. A escolha foi feita por acidente, pelo sprint seguinte. Metade do Clube nao fechou (7/14), e o mc-036 comecou aqui seu ciclo de tres sprints em vermelho sem ser feito. O board ja descolava da execucao: o sl-016 aparece aberto, mas foi entregue em 28/08, o ultimo dia da janela, e so virou registro no sprint seguinte como sl-017.",
+      what_to_change: "Experimento precisa de data de decisao e metrica, nao so de variantes — tres landings sem criterio escrito de quem ganha e quando nao e teste, e tres paginas; sem volume pra decidir, adiar em vez de construir. Tarefa entregue no ultimo dia entra no board no ultimo dia: a v0.4 do MOAI foi um sprint inteiro que atravessou a fronteira sem registro. E vermelho que sobrevive a dois sprints deixa de ser vermelho — o mc-036 provou na pratica que nao era urgente."
+    },
     projects: {
       "memory-club": { name: "Clube da Memória", tasks: [
-        { id: "mc-026", title: "Salvar o RAM fase a fase, sem exigir conta", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. Restam ~2h das 5h estimadas — a lambda ram-progress já foi criada, commitada (1458092) e deployada, e o wiring do template entrou no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edição). Fecha o buraco do caso Tainara: hoje o resultado de cada fase só existe se a pessoa conseguir logar.", default_status: "doing" },
-        { id: "mc-027", title: "Cooldown de reenvio honesto no login por código", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. A UI destrava 'Enviar de novo' em 30s e o servidor só reenvia em 5min — na janela entre os dois nenhum email sai e a UI mente. Causa raiz do único gate de login exercitado em produção em 18/08, que falhou. Propagar o tempo restante do challengeMetadata e alinhar o contador; dica de spam já na primeira tela." },
-        { id: "mc-028", title: "Aquecer o envio de email do Clube", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Frente: cauda do lançamento. SES reporta 3 Send / 3 Delivery / 0 Bounce, então a falha é classificação do Gmail, não envio. Trocar pra remetente de produto, subir o DMARC quando o volume estabilizar, alarme para sent sem Delivery." },
-        { id: "mc-018", title: "Enviar email/WhatsApp de boas-vindas", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar." },
-        { id: "mc-025", title: "Memory Pulse — cockpit admin (vendas + uso, usuário 360)", repo: "memory-pulse", estimated_hours: 10, priority: "yellow", notes: "Frente: instrumentação. Restam ~10h das 16h estimadas (6h feitas entre W33 e W34). Já entregues: cockpit read-only v1, aba de aquisição, rotas /admin/emails e /admin/product (ce01d8e), aba Emails e Produto v2. Falta fechar o usuário 360 e o funil de vendas. Ver Plannings/#78.", default_status: "doing" },
+        { id: "mc-026", title: "Salvar o RAM fase a fase, sem exigir conta", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. Restam ~2h das 5h estimadas — a lambda ram-progress já foi criada, commitada (1458092) e deployada, e o wiring do template entrou no ce01d8e. Falta a leitura no cockpit (tipos ScoreDistribution em edição). Fecha o buraco do caso Tainara: hoje o resultado de cada fase só existe se a pessoa conseguir logar.", default_status: "done" },
+        { id: "mc-027", title: "Cooldown de reenvio honesto no login por código", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Frente: cauda do lançamento. A UI destrava 'Enviar de novo' em 30s e o servidor só reenvia em 5min — na janela entre os dois nenhum email sai e a UI mente. Causa raiz do único gate de login exercitado em produção em 18/08, que falhou. Propagar o tempo restante do challengeMetadata e alinhar o contador; dica de spam já na primeira tela.", default_status: "done" },
+        { id: "mc-028", title: "Aquecer o envio de email do Clube", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Frente: cauda do lançamento. SES reporta 3 Send / 3 Delivery / 0 Bounce, então a falha é classificação do Gmail, não envio. Trocar pra remetente de produto, subir o DMARC quando o volume estabilizar, alarme para sent sem Delivery.", default_status: "done" },
+        { id: "mc-018", title: "Enviar email/WhatsApp de boas-vindas", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar. Frente growth: ativação (funil A) — boas-vindas puxa pro treino diário, não pra venda.", default_status: "done" },
+        { id: "mc-025", title: "Memory Pulse — cockpit admin (vendas + uso, usuário 360)", repo: "memory-pulse", estimated_hours: 10, priority: "yellow", notes: "Frente: instrumentação. Restam ~10h das 16h estimadas (6h feitas entre W33 e W34). Já entregues: cockpit read-only v1, aba de aquisição, rotas /admin/emails e /admin/product (ce01d8e), aba Emails e Produto v2. Falta fechar o usuário 360 e o funil de vendas. Ver Plannings/#78.", default_status: "done" },
         { id: "mc-031", title: "Skill de relatório diário com aba de exceções (11 detectores)", repo: "memory-pulse", estimated_hours: 4, priority: "yellow", notes: "Frente: instrumentação. Objetivo do sprint é parar de descobrir problema por replay do Clarity — o caso Tainara só apareceu porque alguém foi olhar. Detectores viram alarme." },
-        { id: "mc-032", title: "Redesign da landing: de página de vendas do curso pra vitrine do produto", repo: "memory-club", estimated_hours: 10, priority: "yellow", notes: "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes." },
+        { id: "mc-032", title: "Redesign da landing: de página de vendas do curso pra vitrine do produto", repo: "memory-club", estimated_hours: 10, priority: "red", notes: "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes. Frente growth onda 1 (funil A) + decidir rota da página de venda (/curso) pro funil B. Ver docs/estudos/growth-plan-clube-2026-Q3.md. Spec da estrutura: Plannings/#92-MAIN_PAGE_HUB_DAS_INICIATIVAS.md (evolui o #87). Implementado pelo Claude em 20/08 (estrutura do #92): hero RAM, duas frentes, seção RAM, playground, teaser Pro, canais, CTA final; pitch do curso 100% no /pro (PainPoints e Pricing exportados pro ProPitch). Falta: foto do Taya em public/landing/taya-avatar.png, revisão de copy do Rafael, teste visual mobile, commit. Pitch v2 (20/08, estilo Educato/RevisionDojo): hero de resultado, barra de prova (270k/2M/1º lugar), como funciona em 3 passos, seção de ciência com o Taya, FAQ da vitrine. Estudo: __main/docs/estudos/landing-referencias-pitch.md.", default_status: "done" },
         { id: "mc-022", title: "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog — fora do sprint por decisão no planning de 19/08 (integridade de dados não entrou nas 3 frentes escolhidas). Portar fórmulas de scoring pro ram-post-session + bounds de plausibilidade. Ver Plannings/#29." },
-        { id: "mc-023", title: "Espelho completo dos dados Hotmart via API REST", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos." }
+        { id: "mc-023", title: "Espelho completo dos dados Hotmart via API REST", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos.", default_status: "done" },
+        { id: "mc-033", title: "Dar destino aos posts semanais (growth funil A)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Definir CTA e UTM por canal: Taya terça → /ram; Fuji → alternar /ram e bio de venda. Medir por referrerHost/UTM no ram-funnel. Ver growth-plan-clube-2026-Q3.md." },
+        { id: "mc-034", title: "Desenhar funil C: jornada de conversão in-app free→Pro", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Spec PM, sem código: mapear momentos de impacto (checkpoint RAM, conclusão semanal, gate do Palácio) e onde entra o paywall (D3-D7, nunca no cadastro). Copy no padrão do gate." },
+        { id: "mc-035", title: "Share do resultado RAM com UTM (loop de aquisição)", repo: "memory-club", estimated_hours: 4, priority: "white", notes: "Backlog da onda 1: botão de share no resultado (imagem/link com UTM) + evento ram_share. Entra se sobrar hora." },
+        { id: "mc-036", title: "Fundação de rotas públicas (fatia 1 do #93): /pro público + 3 jogos abertos + gate de salvar", repo: "memory-club", estimated_hours: 14, priority: "red", notes: "Implementado pelo Claude em 20/08: rotas públicas (/pro, torre-controle, encaixe-sombra, garcom-maluco), useProStatus anon, ProPage dois estados, useExitTarget, persistência anônima por visitorId, MinigameSaveGate + useClaimOnAuth, lambda minigame-progress + tabela no template.yaml. Falta: deploy SAM, teste manual dos fluxos (anônimo → salvar → claim; Google/reload), commit. Fatia 2 (20/08): pitch completo migrado pro /pro (ProPitch reusa seções da landing; quem não é Pro vê a venda, Pro vê os benefícios) — destrava o mc-032.", default_status: "doing" },
+        { id: "mc-037", title: "Separar reputação de email: transacional em auth.memoria.club (spec #97)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Frente: cauda do lançamento. Filha do mc-028: hoje OTP de login e CX saem do mesmo vitor@memoria.club, e um complaint de CX pode suprimir o remetente do login (supressão do SES é por endereço, config set é só telemetria). Spec aprovada em Plannings/#97: identidade SES nova auth.memoria.club pro transacional, CX fica na raiz; memory-club-cx formalizado no IaC por recriação cirúrgica (log group fica fora, preserva histórico Abriu/Clicou). template.yaml já editado e validado, NADA deployado. Próximo passo: janela de recriação + sam deploy, depois Rafael registra os 3 CNAMEs DKIM no name.com. Corte do SESSender só com DNS SUCCESS + teste manual verde, em horário de baixo uso." }
       ]},
       "yangplanet": { name: "Yang Planet", tasks: [
-        { id: "yp-023", title: "Fase 2: estruturar as 8 novas fontes como fundos mapeados", repo: "yang-gps", estimated_hours: 20, priority: "yellow", notes: "Única frente do Yang no sprint, depois de duas semanas quase paradas. FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. RESOLVER ANTES DE COMEÇAR: método de coleta (scraping vs curadoria manual vs ingestão de PDF) e as open questions do doc — valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md" },
-        { id: "yp-018", title: "Adicionar novo fundo — scrap + processamento + inclusão na base", repo: "yang-gps", estimated_hours: 6, priority: "white", notes: "Backlog — carryover desde o W32. Provavelmente absorvido pelo método que sair do [yp-023]; reavaliar depois que a Fase 2 destravar." }
+        { id: "yp-023", title: "Fase 2: estruturar as 8 novas fontes como fundos mapeados", repo: "yang-gps", estimated_hours: 20, priority: "yellow", notes: "Única frente do Yang no sprint, depois de duas semanas quase paradas. FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. RESOLVER ANTES DE COMEÇAR: método de coleta (scraping vs curadoria manual vs ingestão de PDF) e as open questions do doc — valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md", default_status: "done" },
+        { id: "yp-018", title: "Adicionar novo fundo — scrap + processamento + inclusão na base", repo: "yang-gps", estimated_hours: 6, priority: "white", notes: "Backlog — carryover desde o W32. Provavelmente absorvido pelo método que sair do [yp-023]; reavaliar depois que a Fase 2 destravar.", default_status: "done" },
+        { id: "yp-024", title: "Rastreabilidade dos fundos: schema de proveniência + lifecycle + matcher", repo: "yang-gps", estimated_hours: 4, priority: "red", notes: "Fases 1-3+5 implementadas em 26/08: SourceRecord/FundStatus no schema Pydantic, migração dos 32 _inventory.md (300 registros), fixes conhecidos (abf-fip/good-karma closed_for_new, afd janela 2025-07-31, bnb/bb valid_until, bndes-chamada-clima retipado), matcher com pre-filter de status + janelas por data + canal de acesso no contexto do LLM, scripts/check_fund_freshness.py no CI. Plano: ~/.claude/plans/vamos-comecar-uma-planning-quizzical-oasis.md", default_status: "done" },
+        { id: "yp-025", title: "Re-verificação web dos 51 fundos (6 batches) com evidência datada", repo: "yang-gps", estimated_hours: 6, priority: "red", notes: "Fase 4 concluída em 26/08 (6 batches paralelos): 51/51 fundos verificados com evidência datada. Resultado: 44 active, 2 paused (bndes-programs, fundo-brasil), 3 closed_for_new (abf-fip, amaz, inseed-fima), 2 wound_down (suzano-ventures — site redireciona pro corporativo, good-karma — fusão com Just Climate 05/2025). Taxas safra 2026/27 primárias (Res. CMN 5.329) no BNB/BB/BASA. Freshness check: 0 FAILs, 0 warns. Follow-ups: Eco Invest leilão 5 resultados ~09/09; FINEP fluxo contínuo fecha 31/08; avaliar adicionar Just Climate LatAm como fundo sucessor do Good Karma.", default_status: "done" },
+        { id: "yp-026", title: "Frontend: badges de status, fontes datadas, KPI 'ativas' real", repo: "yang-gps-frontend", estimated_hours: 3, priority: "yellow", notes: "Fase 6. GeneratedFundProfile: badge de status + 'verificado em' + lista de source_records datada (fallback pro sources legado). FundsOverview: 'ativas' = status active (não 'tem perfil'), blocos cinza no treemap para fundos fechados. Remover matchable flag do fundsCatalog. Depende só das fases 1-2 (já mergeáveis). Concluída em 26/08 junto com as demais fases; verificada visualmente (46 ativas no Landscape, badges e fontes datadas no perfil).", default_status: "done" },
+        { id: "yp-027", title: "Fix: matching estoura 400KB do item Dynamo (progress + result juntos)", repo: "yang-gps", estimated_hours: 3, priority: "red", notes: "Bug encontrado em 29/08 no projeto Courageous Land (830c2a3c): durante o match, matching (~217KB) e matching_progress (~162KB) coexistem no item; com muitos candidatos qualquer gravação extra passa dos 400KB do Dynamo, o worker morre com ClientError antes do estado terminal e deixa matching_progress órfão (causa do match_failed em 28/08). Fix no gps-match-project: compactar o progress (só chaves/status, sem o match completo) ou movê-lo pra S3/item separado; considerar limpeza de progress órfão no self-heal do gps-get-project. Workaround manual aplicado: REMOVE matching_progress + re-gravação do brief (backup do item no scratchpad da sessão)." }
       ]},
       "stalolabs": { name: "Stalo Labs", tasks: [
-        { id: "sl-011", title: "Exportar relatório em PDF", repo: "stalolabs", estimated_hours: 4, priority: "white", notes: "Backlog — Stalo Labs ficou FORA do sprint por decisão no planning de 19/08. Registrado pra não sumir do board como aconteceu no W33. Carryover crônico." }
+        { id: "sl-012", title: "Prompt caching no resumir-reuniao (−70% do custo de LLM)", repo: "stalolabs-MOAI", estimated_hours: 3, priority: "green", notes: "NÃO planejada — entrou no sprint em 21/08 a partir de uma auditoria da tabela cockpit-llm-logs (US$ 2,88 em 14 dias, 99,2% em input). Num conselho de 4h30 o transcript de ~87k tokens ia 9x pra API. blocoUserMsg() virou dois blocos de conteúdo com cache_control no transcript, e a 1a empresa passou a rodar sozinha pra gravar o cache antes das (N-1) lerem. Medido end-to-end: 60% de economia com 4 empresas, ~70% com 8 (US$ 0,70 -> ~US$ 0,21 por conselho). Junto: contabilidade de custo corrigida (input_tokens vira so o resto nao-cacheado) e a Lambda ganhou o temperature: 0 que so o core mandava. Docs em CLAUDE.md, discovery/docs/chamadas-llm.md e na pagina /arquitetura. Sem commit — branch feat/granola-listing com trabalho da lista do Granola em voo.", default_status: "done" },
+        { id: "sl-011", title: "Exportar relatório em PDF", repo: "stalolabs", estimated_hours: 4, priority: "white", notes: "Backlog — Stalo Labs ficou FORA do sprint por decisão no planning de 19/08. Registrado pra não sumir do board como aconteceu no W33. Carryover crônico.", default_status: "done" },
+        { id: "sl-016", title: "Login individual no cockpit MOAI com Clerk (padrão Stalo de auth)", repo: "stalolabs-MOAI", estimated_hours: 6, priority: "yellow", notes: "Decisão de 28/08 registrada em login-architecture.md: Clerk vence AuthKit/Kinde/Cognito como padrão de login da Stalo (projetos curtos em volume — login é commodity). Escopo: @clerk/clerk-react no lugar do LoginGate, JWT via JWKS na Lambda no lugar do x-app-password, convites invite-only, sub do JWT como updatedBy nas escritas (base do stalo-01-auth-individual), atualizar página /dados. Resolve a rastreabilidade que o termo LGPD (moai-05) exige." }
+      ]}
+    }
+  },
+  "2026-W36": {
+    week: "2026-W36",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W36", "2026-W37"],
+    start_date: "2026-08-29",
+    end_date: "2026-09-12",
+    hours_available: 80,
+    retro: {
+      completed: true,
+      tasks_done: 15,
+      tasks_total: 24,
+      hours_estimated: 170,
+      hours_actual: 100,
+      what_went_well: "O Yang fechou 7 de 7 — sete tarefas, sete merges, nenhuma dependendo da outra, e ainda achou e corrigiu um bug de producao (o teto de 400KB do Dynamo) dentro do proprio sprint. A v0.4 do MOAI saiu em 28/08, no dia seguinte ao planning. E no Clube a qualidade do que foi construido nao esta em questao: checkout com reembolso self-service, trilha freemium com progresso persistido, e um redesign que passou por revisao de tech lead com 12 debitos registrados por escrito em vez de passarem batido.",
+      what_blocked: "As branches do Clube nao eram frentes paralelas, eram uma PILHA: checkout nasceu de develop, adeus-hotmart nasceu do checkout, trilhas nasceu do adeus-hotmart. Cada feature comecou a partir da anterior ainda nao mergeada, entao entregar o mapa de trilhas exigia levar junto Mux, Mercado Pago e o design system inteiro — nao existia caminho pra entregar um sem os outros tres. Em 08/09 a fatura chegou: o PR #82 era so o fix de sessao, mas arrastou 317 arquivos e teve que ser revertido. A main congelou ali. Resultado: 88 commits no Clube, mais que os outros dois projetos somados, e a pior taxa de conclusao do board (40%).",
+      what_to_change: "Uma branch, um merge, um sprint: nenhuma feature nova comeca a partir de branch nao mergeada — se precisar do que esta na anterior, a anterior entra na main primeiro, mesmo incompleta, atras de flag. A main nao pode ficar mais de uma semana atras da develop; o #82 nao foi erro de merge, foi distancia acumulada. Infra entra no template.yaml no mesmo commit que cria a lambda — as course-progress passaram duas semanas sendo chamadas pelo front sem existir no IaC. E prazo de terceiro (liberacao do MP, DNS do SES) vira card, nao lembranca."
+    },
+    projects: {
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-038", title: "Checkout próprio no Mercado Pago e saída do Hotmart", repo: "memory-club", estimated_hours: 14, priority: "red", notes: "Specs Plannings/#117 (checkout) e #116 (sair do Hotmart). Entregue no período: Brick de pagamento no /assinar, carteira Mercado Pago e fixes do sandbox, overlay de processamento no Pagar, emails indo pro email da conta e não pro payer do MP, reembolso self-service dentro da garantia de 7 dias com fluxo de dois emails e header de contingência do Pix, storyboard da jornada de compra do Pro no /lab. NÃO MERGEADO: vive em feat/checkout-mercado-pago (17 commits à frente de main) e adeus-hotmart (27 à frente). Par do mc-039 — sair do Hotmart exige checkout próprio E aula tocando no app.", default_status: "doing" },
+        { id: "mc-039", title: "Aulas em vídeo no app via Mux e /curso vira hub de trilhas", repo: "memory-club", estimated_hours: 10, priority: "red", notes: "Aulas tocam dentro do app via Mux, uma aula por nó da trilha; Módulos 2 e 3 completos. /curso deixa de ser página de venda e vira hub de trilhas (a venda ganhou página própria), com trilhas empilhadas numa página só e trilha freemium de 2 aulas grátis com progresso no Dynamo. Landing do curso volta em /palacio-da-memoria. É a metade de conteúdo da saída do Hotmart (mc-038) — enquanto a aula morava no Club do Hotmart, não dava pra cortar a plataforma.", default_status: "done" },
+        { id: "mc-040", title: "Redesign interno do app com o Victor Luna: design system, desktop e conversão Pro", repo: "memory-club", estimated_hours: 20, priority: "red", notes: "A frente mais pesada do sprint e a que mais ficou em aberto. v1.6.0 (03/09) trouxe layout desktop, design system e superfícies de conversão Pro; depois vieram lista de cursos com pitch por baralho (Cartas/Números), limpeza do header da trilha com ranking, título único no nó, placeholder de jogo não jogado, card de jogo inteiro clicável. Branch design ainda 7 commits à frente de main. A revisão de tech lead registrou 7 débitos em Plannings/#109 sem corrigir: 4 técnicos (ProfilePage com autosave sem debounce nem erro visível, Icon.tsx falhando em silêncio com 67 ícones em waterfall, SVGs do Hugeicons sem currentColor + licença a conferir, Playwright visual sem baseline commitada) e 3 decisões de produto a validar com o Victor (variante C da landing morreu, PalaceHubPage perdeu o unlock in-place, DailyTrainingCard perdeu o casamento score-RAM-por-slot).", default_status: "doing" },
+        { id: "mc-041", title: "Mapa de trilhas na página inicial (zoom-out do Palácio)", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Plannings/#115. Página inicial vira mapa de trilhas, Pro vê as 4 frentes do Palácio, hub vira Aprenda + Desafios, convite de aula grátis e desafios do Palácio na aba Jogos, treino de hoje mostra o par de jogos do dia. Branch feat/trilhas-zoom-out com 47 commits à frente de main — a maior pendência de merge do sprint.", default_status: "doing" },
+        { id: "mc-042", title: "App iOS com Capacitor", repo: "memory-club", estimated_hours: 6, priority: "yellow", notes: "Plannings/#106. Victor, 08/09: app iOS com Capacitor, login federado nativo e build próprio. O repo memory-club-mobile ainda está vazio nesta máquina — confirmar onde o build mora antes de tratar como entregue." },
+        { id: "mc-043", title: "Memory Pulse em produção: pulso de vendas de 6 estágios e placar por canal", repo: "memory-pulse", estimated_hours: 10, priority: "yellow", notes: "Fecha o mc-025 do W35. Home /pulso nasceu como placar do experimento Fuji vs Taya e virou placar por canal (TikTok, Instagram, Google, mais o canal inApp por navegador embutido). Produto virou a aba principal, com scores por etapa do RAM (raciocínio, atenção, memória), novo vs recorrente, distribuição de dias e retenção por coorte nos minigames, leitor fixo no hover do gráfico e botão Copiar contexto (JSON anonimizado pra jogar em outra LLM). Redesign completo com o design seed do nufinance. No ar em pulse.memoria.club via Amplify, com script que fecha o setup pela CLI.", default_status: "done" },
+        { id: "mc-044", title: "Sessão persistente e claim atômico do resultado RAM", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Plannings/#112. Sessão expirada volta pelo refresh token no boot, e o claim atômico impede que uma sessão recuperada duplique o resultado do RAM. Junto: fluxo develop + previews automáticos no Amplify (#110) com guia de contribuição, callbacks de preview e staging na allowlist do Cognito, e o revert do release acidental do PR #82 (main de volta ao estado pré-merge).", default_status: "done" },
+        { id: "mc-045", title: "Onboarding do Fuji e polimento dos minigames", repo: "memory-club", estimated_hours: 5, priority: "green", notes: "Frente growth funil A: onboarding do Fuji em palacio.memoria.club (Plannings/#113). Minigames: rotação por setas de quarto de volta no Encaixe Sombra (#114), timebox de 90s visível no Espelho Oculto, covers quadrados, mais palco pra peça no iPhone SE, botão de voltar durante memorizar/ordenar não recarrega pra home. Histórico ganhou calendário mensal com anéis por domínio. No admin-api: venda reembolsada conta no dia em que aconteceu e a janela de leads corta por dias inteiros UTC.", default_status: "done" },
+        { id: "mc-036", title: "Fundação de rotas públicas (fatia 1 do #93): /pro público + 3 jogos abertos + gate de salvar", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Carryover do W35, ainda em doing. Rotas públicas, persistência anônima por visitorId, MinigameSaveGate + useClaimOnAuth e a lambda minigame-progress estão implementados; falta deploy SAM, teste manual do fluxo anônimo → salvar → claim e o commit." },
+        { id: "mc-031", title: "Skill de relatório diário com aba de exceções (11 detectores)", repo: "memory-pulse", estimated_hours: 4, priority: "yellow", notes: "Carryover do W35. Agora que o Pulse está em produção (mc-043), é o passo que falta pra parar de descobrir problema por replay do Clarity: os detectores viram alarme." },
+        { id: "mc-037", title: "Separar reputação de email: transacional em auth.memoria.club (spec #97)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Carryover do W35, ficou parado. template.yaml editado e validado, NADA deployado. Ganhou urgência com o mc-038: o checkout próprio passa a mandar email de compra e de reembolso pelo mesmo remetente do OTP de login." },
+        { id: "mc-033", title: "Dar destino aos posts semanais (growth funil A)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Carryover do W35. Parcialmente coberto pelo placar por canal do mc-043, que já mede TikTok/Instagram/Google — falta fechar CTA e UTM por canal." },
+        { id: "mc-034", title: "Desenhar funil C: jornada de conversão in-app free→Pro", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Carryover do W35. Spec PM, sem código. As superfícies de conversão Pro do mc-040 já escolheram alguns momentos na prática — a spec precisa alcançar o que o design já decidiu.", default_status: "done" },
+        { id: "mc-035", title: "Share do resultado RAM com UTM (loop de aquisição)", repo: "memory-club", estimated_hours: 4, priority: "white", notes: "Backlog, carryover do W35.", default_status: "done" },
+        { id: "mc-022", title: "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog crônico, carryover desde o W34." }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-028", title: "Admin aloca usuário a projeto: compartilhar por domínio ou e-mail", repo: "yang-gps", estimated_hours: 5, priority: "red", notes: "Endpoints de project access no backend e painel de acesso no frontend (10/09): um projeto passa a ser compartilhado por domínio de email ou por email individual. Junto, restaurou o access_domains que a porta pro FastAPI tinha derrubado. É o que destrava trial com cliente sem dar acesso à base inteira.", default_status: "done" },
+        { id: "yp-029", title: "Fix: match estourando o teto de 400KB do item no Dynamo", repo: "yang-gps", estimated_hours: 4, priority: "red", notes: "Fecha o yp-027 do W35 (bug do Courageous Land). O item do projeto deixou de crescer além do teto, um run parcial parou de deixar progress map, erro e cache morto pra trás, e um registro no teto de 400KB não trava mais uma strategy em running. Junto: teto de ticket abaixo da necessidade virou cobertura e não corte, e um match confirmado deixou de invalidar a própria triagem.", default_status: "done" },
+        { id: "yp-030", title: "Match e Strategy: tipo de crédito como eixo, histórico append-only e dois WACCs", repo: "yang-gps", estimated_hours: 16, priority: "yellow", notes: "Maior bloco de produto do Yang no sprint. Match: credit-type (equity/debt/grant/blended) vira eixo de primeira classe com abas e runs por grupo, line picker com escopo por linha, aba de grants com a faixa captável de cada linha, linhas desativáveis num drawer sem re-rodar LLM, e refinamento em texto livre entrando como add-on do prompt. Strategy: runs viram histórico append-only com curadoria pro cliente, accordion por run, delete permanente, e dois WACCs (só dívida e geral com equity no IRR do projeto) — calculados em código, nunca confiados ao LLM.", default_status: "done" },
+        { id: "yp-031", title: "Variante de produto /abdi sobre catálogo isolado", repo: "yang-gps", estimated_hours: 6, priority: "yellow", notes: "Catálogos de fundo viram a unidade de isolamento entre produtos: /abdi roda sobre um catálogo BNDES + FINEP isolado, com o fund chat escopado ao catálogo da variante ativa. Junto, a chamada anônima da Function URL do fund-chat deixou de cair no ramo confiável, e o gate de freshness saiu do PR check pra um job diário.", default_status: "done" },
+        { id: "yp-032", title: "Expansão da base de fundos: 52 → 69", repo: "yang-gps", estimated_hours: 12, priority: "yellow", notes: "ATENÇÃO À DATA: a curadoria aconteceu ao longo deste sprint, mas os commits de absorção entraram em 15-16/09, já na semana atual (bc68735 absorve a triagem do Excel, 51→70; fc163ad adiciona ProFloresta+, Desenvolve SP e Sitawi e enriquece as linhas da FINEP; 7d74e35 tria o mapa de financiamento da Climatechs, os +4 que levaram a base a 73). Se o critério do board for data de commit, este card migra pro sprint atual. Junto vieram tiers de qualidade de dado (triage/structured/enriched/max) e o catálogo do frontend virando espelho gerado do backend.", default_status: "done" },
+        { id: "yp-033", title: "3 trials ao vivo com clientes — nenhum seguiu no funil", repo: "yang-gps", estimated_hours: 8, priority: "red", notes: "Três trials conduzidos ao vivo no período. Os três foram feitos e NENHUM seguiu no funil. Trabalho de venda, sem commit associado. PENDÊNCIA PRA PRÓXIMA PLANNING: não existe registro do motivo da não-conversão dos três. Antes de rodar o próximo trial, abrir um card de diagnóstico — três trials perdidos sem causa registrada é o mesmo padrão do caso Tainara no Clube, descobrir problema só quando alguém vai olhar.", default_status: "done" },
+        { id: "yp-034", title: "Observabilidade: access log da API e custo cobrado de quem agiu", repo: "yang-gps", estimated_hours: 3, priority: "green", notes: "Log de acesso da API com o uso cobrado de quem de fato agiu, não do dono do projeto. É o par do yp-028: com projeto compartilhado por domínio, custo sem atribuição vira ponto cego.", default_status: "done" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-017", title: "Login individual no cockpit MOAI com Clerk + trilha de auditoria", repo: "stalolabs-MOAI", estimated_hours: 6, priority: "yellow", notes: "Fecha o sl-016 do W35, entregue em 28/08 — no dia seguinte ao planning que o criou. Clerk com allowlist de e-mails, passwordless (Google off em produção), sessão de 7 dias e auto-cadastro destravado. Rastreabilidade: 'editado por' nos Ajustes, página de histórico no app, edições do mesmo autor em 30 min colapsando numa entrada só. Junto na v0.4: propriedades colapsáveis, ata geral em PDF, wordmark da MOAI, URLs em prosa viram links, /dados e /arquitetura refletindo a trilha, e scroll único na página do conselho. Resolve a rastreabilidade que o termo LGPD (moai-05) exige.", default_status: "done" },
+        { id: "sl-011", title: "Exportar relatório em PDF", repo: "stalolabs", estimated_hours: 4, priority: "white", notes: "Backlog crônico. Stalo Labs teve só a entrega do MOAI (sl-017) em 28/08 e ficou parada no resto do sprint.", default_status: "done" }
+      ]}
+    }
+  },
+  "2026-W37": {
+    week: "2026-W37",
+    period_label: "Sprint",
+    sprint_weeks: ["2026-W37", "2026-W38"],
+    start_date: "2026-09-14",
+    end_date: "2026-09-27",
+    hours_available: 80,
+    projects: {
+      "mba": { name: "MBA", tasks: [
+        { id: "mba-002", title: "TCC: relatório do Business Game — entrega domingo 20/09 à noite", repo: "mba", estimated_hours: 8, priority: "red", notes: "PRAZO: domingo 20/09 à noite. Uma das duas entregas que vencem no mesmo dia (a outra é a [mba-004]). Prioridade máxima do sprint: o TCC do MBA vem antes de qualquer coisa de produto, por decisão do Rafael no planning de 17/09." },
+        { id: "mba-004", title: "TCC: Leadership Evaluation — entrega domingo 20/09 às 23h45", repo: "mba", estimated_hours: 3, priority: "red", notes: "PRAZO DURO: domingo 20/09, 23h45. Vence no mesmo dia do relatório do Business Game ([mba-002]) — os dois precisam caber no fim de semana, e este tem hora marcada." },
+        { id: "mba-001", title: "TCC: relatório de PDI — entrega segunda 21/09", repo: "mba", estimated_hours: 10, priority: "red", notes: "PRAZO: segunda-feira 21/09. A maior das quatro entregas em volume. Como as duas de domingo ([mba-002] e [mba-004]) comem o fim de semana, o PDI precisa começar ANTES — quinta e sexta são a única janela limpa que sobra." },
+        { id: "mba-003", title: "TCC: decisões do Q6 em grupo — entrega segunda 21/09 à noite", repo: "mba", estimated_hours: 6, priority: "red", notes: "PRAZO: segunda 21/09 à noite. Única das quatro que DEPENDE DE OUTRAS PESSOAS — é decisão em grupo. Risco de agenda: se a combinação com o grupo não estiver marcada, marcar antes de sentar pra escrever o PDI, porque o slot do grupo não é seu pra escolher." }
+      ]},
+      "memory-club": { name: "Clube da Memória", tasks: [
+        { id: "mc-046", title: "Merge train: a main volta a ser a verdade (5 commits, fast-forward)", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "REFINADO em 17/09 com dry-run commit a commit. O merge pra main e FAST-FORWARD e a arvore resultante e BYTE-IDENTICA a da branch (git merge-tree --write-tree main feat/trilhas-zoom-out == git rev-parse feat/trilhas-zoom-out^{tree}). NAO RODAR git revert 2e743d8 — simulado: gera conflito em massa (App.jsx, admin-api, package-lock, ate binario em public/images/games/*.webp) e MATA o fast-forward. O aviso escrito no commit do revert esta obsoleto, foi invalidado pelo back-merge f8a3ec2. NAO E PRA MERGEAR A BRANCH design: o PR #83 (6526b92) que integrou design JA ESTA na historia da trilhas; os 4 commits soltos sao trabalho POSTERIOR e 3 deles foram superados. Fazer cherry-pick seletivo: 108fb06 (botao de voltar, aplica LIMPO) e opcionalmente 386fb85 (calendario, conflito so no CHANGELOG). DESCARTAR e561354, 8bfbcc9 e 34ab5cb — a reescrita do MobileVerticalPath em trilhas mexeu em 358 linhas contra 50 do design, e 34ab5cb traria uma SEGUNDA tela de venda concorrendo com a pagina que o 45b619d criou. Sequencia: cherry-pick -> npm run build -> push -> PR pra develop -> validar no preview -> PR develop->main POR ULTIMO, depois da infra de pe." },
+        { id: "mc-047", title: "BLOQUEADOR: course-progress esta fora do IaC e quebra a trilha freemium", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "Achado em 17/09 no levantamento do lancamento — nao estava em nenhum card. As lambdas lambdas/course-progress-get/ e lambdas/course-progress-post/ existem em disco e o FRONT JA AS CONSOME (src/services/apiService.ts:398-403, src/features/course/model/courseProgressSlice.ts, src/components/MobileVerticalPath.jsx:18), mas NAO estao em template.yaml nem no mapa de lambdas/deploy.sh. A tabela e hardcoded sem sufixo (const TABLE = 'course-progress' nos dois index.mjs) e nao e declarada em lugar nenhum. Consequencia: o progresso das aulas da trilha freemium quebra em producao — e a trilha freemium e justamente a isca do lancamento. Escopo: declarar a tabela course-progress${NameSuffix} e as duas lambdas no template.yaml, trocar o TABLE hardcoded por env var, sam build && sam deploy. E o bloqueador numero 1. || ARMADILHA CRITICA DESCOBERTA: samconfig.toml NAO TEM parameter_overrides, e todos os segredos (HotmartHottok, MpAccessToken, MpWebhookSecret, SESSender) tem Default: '' (fail closed). Um sam deploy que esqueca qualquer --parameter-overrides ZERA o SESSender e DERRUBA O LOGIN DE TODO MUNDO, em silencio. ANTES de deployar rodar: aws cloudformation describe-stacks --stack-name memory-club-minigames --region us-east-2 --profile rafaelmezzomo --query 'Stacks[0].Parameters' e guardar os valores (NoEcho mascara os segredos — precisa ter os originais em maos). Detalhes da implementacao: PK userId; eventos GET/POST /course-progress com RestApiId: !Ref MinigameApi (e a unica API do stack; PALACE_API_URL cai em MINIGAME_API_URL por fallback em apiService.ts:9); DynamoDBCrudPolicy; e adicionar os dois dirs em ALL_DIRS de lambdas/deploy.sh:39 e no case do mapa, pra permitir hotfix rapido sem sam deploy no dia." },
+        { id: "mc-048", title: "Etapa 0 do Mercado Pago: aplicacao de producao, webhook e credenciais", repo: "memory-club", estimated_hours: 1, priority: "red", notes: "FAZER HOJE (17/09) — e trabalho manual em painel externo com relogio proprio. Plannings/#117 etapa 0: criar aplicacao MP de producao, registrar o webhook de producao, gerar o secret, conferir o Parcelado Comprador e a liberacao de 30 dias. Nao bloqueia o lancamento de domingo (a venda continua no Hotmart), mas e pre-requisito do mc-051 e quanto antes comecar, melhor. ATENCAO: o .env.local esta com VITE_MP_PUBLIC_KEY=TEST-; sem a chave APP_USR- nas env vars do Amplify a rota /assinar SOBE QUEBRADA em producao. Boa noticia: o risco de CSP listado no #117 nao existe — nao ha CSP configurada em lugar nenhum do projeto. || A LIBERACAO DOS 30 DIAS DO MP PODE LEVAR DIAS UTEIS. Se nao for pedida hoje, o dinheiro do lancamento fica retido e o Rafael descobre na segunda. E o item com a pior razao esforco/latencia do plano inteiro: 30 min de painel que, se atrasarem, atrasam o caixa." },
+        { id: "mc-050", title: "Unlock in-place do PalaceHub: quem compra nao pode ficar preso", repo: "memory-club", estimated_hours: 2, priority: "red", notes: "Debito #6 de Plannings/#109, e o unico dos 12 que bate direto no fluxo de compra. PalaceHubPage perdeu o unlock in-place: nao-Pro agora vira Navigate pra /curso. Antes o paywall abria sobreposto e a compra confirmada liberava o hub sem re-checar proStatus. Hoje quem compra pelo paywall pode FICAR PRESO ate o status do Pro propagar. Num dia de lancamento, com gente nova chegando pelo video, esse e o pior modo de falha possivel. Entra na janela de sexta. || Local exato: PalaceHubPage.tsx:37, o <Navigate to='/curso' replace />. Fix: estado de loading / re-check do token em vez de redirect imediato. E o unico bug conhecido que atinge o usuario EXATAMENTE no momento em que ele ja pagou." },
+        { id: "mc-049", title: "Divida de receita: aulas do Mux com playback ID publico", repo: "memory-club", estimated_hours: 4, priority: "red", notes: "PIOR DO QUE PARECIA. Nao e so 'URL publica': os 20 playback IDs estao NO BUNDLE JS, e o gate do Pro em MobileVerticalPath.jsx:472 (isProLocked) e PURAMENTE CLIENT-SIDE. Qualquer pessoa que abra o devtools e de grep no bundle assiste o curso de R$499 inteiro de graca, sem conta Pro. Nao e compartilhar link, e ler o codigo-fonte. DECISAO: lancar assim mesmo (no dia 1 o publico e o do video do Fuji, a receita perdida por NAO lancar e 100% e a perdida por vazamento e ~0 nas primeiras semanas), mas isto e o ITEM #1 DE 23/09, nao 'algum dia'. O conserto e reversivel sem re-upload: criar signed playback IDs no Mux, apagar os publicos, escrever a lambda de JWT. Evitar mencionar no video que o curso tem player proprio de um jeito que convide curiosidade tecnica. Fora do escopo e sem trabalho: 40-theory e 40-practical seguem na Hotmart (cardLevels.js:63) — nenhum comprador do dia 1 chega na fase 40." },
+        { id: "mc-051", title: "Release W38: ligar o checkout MP e desligar o Hotmart", repo: "memory-club", estimated_hours: 6, priority: "yellow", notes: "CORTADO DO DIA DO LANCAMENTO por decisao de 17/09 — vai pra terca/quarta da W38, com o MBA entregue. Motivo: o checkout nunca processou venda real (so sandbox) e o modo de falha dele e justamente a tela de compra, no dia em que o video traz gente nova. O Hotmart continua vendendo e e o fallback natural: nenhuma venda se perde. Escopo: deploy com credenciais APP_USR-, chave publica de producao nas env vars do Amplify, COMPRA PIX REAL validando grant do Pro + email, e REFUND REAL validando a revogacao. Depende do mc-048. || ATENCAO AO ROLLBACK: os CTAs de compra do front JA FORAM TROCADOS pro /assinar (git grep hotmart.com -- src so acha cardLevels.js e um teste), entao 'o Hotmart continua vendendo' NAO e automatico. A infra da Hotmart esta intacta no template.yaml (webhook, HotmartPurchasesTable, HotmartEventsTable, HotmartHottok) e o link do produto ainda vende e ainda concede member-pro. PLANO A (30s, sem deploy): colar o link do produto Hotmart na descricao do video / story / direct. SALVAR ESSE LINK NO CELULAR ANTES DE GRAVAR. Plano B (~8min): hotfix trocando o CTA. Plano C: revert do merge — EVITAR, foi assim que o #82 comecou." },
+        { id: "mc-038", title: "Checkout próprio no Mercado Pago e saída do Hotmart", repo: "memory-club", estimated_hours: 14, priority: "red", notes: "Carryover do W36, em doing. Specs Plannings/#117 e #116. Brick, carteira MP, reembolso self-service na garantia de 7 dias e emails da compra já existem em branch. Segue vermelho porque é dinheiro: enquanto não mergeia, o Clube continua pagando taxa de Hotmart numa venda que já sabe processar sozinho. Depende do [mc-046] e do [mc-039] (aula tocando no app, já feito).", default_status: "doing" },
+        { id: "mc-037", title: "Separar reputação de email: transacional em auth.memoria.club (spec #97)", repo: "memory-club", estimated_hours: 3, priority: "red", notes: "PROMOVIDO A VERMELHO e PARTE DELE E HOJE (17/09). O rollout do #97 tem LATENCIA DE DNS: sam deploy da identidade SES -> ler os 3 tokens DKIM -> Rafael registra 3 CNAMEs no name.com -> esperar VerificationStatus SUCCESS -> so entao trocar o SESSender. Se os CNAMEs nao forem registrados hoje, o DNS nao propaga a tempo. NAO mexer no SESSender antes do SUCCESS (template.yaml:889-891). Nao bloqueia o lancamento de domingo, mas o relogio externo so corre se comecar hoje." },
+        { id: "mc-040", title: "Redesign interno do app com o Victor Luna: design system, desktop e conversão Pro", repo: "memory-club", estimated_hours: 20, priority: "yellow", notes: "Carryover do W36, em doing. REBAIXADO DE VERMELHO PRA AMARELO neste planning: com 27h de MBA na primeira semana, isto é importante mas não urgente — é a definição de amarelo. Falta fechar os 7 débitos de Plannings/#109: 4 técnicos (autosave sem debounce, Icon.tsx falhando em silêncio, SVGs sem currentColor + licença do Hugeicons, Playwright sem baseline) e 3 decisões de produto a validar com o Victor (variante C da landing, unlock in-place do PalaceHub, régua RAM por slot). As 3 decisões são conversa, não código — dá pra destravar numa call curta mesmo na semana do TCC.", default_status: "doing" },
+        { id: "mc-041", title: "Mapa de trilhas na página inicial (zoom-out do Palácio)", repo: "memory-club", estimated_hours: 8, priority: "yellow", notes: "Carryover do W36, em doing. Plannings/#115. A branch com 47 commits à frente da main — é o maior pedaço do [mc-046].", default_status: "doing" },
+        { id: "mc-042", title: "App iOS com Capacitor", repo: "memory-club", estimated_hours: 6, priority: "yellow", notes: "Carryover do W36. Plannings/#106. Antes de tratar como trabalho novo: o repo memory-club-mobile está vazio nesta máquina e o Victor já fez o app iOS com login federado nativo em 08/09 — descobrir onde esse build mora é o primeiro passo, não recomeçar." },
+        { id: "mc-036", title: "Fundação de rotas públicas (fatia 1 do #93): /pro público + 3 jogos abertos + gate de salvar", repo: "memory-club", estimated_hours: 4, priority: "yellow", notes: "Carryover desde o W35. PADRÃO A QUEBRAR: ficou vermelho por três sprints seguidos e nunca foi feito — o que na prática significa que não é urgente. Rebaixado pra amarelo. O código existe; falta deploy SAM, um teste manual do fluxo anônimo → salvar → claim, e o commit. São 4h reais: ou vira quick win numa tarde, ou sai do board.", default_status: "done" },
+        { id: "mc-031", title: "Skill de relatório diário com aba de exceções (11 detectores)", repo: "memory-pulse", estimated_hours: 4, priority: "yellow", notes: "Carryover do W35. Com o Pulse em produção desde o W36, é o que falta pra parar de descobrir problema por replay do Clarity. Ganha peso numa sprint em que o Rafael vai estar de cabeça no TCC: detector que vira alarme é o que vigia o produto enquanto ele não está olhando." },
+        { id: "mc-033", title: "Dar destino aos posts semanais (growth funil A)", repo: "memory-club", estimated_hours: 3, priority: "yellow", notes: "Carryover do W35. O placar por canal do Pulse já mede TikTok/Instagram/Google — falta fechar CTA e UTM por canal pra medida virar decisão." },
+        { id: "mc-022", title: "#29 Tier 1: recalc SART server-side + bounds SpeedCards/DigitSpan", repo: "memory-club", estimated_hours: 8, priority: "white", notes: "Backlog crônico desde o W34. Integridade de dados, nunca entrou em nenhum sprint." }
+      ]},
+      "yangplanet": { name: "Yang Planet", tasks: [
+        { id: "yp-040", title: "Pitch do Yang GPS com o Álvares — sessão hoje 15h", repo: "yang-gps", estimated_hours: 5, priority: "red", notes: "PRAZO: sessão de trabalho com o Álvares HOJE (17/09) às 15h. É a entrega da semana do Yang. Material vive em yang-gps/docs/presentation/value_prop_and_features_pt.html (já existe uma v0.1 e um PDF gerado). Insumos novos que o pitch ainda não reflete e que valem entrar: base em 73 fundos (yp-035), tiers de qualidade de dado, e o KPI de capital endereçável no Brasil com metodologia explicada (yp-036). Alimenta a reunião interna de terça ([yp-041]); a Ana (ex-Lemon) precisa só de uma prévia, não do deck final.", default_status: "doing" },
+        { id: "yp-041", title: "Reunião interna Yang (terça 22/09, 2h): fechar estratégia e modelo de negócio", repo: "yang-gps", estimated_hours: 4, priority: "red", notes: "PRAZO: terça-feira 22/09 à tarde, 2h, com todos da Yang. É onde a estratégia e o modelo de negócio da Yang são finalizados e a apresentação de slides fecha — não é uma revisão de deck, é a decisão. O ENTREGÁVEL DO RAFAEL PRA ESSA REUNIÃO É O ESTUDO: docs/planning/2026-09-15-brazil-addressable-capital.md (capital endereçável no Brasil, estimativa por fundo) e docs/planning/2026-09-15-climatechs-map-triage.md (triagem do mapa da Climatechs contra o catálogo). Horas estimadas são as 2h de reunião mais o tempo de deixar o estudo apresentável. Separado do [yp-040] de propósito: o pitch é material, isto é decisão de sócios. A conversa com a Ana vem depois e só precisa de prévia." },
+        { id: "yp-039", title: "Diagnóstico dos 3 trials perdidos antes de rodar o próximo", repo: "yang-gps", estimated_hours: 4, priority: "red", notes: "Pendência levantada no [yp-033] do W36: três trials ao vivo foram feitos, nenhum seguiu no funil, e não existe registro do motivo de nenhum deles. Já há trials novos em voo (commit de 15/09). Rodar o quarto trial sem saber por que os três primeiros morreram é repetir o padrão do caso Tainara — descobrir o problema só quando alguém vai olhar. Escopo: conversar/recuperar o contexto dos três, escrever o motivo de cada um, e decidir se o que falta é produto, preço ou perfil de cliente." },
+        { id: "yp-035", title: "Base de fundos a 73 e tiers de qualidade de dado", repo: "yang-gps", estimated_hours: 12, priority: "yellow", notes: "Feito em 15/09. Absorveu a triagem do Excel (19 fundos novos, 8 enriquecidos, 51 → 70), somou ProFloresta+, Desenvolve SP e Sitawi com as linhas de crédito da FINEP enriquecidas, e triou o mapa de financiamento da Climatechs contra o catálogo — os +4 que fecham em 73. Junto veio o conceito de tier de qualidade conquistado (triage/structured/enriched/max), que separa fundo catalogado de fundo realmente conhecido.", default_status: "done" },
+        { id: "yp-036", title: "Catálogo do frontend vira espelho gerado do backend + KPI de capital endereçável", repo: "yang-gps-frontend", estimated_hours: 6, priority: "yellow", notes: "Feito em 15/09. Inverteu a direção da verdade: o catálogo do frontend passa a ser espelho gerado do backend (73 fundos) e o script sync_funds_from_frontend.py foi aposentado. O KPI de capa virou capital endereçável no Brasil, com estimativa por fundo e popover explicando a metodologia; o landscape ganhou uma coluna por fundo e perdeu a coluna Blended; star tiers escalam com o tamanho do catálogo em vez dos '9 fundos' fixos.", default_status: "done" },
+        { id: "yp-037", title: "Diagnóstico do match: eliminações do pre-filter e razões de degrade", repo: "yang-gps", estimated_hours: 5, priority: "yellow", notes: "Feito em 15/09. O match passa a mostrar o que o pre-filter eliminou e por que a triagem degradou, com painel de diagnóstico unificado e resumo pós-match nos cards do agente. É o que transforma 'o match não achou nada' em uma resposta auditável — útil justamente pro [yp-039].", default_status: "done" },
+        { id: "yp-038", title: "/docs admin ao vivo a partir do registro de skills e erros", repo: "yang-gps", estimated_hours: 3, priority: "green", notes: "Feito em 16/09. GET /admin/docs gera a documentação da API a partir de um registro de skills e erros, e a página /docs (admin-only) renderiza isso ao vivo. Junto: docs dos agentes sincronizados com o código (73 fundos, 8 regras, estágio de screening, referências reais de linha) e fim do N+1 na lista de projetos.", default_status: "done" }
+      ]},
+      "stalolabs": { name: "Stalo Labs", tasks: [
+        { id: "sl-019", title: "DESTRAVAR HOJE: conta AWS do cliente novo + role de deploy temporaria", repo: "stalolabs", estimated_hours: 2, priority: "red", notes: "Cliente novo fechado em 17/09; sprint de lancamento comeca na semana que vem. ESTE CARD E DEPENDENCIA EXTERNA COM LEAD TIME — mesmo padrao do mc-048 (liberacao do Mercado Pago): se nao for pedido AGORA, a sprint de segunda comeca bloqueada esperando o cliente. O scaffold da Stalo (stalo-boilerplate/scaffold-infra-cliente.md, Pilar 3) define que o projeto NASCE NA CONTA AWS DO CLIENTE, sem etapa posterior de migracao. Para isso o cliente precisa: (1) criar conta AWS ou sub-conta via Organizations, (2) criar uma IAM role de deploy temporaria (ou IAM Identity Center/SSO) que a Stalo assume so durante a sprint, sem credencial de longo prazo. Mandar esse pedido pro cliente HOJE, por escrito, com o passo a passo — e o unico item do setup que nao depende do Rafael." },
+        { id: "sl-020", title: "Setup inicial do projeto: scaffold de infra a partir do MOAI", repo: "stalolabs", estimated_hours: 6, priority: "red", notes: "Tempo priorizado na W37 pra sprint de lancamento comecar rodando na semana que vem. ATENCAO AO ESTADO REAL: stalo-boilerplate/scaffold-infra-cliente.md e um DOCUMENTO DE PROPOSTA, nao um padrao em uso — o proprio doc diz 'ainda nao e uma decisao tomada nem um padrao em uso'. Nao existe boilerplate pronto pra clonar. Os 'proximos passos' dele SAO o trabalho deste card: (1) extrair um template.yaml generico do cockpit-app/template.yaml do MOAI, tirando o que e dominio (conselhos, Granola) e mantendo o esqueleto Lambda + API Gateway + DynamoDB + Secrets Manager; (2) escrever o checklist de bootstrap da conta do cliente; (3) preencher a tabela de estimativa de custo de infra (Pilar 4) — o cliente precisa da faixa de custo mensal ANTES da sprint, separando infra AWS de tokens de IA. Fixo do padrao: SAM como IaC, Node LTS, throttle no stage, DynamoDB PAY_PER_REQUEST, segredos em Secrets Manager (NAO como parametro de deploy — foi exatamente essa a armadilha achada no Clube em 17/09, onde um sam deploy sem --parameter-overrides derruba o login). CORRIGIR O DOC: o Pilar 2 recomenda senha unica compartilhada como default, mas isso esta DESATUALIZADO — a decisao de 28/08 (login-architecture.md, sl-016/sl-017) elegeu o CLERK como padrao de login da Stalo, justamente porque sao projetos curtos em volume e login e commodity. Usar Clerk e atualizar o Pilar 2. PENDENTE DE DEFINICAO COM O RAFAEL: nome do cliente, escopo do produto e quais integracoes de terceiros entram (cada uma = 1 segredo a mais no cofre)." },
+        { id: "sl-018", title: "Release v0.5 do MOAI: integração com o CRM Tomato — entrega amanhã 18/09", repo: "stalolabs-MOAI", estimated_hours: 6, priority: "red", notes: "PRAZO: amanhã, sexta 18/09. Já em implementação. Sucede a v0.4 (login individual com Clerk + trilha de auditoria, sl-017). O CRM foi identificado no backlog do MOAI em 21/08, o que destravou o item da rotina do CS — esta release é o que fecha aquela ponta. ATENÇÃO: nada da integração aparece commitado no stalolabs-MOAI desta máquina (main parada em 01/09, último branch release/v0.4) — ou o trabalho está em outro lugar, ou não foi pushado. Conferir antes de contar como pronto." }
       ]}
     }
   }
@@ -1195,6 +1416,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeModal();
+    document.getElementById('add-overlay').classList.remove('open');
     document.getElementById('retros-panel').classList.remove('open');
     document.getElementById('changelog-panel').classList.remove('open');
   }
@@ -1225,6 +1447,91 @@ function render() {
 
   updateStats(tasks);
 }
+
+// ── Nova tarefa ──
+// Só funciona servido pelo serve.js: o POST grava no planning.json E re-estampa a
+// const WEEKS do viewer. Via file:// não há onde gravar, então o botão fica travado.
+const addOverlay = document.getElementById('add-overlay');
+const addForm = document.getElementById('add-form');
+const addToggle = document.getElementById('add-task-toggle');
+const addError = document.getElementById('add-error');
+
+if (!SERVER) {
+  addToggle.disabled = true;
+  addToggle.style.opacity = '0.5';
+  addToggle.style.cursor = 'default';
+  addToggle.title = 'Só funciona com o board servido por scripts/serve.js';
+}
+
+function openAddModal() {
+  const projects = WEEKS[currentWeekKey].projects;
+  const select = document.getElementById('add-project');
+  select.innerHTML = '';
+  for (const [id, proj] of Object.entries(projects)) {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = proj.name;
+    select.appendChild(opt);
+  }
+  addError.textContent = '';
+  addForm.reset();
+  addOverlay.classList.add('open');
+  addForm.elements.title.focus();
+}
+function closeAddModal() { addOverlay.classList.remove('open'); }
+
+addToggle.addEventListener('click', () => { if (SERVER) openAddModal(); });
+document.getElementById('add-close').addEventListener('click', closeAddModal);
+addOverlay.addEventListener('click', e => { if (e.target === e.currentTarget) closeAddModal(); });
+
+addForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('add-submit');
+  const f = addForm.elements;
+  const payload = {
+    week: currentWeekKey,
+    project: f.project.value,
+    title: f.title.value,
+    repo: f.repo.value,
+    priority: f.priority.value,
+    status: f.status.value,
+    estimated_hours: f.estimated_hours.value,
+    notes: f.notes.value,
+  };
+
+  btn.disabled = true;
+  addError.textContent = '';
+  try {
+    const res = await fetch('/api/task', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'falha ao criar');
+
+    // Injeta na memória pra o card aparecer sem reload; o disco já foi gravado.
+    const task = json.task;
+    WEEKS[currentWeekKey].projects[payload.project].tasks.push({
+      id: task.id,
+      title: task.title,
+      repo: task.repo,
+      estimated_hours: task.estimated_hours,
+      priority: task.priority,
+      notes: task.notes,
+      default_status: task.status,
+    });
+    statuses[task.id] = task.status;
+
+    closeAddModal();
+    render();
+    renderHeader();
+  } catch (err) {
+    addError.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 function updateStats(allTasks) {
   const filtered = activeFilter === 'all' ? allTasks : allTasks.filter(t => t.projectId === activeFilter);
@@ -1900,6 +2207,292 @@ o rastreamento de carryover por ID. Correção sugerida: renumerar as tarefas no
 | **Total** | **58k** | **7.2M** | **1860.9M** | **1.87B** |
 
 90% do consumo foi Clube da Memória — o mesmo formato da distribuição de commits e de horas.`,
+  "2026-W35": `# Retro Sprint 2026-W35 (19/08 - 28/08) — A cauda do lançamento e a fábrica de jogos
+
+> Retro escrita em 17/09, com atraso, reconstruída a partir do git. É a segunda metade de agosto —
+> o sprint que veio depois do lançamento do Pro (11/08) e antes do congelamento da main. Cobre as
+> semanas W34+W35.
+
+## Métricas
+
+- Tarefas: **14/23 concluídas (61%)** — 9 abertas
+- Horas: **85h concluídas de 133h estimadas**, sobre 56h disponíveis
+- Utilização: **≥152% do budget** — e o número é piso, nenhuma tarefa teve \`actual_hours\` registrado
+
+| Projeto | Concluídas | Horas done / est. | Commits |
+|---------|-----------|-------------------|---------|
+| **Clube da Memória** | 7/14 (50%) | 39h / 78h | 79 |
+| **Yang Planet** | 5/6 (83%) | 39h / 42h | 23 |
+| **Stalo Labs** | 2/3 (67%) | 7h / 13h | 52 |
+| **Total** | **14/23** | **85h / 133h** | **154** |
+
+---
+
+## Highlights por projeto
+
+### Clube da Memória — a fábrica de jogos girou
+
+Três minigames novos no mesmo sprint: **Espelho Oculto, Cores Velozes e Cromofila** (span
+visuoespacial com tom por cor), todos entrando em beta visível só para admin antes de abrir. A
+pipeline da fábrica de jogos foi revisada com as lições de duas rodadas e documentada.
+
+E duas rodadas de polimento que merecem destaque pelo **método**: \`#95\` diagnosticou a interface dos
+minigames e virou uma lista de correções rastreáveis (E1 a E10 no Espelho Oculto, V1/V2/V4/V5 no
+Cores Velozes); \`#96\` fez o mesmo com o fluxo do RAM Score (R1 a R4). Diagnóstico escrito primeiro,
+correção depois, cada fix apontando para o item que fecha.
+
+Também saíram: o modo revisão do RAM renderizando sessão sem snapshot, aberturas e cliques por
+e-mail na rota \`/admin/emails\`, o fix do rubber-band do iOS que vazava para o body, e os guard-rails
+do callback do Cognito — que virou a pasta \`Plannings/aprendizados\`.
+
+**E a landing nova.** Design system de marketing, e em seguida **três variantes** — A, B (pitch de
+comunidade, v1.5.2) e C (objetivo único, v1.5.3) —, com a variante C mudando o funil: passou a levar
+para a aula grátis do Hotmart em vez da compra, e o funil grátis passou a começar no signup do app
+em vez do teste RAM.
+
+### Yang Planet — 5 de 6, e a Fase 2 destravada
+Rastreabilidade dos fundos com schema de proveniência e lifecycle (migração de 300 registros dos 32
+\`_inventory.md\`), re-verificação web dos 51 fundos em 6 batches paralelos com evidência datada
+(resultado: 44 ativos, 2 pausados, 3 fechados para novos, 2 encerrados), badges de status e KPI de
+"ativas" real no frontend, e a Fase 2 das 8 novas fontes.
+
+Ficou aberto o \`yp-027\`: o match estourando o teto de 400KB do item no Dynamo, bug real encontrado
+no projeto Courageous Land. Foi corrigido na W36.
+
+### Stalo Labs — 52 commits e o padrão de auth da casa
+O maior volume de commits da Stalo em muito tempo. Saiu o **prompt caching no resumir-reunião**
+(\`sl-012\`), que não estava planejado: uma auditoria da tabela de logs mostrou 99,2% do custo em
+input, e transformar o transcript em bloco com \`cache_control\` derrubou o custo em ~70% num conselho
+de 8 empresas (US$ 0,70 → ~US$ 0,21).
+
+E em **28/08, o último dia do sprint**, saiu a v0.4 do MOAI: login individual com Clerk, allowlist,
+passwordless, sessão de 7 dias e trilha de auditoria com "editado por".
+
+---
+
+## Reflexão
+
+### O que foi bem
+
+**O sprint entregou continuamente.** Três versões foram para a main em dois dias — v1.5.1, v1.5.2,
+v1.5.3 — além da landing nova e dos três minigames. Nada ficou esperando outra coisa para subir.
+
+Isso merece ser dito com todas as letras porque é o **contraste exato com a W36**: mesmo
+desenvolvedor, mesmo código, mesma velocidade de commit (79 commits aqui, 88 lá). A W35 colocou tudo
+no ar e a W36 não colocou nada. A diferença não foi esforço nem competência — foi que na W35 cada
+entrega saía de uma base já mergeada, e na W36 cada uma começou a partir da anterior ainda em
+branch.
+
+O outro acerto foi de método: **diagnosticar por escrito antes de corrigir**. Os documentos \`#95\` e
+\`#96\` transformaram "a interface está ruim" numa lista numerada de defeitos, e cada commit fechou um
+item específico. É o oposto de polir no olho, e foi o que permitiu tocar seis jogos sem regressão.
+
+### O que travou
+
+**O experimento das três landings nunca produziu um resultado.** As variantes A, B e C foram
+construídas, a C mudou o funil de propósito (aula grátis em vez de compra direta), e o beta estava
+registrado em \`Plannings/#97\`. Só que na W36 o redesign substituiu aqueles CTAs — a revisão de tech
+lead registrou isso em \`#109\`, item 5: *"variante C morreu"*, com um pedido para confirmar se a
+mudança de funil era intencional. **Até hoje ninguém confirmou.**
+
+Ou seja: construiu-se três versões de uma página para escolher a melhor, e a escolha nunca foi
+feita — a decisão foi tomada por acidente, pelo sprint seguinte. O trabalho não foi perdido, mas o
+aprendizado foi.
+
+**Metade do Clube não fechou.** 7 de 14, e algumas das que ficaram abertas são as mesmas de hoje.
+O \`mc-036\` (fundação de rotas públicas) começou aqui o seu ciclo de **três sprints seguidos em
+vermelho sem ser feito** — o que, na prática, é o board dizendo que ele nunca foi urgente. O
+\`mc-037\` (separação de reputação de e-mail) também nasceu aqui e segue parado, com o \`template.yaml\`
+editado e nada deployado.
+
+**O board já estava descolando da execução.** O \`sl-016\` (login com Clerk) aparece como aberto neste
+sprint, mas o trabalho foi feito em **28/08 — o último dia da janela**. Ele só foi registrado como
+concluído no sprint seguinte, virando \`sl-017\`. É o mesmo diagnóstico que a retro da W33 já tinha
+feito, repetido: o que é entregue no fim do sprint não vira registro, e a retro seguinte tem que ir
+buscar no git.
+
+### O que mudar
+
+**Experimento precisa de data de decisão e de métrica, não só de variantes.** Três landings sem um
+critério escrito de quem ganha e quando se decide não é um teste — é três páginas. Se não há volume
+para decidir, o registro tem que dizer isso e o experimento tem que ser adiado, não construído.
+
+**Tarefa entregue no último dia entra no board no último dia.** A v0.4 do MOAI foi um sprint inteiro
+de trabalho que atravessou a fronteira sem registro. Isso não é burocracia: é o que separa "a Stalo
+entregou pouco" de "a Stalo entregou a v0.4 inteira".
+
+**Vermelho que sobrevive a dois sprints deixa de ser vermelho.** O \`mc-036\` provou na prática que
+não era urgente. Ou ele vira quick win e sai numa tarde, ou desce para amarelo e para de ocupar o
+topo da lista — o que foi feito na W37.
+
+---
+
+## Carryover → Sprint 2026-W36 (29/08-12/09)
+
+Nove tarefas atravessaram:
+
+- **\`mc-036\`** Fundação de rotas públicas (14h) — 🔴 em doing, carryover desde o W34
+- **\`mc-037\`** Separação de reputação de e-mail (3h) — 🟡, nada deployado
+- **\`mc-031\`** Skill de relatório diário (4h) — 🟡
+- **\`mc-033\`**, **\`mc-034\`**, **\`mc-035\`** Growth: destino dos posts, funil C, share do RAM — 🟡/⚪
+- **\`mc-022\`** Recalc SART server-side (8h) — ⚪ backlog crônico
+- **\`yp-027\`** Fix do teto de 400KB no Dynamo (3h) — 🔴 **corrigido na W36**
+- **\`sl-016\`** Login com Clerk (6h) — 🟡 **na verdade entregue em 28/08**, registrado na W36 como \`sl-017\`
+
+⚠️ **Nota de rastreamento:** a retro da W33 já tinha alertado para colisão de IDs entre semanas
+(\`mc-026\` a \`mc-031\` existem na W33 e na W34 apontando para tarefas diferentes). A faixa usada aqui
+(\`mc-026\` a \`mc-037\`) segue a numeração corrigida. A partir da W37 o board gera IDs pelo servidor,
+varrendo todas as semanas — a colisão não pode mais acontecer.`,
+  "2026-W36": `# Retro Sprint 2026-W36 (29/08 - 12/09) — O sprint que produziu tudo e entregou nada
+
+> Retro escrita em 17/09, com atraso, reconstruída a partir do git. Agosto fechou sem retrospectiva
+> e a W36 passou sem daily log (o \`changelog.md\` para em 21/08). Os números abaixo saem do
+> \`planning.json\` reconciliado e do histórico dos repositórios.
+
+## Métricas
+
+- Tarefas: **15/24 concluídas (63%)** — 9 abertas
+- Horas: **100h concluídas de 170h estimadas**, sobre 80h disponíveis
+- Utilização: **≥125% do budget**, e o número é piso — nenhuma tarefa teve \`actual_hours\` registrado
+
+| Projeto | Concluídas | Horas done / est. | Commits |
+|---------|-----------|-------------------|---------|
+| **Clube da Memória** | 6/15 (40%) | 36h / 106h | 88 |
+| **Yang Planet** | 7/7 (100%) | 54h / 54h | 55 |
+| **Stalo Labs** | 2/2 (100%) | 10h / 10h | 1 |
+| **Total** | **15/24** | **100h / 170h** | **144** |
+
+**O número que resume o sprint:** o Clube teve **88 commits — mais que os outros dois projetos
+somados — e a pior taxa de conclusão do board (40%)**. Não foi falta de trabalho. Foi trabalho que
+não chegou a lugar nenhum.
+
+---
+
+## Highlights por projeto
+
+### Yang Planet — o sprint que funcionou
+7 de 7 tarefas fechadas. Rastreabilidade dos fundos com proveniência e lifecycle, re-verificação dos
+51 fundos com evidência datada, badges de status no frontend, o fix do teto de 400KB do Dynamo que
+vinha derrubando match de cliente, admin alocando usuário a projeto, variante \`/abdi\` sobre catálogo
+isolado, e o bloco grande de match e strategy (tipo de crédito como eixo, histórico append-only,
+dois WACCs calculados em código e nunca confiados ao LLM).
+
+Três trials ao vivo foram conduzidos. **Nenhum seguiu no funil, e não há registro do motivo de
+nenhum deles** — virou pendência vermelha na W37 (\`yp-039\`).
+
+### Stalo Labs — uma entrega, no primeiro dia
+A v0.4 do MOAI saiu em 28/08, no dia seguinte ao planning que a criou: login individual com Clerk,
+allowlist, passwordless, trilha de auditoria com "editado por", ata geral em PDF. Fechou o \`sl-016\`
+e resolveu a rastreabilidade que o termo de LGPD exigia. Depois disso a Stalo ficou parada o sprint
+inteiro — **1 commit em duas semanas**.
+
+### Clube da Memória — 88 commits, zero em produção
+O que foi construído: checkout próprio no Mercado Pago com Brick, carteira e reembolso self-service
+na garantia de 7 dias; aulas tocando no app via Mux com \`/curso\` virando hub de trilhas e trilha
+freemium de 2 aulas grátis; redesign interno com o Victor (design system, layout desktop,
+superfícies de conversão Pro); mapa de trilhas na home; app iOS com Capacitor.
+
+Foi ao ar: o Memory Pulse em \`pulse.memoria.club\`, a sessão persistente com claim atômico do RAM, o
+onboarding do Fuji e o polimento dos minigames.
+
+**A última coisa que entrou na main foi em 08/09** (\`5cc7927\`, fix de sessão). Tudo o mais continua
+em branch.
+
+---
+
+## Reflexão
+
+### O que foi bem
+
+O Yang provou que o método funciona quando o trabalho é fatiado em entregas que fecham sozinhas.
+Sete tarefas, sete merges, nenhuma dependendo da outra — e no meio delas um bug de produção real
+(o teto de 400KB) foi achado, corrigido e fechado dentro do mesmo sprint.
+
+No Clube, a qualidade do que foi construído não está em questão. O checkout tem reembolso
+self-service com fluxo de dois e-mails e header de contingência do Pix; a trilha freemium tem
+progresso persistido; o redesign passou por revisão de tech lead que registrou 12 débitos por
+escrito em vez de deixar passar. Isso é trabalho bem feito.
+
+### O que travou — e o mecanismo exato
+
+Três entregas ficaram amarradas uma na outra, e o git mostra **como** isso aconteceu. As branches
+não eram frentes paralelas: eram uma **pilha**.
+
+\`\`\`
+develop (design system / v1.6.0)
+ └─ feat/checkout-mercado-pago     nasceu de develop
+     └─ adeus-hotmart              nasceu do checkout
+         └─ feat/trilhas-zoom-out  nasceu do adeus-hotmart
+\`\`\`
+
+Cada feature nova começou **a partir da anterior ainda não mergeada**. A consequência é aritmética,
+não opinião: para colocar o mapa de trilhas no ar, era obrigatório levar junto o Mux, o Mercado Pago
+e o design system inteiro. Não existia caminho para entregar um sem os outros três. A landing e o
+redesign ficaram presos ao fluxo de Mux/Mercado Pago não porque alguém decidiu acoplar, mas porque
+foram construídos empilhados.
+
+**O dia 08/09 foi a fatura dessa dívida chegando.** O PR #82 era para levar só o fix de sessão
+(#112). Como a main estava atrás da develop desde a 1.6.0, o merge arrastou 317 arquivos junto — um
+release inteiro não planejado, no meio da semana. Foi revertido no mesmo dia. A partir dali a main
+congelou.
+
+Ou seja: **na única vez em que se tentou entregar algo pequeno, o sprint acumulado veio junto e
+forçou um rollback.** É o sintoma clássico de branch de vida longa, e custou o lançamento da W36.
+
+Três consequências que só apareceram quando alguém foi olhar, em 17/09:
+- as lambdas \`course-progress\` **nunca foram declaradas no \`template.yaml\`** — o front já as consome,
+  então a trilha freemium quebraria em produção no primeiro clique;
+- os playback IDs do Mux são os **públicos de teste**, e o gate do Pro é client-side — o curso de
+  R$499 fica legível no bundle;
+- o checkout **nunca rodou com dinheiro real**.
+
+Nenhuma das três estava em card nenhum. Todas são filhas do mesmo problema: **código que não vai a
+produção não é testado por ninguém**.
+
+### O que mudar
+
+**Uma branch, um merge, um sprint.** Nenhuma feature nova começa a partir de uma branch não
+mergeada. Se precisar do que está na anterior, a anterior entra na main primeiro — mesmo incompleta,
+atrás de flag. A regra não é estética: é o que impede que a quarta feature sequestre as três
+primeiras.
+
+**A main não pode ficar mais de uma semana atrás da develop.** O incidente do #82 não foi erro de
+merge, foi consequência de distância acumulada. Se \`develop → main\` tivesse rodado em 03/09, o PR
+#82 teria sido o que se esperava dele: um fix de sessão.
+
+**Infra entra no \`template.yaml\` no mesmo commit que cria a lambda.** As \`course-progress\` passaram
+duas semanas existindo em disco, sendo chamadas pelo front, sem nunca existir no IaC. Isso não é
+descuido de quem escreveu — é a ausência de um passo obrigatório.
+
+**Registrar prazo de terceiro como card, não como lembrança.** A liberação de 30 dias do Mercado
+Pago e o DNS do SES têm relógio externo e nenhum dos dois tinha card. Descobrir isso na véspera do
+lançamento é o mesmo padrão do caso Tainara: o problema só aparece quando alguém vai olhar.
+
+---
+
+## Carryover → Sprint 2026-W37 (14/09-27/09)
+
+O lançamento público, que era para ter acontecido na W36, foi remarcado para a **segunda 21/09**, em
+Brasília, com gravação do vídeo na casa do Fuji — o que coloca o prazo real de estar no ar em
+**domingo 20/09 à noite**.
+
+Seguem abertas, todas absorvidas pela W37:
+
+- **\`mc-038\`** Checkout Mercado Pago (14h) — 🔴 em doing, ainda em branch
+- **\`mc-040\`** Redesign com o Victor (20h) — 🟡 em doing, 12 débitos no #109
+- **\`mc-041\`** Mapa de trilhas (8h) — 🟡 em doing, a branch com 47 commits
+- **\`mc-042\`** App iOS com Capacitor (6h) — 🟡
+- **\`mc-046\`** Merge train (2h) — 🔴 reescrito: é fast-forward de 5 commits, não 4 branches em conflito
+- **\`mc-037\`** Separação de reputação de e-mail (3h) — 🔴 promovido, tem latência de DNS
+- **\`mc-031\`**, **\`mc-033\`**, **\`mc-022\`** — carryover crônico
+
+Abertos na W37 a partir do que esta retro encontrou: **\`mc-047\`** (course-progress fora do IaC,
+bloqueador), **\`mc-048\`** (etapa 0 do Mercado Pago), **\`mc-049\`** (Mux público), **\`mc-050\`**
+(unlock in-place do PalaceHub), **\`mc-051\`** (ligar o checkout na W38).
+
+⚠️ **Decisão registrada em 17/09:** o checkout do Mercado Pago foi **cortado do dia do lançamento**.
+Nunca processou venda real, e o modo de falha dele é a tela de compra — justamente no dia em que o
+vídeo traz gente nova. O Hotmart continua vendendo como fallback, e o checkout entra na W38.`,
   "2026-W21": `# Retro Semana 2026-W21 (19/05 - 25/05)
 
 ## Métricas

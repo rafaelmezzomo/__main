@@ -12,7 +12,7 @@ import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HTML = os.path.join(ROOT, '__planning-layout', 'index.html')
-NAMES = {'memory-club': 'Clube da Memória', 'yangplanet': 'Yang Planet', 'stalolabs': 'Stalo Labs'}
+NAMES = {'mba': 'MBA', 'memory-club': 'Clube da Memória', 'yangplanet': 'Yang Planet', 'stalolabs': 'Stalo Labs'}
 
 
 def js(v):
@@ -50,7 +50,7 @@ def week_block(week):
                 '    },']
 
     out.append('    projects: {')
-    keys = [k for k in ('memory-club', 'yangplanet', 'stalolabs') if k in d['projects']]
+    keys = [k for k in ('mba', 'memory-club', 'yangplanet', 'stalolabs') if k in d['projects']]
     for i, k in enumerate(keys):
         ts = d['projects'][k]['tasks']
         out.append('      %s: { name: %s, tasks: [' % (js(k), js(NAMES.get(k, k))))

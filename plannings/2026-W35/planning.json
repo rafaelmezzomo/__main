@@ -30,7 +30,7 @@
           "estimated_hours": 2,
           "actual_hours": null,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Frente: cauda do lançamento. A UI destrava 'Enviar de novo' em 30s e o servidor só reenvia em 5min — na janela entre os dois nenhum email sai e a UI mente. Causa raiz do único gate de login exercitado em produção em 18/08, que falhou. Propagar o tempo restante do challengeMetadata e alinhar o contador; dica de spam já na primeira tela."
         },
@@ -41,7 +41,7 @@
           "estimated_hours": 3,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Frente: cauda do lançamento. SES reporta 3 Send / 3 Delivery / 0 Bounce, então a falha é classificação do Gmail, não envio. Trocar pra remetente de produto, subir o DMARC quando o volume estabilizar, alarme para sent sem Delivery."
         },
@@ -52,7 +52,7 @@
           "estimated_hours": 4,
           "actual_hours": null,
           "priority": "red",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Frente: cauda do lançamento. Carryover crônico desde o W33. Disparo de boas-vindas ao confirmar novo membro. Depende de [mc-028] estar saudável — não adianta disparar boas-vindas se o email cai no spam. Definir provider e trigger antes de codar. Frente growth: ativação (funil A) — boas-vindas puxa pro treino diário, não pra venda."
         },
@@ -63,7 +63,7 @@
           "estimated_hours": 10,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "doing",
+          "status": "done",
           "carryover": true,
           "notes": "Frente: instrumentação. Restam ~10h das 16h estimadas (6h feitas entre W33 e W34). Já entregues: cockpit read-only v1, aba de aquisição, rotas /admin/emails e /admin/product (ce01d8e), aba Emails e Produto v2. Falta fechar o usuário 360 e o funil de vendas. Ver Plannings/#78."
         },
@@ -85,7 +85,7 @@
           "estimated_hours": 10,
           "actual_hours": null,
           "priority": "red",
-          "status": "doing",
+          "status": "done",
           "carryover": true,
           "notes": "Frente: crescimento. Spec de produto fechada em Plannings/#87. Landing hoje é 100% pitch do curso; passa a ser vitrine da plataforma (RAM Score, minigames, Speed Cards/Digit Span, ranking, trilha do Palácio), com o pitch do curso condensado e movido pro /pro. BLOQUEIO A RESOLVER ANTES DE CODAR: /pro hoje é rota autenticada e precisa virar pública pra landing linkar. Pede uma sessão de planejamento de implementação antes. Frente growth onda 1 (funil A) + decidir rota da página de venda (/curso) pro funil B. Ver docs/estudos/growth-plan-clube-2026-Q3.md. Spec da estrutura: Plannings/#92-MAIN_PAGE_HUB_DAS_INICIATIVAS.md (evolui o #87). Implementado pelo Claude em 20/08 (estrutura do #92): hero RAM, duas frentes, seção RAM, playground, teaser Pro, canais, CTA final; pitch do curso 100% no /pro (PainPoints e Pricing exportados pro ProPitch). Falta: foto do Taya em public/landing/taya-avatar.png, revisão de copy do Rafael, teste visual mobile, commit. Pitch v2 (20/08, estilo Educato/RevisionDojo): hero de resultado, barra de prova (270k/2M/1º lugar), como funciona em 3 passos, seção de ciência com o Taya, FAQ da vitrine. Estudo: __main/docs/estudos/landing-referencias-pitch.md."
         },
@@ -107,7 +107,7 @@
           "estimated_hours": 8,
           "actual_hours": null,
           "priority": "white",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Backlog — fora do sprint por decisão no planning de 19/08. Credencial OAuth + sync job puxando Sales History, Subscriptions e Club students/progress pra tabelas espelho. Hotmart só guarda 60 dias de eventos."
         },
@@ -154,6 +154,17 @@
           "status": "doing",
           "carryover": false,
           "notes": "Implementado pelo Claude em 20/08: rotas públicas (/pro, torre-controle, encaixe-sombra, garcom-maluco), useProStatus anon, ProPage dois estados, useExitTarget, persistência anônima por visitorId, MinigameSaveGate + useClaimOnAuth, lambda minigame-progress + tabela no template.yaml. Falta: deploy SAM, teste manual dos fluxos (anônimo → salvar → claim; Google/reload), commit. Fatia 2 (20/08): pitch completo migrado pro /pro (ProPitch reusa seções da landing; quem não é Pro vê a venda, Pro vê os benefícios) — destrava o mc-032."
+        },
+        {
+          "id": "mc-037",
+          "title": "Separar reputação de email: transacional em auth.memoria.club (spec #97)",
+          "repo": "memory-club",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Frente: cauda do lançamento. Filha do mc-028: hoje OTP de login e CX saem do mesmo vitor@memoria.club, e um complaint de CX pode suprimir o remetente do login (supressão do SES é por endereço, config set é só telemetria). Spec aprovada em Plannings/#97: identidade SES nova auth.memoria.club pro transacional, CX fica na raiz; memory-club-cx formalizado no IaC por recriação cirúrgica (log group fica fora, preserva histórico Abriu/Clicou). template.yaml já editado e validado, NADA deployado. Próximo passo: janela de recriação + sam deploy, depois Rafael registra os 3 CNAMEs DKIM no name.com. Corte do SESSender só com DNS SUCCESS + teste manual verde, em horário de baixo uso."
         }
       ]
     },
@@ -166,7 +177,7 @@
           "estimated_hours": 20,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Única frente do Yang no sprint, depois de duas semanas quase paradas. FINEP, TFFF, BNDES programas, GEF, CAIXA, Banco do Brasil, Banco do Nordeste, Fundo Brasil. RESOLVER ANTES DE COMEÇAR: método de coleta (scraping vs curadoria manual vs ingestão de PDF) e as open questions do doc — valor do GEF (possível erro K->M), fatia grant do programa FINEP de R$1.6B, fatia Brasil do TFFF. Depois: raw-files -> fund JSON no backend -> schema no frontend -> fundsCatalog -> mappedFundId. Doc: yang-gps/docs/planning/2026-08-17-funding-sources-expansion.md"
         },
@@ -177,9 +188,53 @@
           "estimated_hours": 6,
           "actual_hours": null,
           "priority": "white",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Backlog — carryover desde o W32. Provavelmente absorvido pelo método que sair do [yp-023]; reavaliar depois que a Fase 2 destravar."
+        },
+        {
+          "id": "yp-024",
+          "title": "Rastreabilidade dos fundos: schema de proveniência + lifecycle + matcher",
+          "repo": "yang-gps",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Fases 1-3+5 implementadas em 26/08: SourceRecord/FundStatus no schema Pydantic, migração dos 32 _inventory.md (300 registros), fixes conhecidos (abf-fip/good-karma closed_for_new, afd janela 2025-07-31, bnb/bb valid_until, bndes-chamada-clima retipado), matcher com pre-filter de status + janelas por data + canal de acesso no contexto do LLM, scripts/check_fund_freshness.py no CI. Plano: ~/.claude/plans/vamos-comecar-uma-planning-quizzical-oasis.md"
+        },
+        {
+          "id": "yp-025",
+          "title": "Re-verificação web dos 51 fundos (6 batches) com evidência datada",
+          "repo": "yang-gps",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "notes": "Fase 4 concluída em 26/08 (6 batches paralelos): 51/51 fundos verificados com evidência datada. Resultado: 44 active, 2 paused (bndes-programs, fundo-brasil), 3 closed_for_new (abf-fip, amaz, inseed-fima), 2 wound_down (suzano-ventures — site redireciona pro corporativo, good-karma — fusão com Just Climate 05/2025). Taxas safra 2026/27 primárias (Res. CMN 5.329) no BNB/BB/BASA. Freshness check: 0 FAILs, 0 warns. Follow-ups: Eco Invest leilão 5 resultados ~09/09; FINEP fluxo contínuo fecha 31/08; avaliar adicionar Just Climate LatAm como fundo sucessor do Good Karma."
+        },
+        {
+          "id": "yp-026",
+          "title": "Frontend: badges de status, fontes datadas, KPI 'ativas' real",
+          "repo": "yang-gps-frontend",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Fase 6. GeneratedFundProfile: badge de status + 'verificado em' + lista de source_records datada (fallback pro sources legado). FundsOverview: 'ativas' = status active (não 'tem perfil'), blocos cinza no treemap para fundos fechados. Remover matchable flag do fundsCatalog. Depende só das fases 1-2 (já mergeáveis). Concluída em 26/08 junto com as demais fases; verificada visualmente (46 ativas no Landscape, badges e fontes datadas no perfil)."
+        },
+        {
+          "id": "yp-027",
+          "title": "Fix: matching estoura 400KB do item Dynamo (progress + result juntos)",
+          "repo": "yang-gps",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Bug encontrado em 29/08 no projeto Courageous Land (830c2a3c): durante o match, matching (~217KB) e matching_progress (~162KB) coexistem no item; com muitos candidatos qualquer gravação extra passa dos 400KB do Dynamo, o worker morre com ClientError antes do estado terminal e deixa matching_progress órfão (causa do match_failed em 28/08). Fix no gps-match-project: compactar o progress (só chaves/status, sem o match completo) ou movê-lo pra S3/item separado; considerar limpeza de progress órfão no self-heal do gps-get-project. Workaround manual aplicado: REMOVE matching_progress + re-gravação do brief (backup do item no scratchpad da sessão)."
         }
       ]
     },
@@ -203,14 +258,35 @@
           "estimated_hours": 4,
           "actual_hours": null,
           "priority": "white",
-          "status": "todo",
+          "status": "done",
           "carryover": true,
           "notes": "Backlog — Stalo Labs ficou FORA do sprint por decisão no planning de 19/08. Registrado pra não sumir do board como aconteceu no W33. Carryover crônico."
+        },
+        {
+          "id": "sl-016",
+          "title": "Login individual no cockpit MOAI com Clerk (padrão Stalo de auth)",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Decisão de 28/08 registrada em login-architecture.md: Clerk vence AuthKit/Kinde/Cognito como padrão de login da Stalo (projetos curtos em volume — login é commodity). Escopo: @clerk/clerk-react no lugar do LoginGate, JWT via JWKS na Lambda no lugar do x-app-password, convites invite-only, sub do JWT como updatedBy nas escritas (base do stalo-01-auth-individual), atualizar página /dados. Resolve a rastreabilidade que o termo LGPD (moai-05) exige."
         }
       ]
     }
   },
   "retro": {
-    "completed": false
+    "completed": true,
+    "metrics": {
+      "tasks_done": 14,
+      "tasks_total": 23,
+      "hours_estimated": 133,
+      "hours_actual": 85,
+      "hours_available": 56
+    },
+    "what_went_well": "O sprint entregou CONTINUAMENTE: tres versoes na main em dois dias (v1.5.1, v1.5.2, v1.5.3), mais a landing nova e tres minigames (Espelho Oculto, Cores Velozes, Cromofila). Nada ficou esperando outra coisa pra subir — o contraste exato com a W36, que teve volume de commit parecido (79 aqui, 88 la) e nao colocou nada no ar. O outro acerto foi de metodo: diagnosticar por escrito antes de corrigir. Os docs #95 (minigames) e #96 (fluxo RAM) viraram listas numeradas de defeitos, com cada commit fechando um item — foi o que permitiu tocar seis jogos sem regressao. Na Stalo, o prompt caching nao planejado derrubou ~70% do custo de LLM por conselho.",
+    "what_blocked_me": "O experimento das tres landings nunca produziu resultado. A, B e C foram construidas, a C mudou o funil de proposito, e o beta estava registrado no #97 — mas na W36 o redesign substituiu aqueles CTAs e a revisao registrou no #109 que 'a variante C morreu', pedindo confirmacao que ate hoje ninguem deu. A escolha foi feita por acidente, pelo sprint seguinte. Metade do Clube nao fechou (7/14), e o mc-036 comecou aqui seu ciclo de tres sprints em vermelho sem ser feito. O board ja descolava da execucao: o sl-016 aparece aberto, mas foi entregue em 28/08, o ultimo dia da janela, e so virou registro no sprint seguinte como sl-017.",
+    "what_to_change": "Experimento precisa de data de decisao e metrica, nao so de variantes — tres landings sem criterio escrito de quem ganha e quando nao e teste, e tres paginas; sem volume pra decidir, adiar em vez de construir. Tarefa entregue no ultimo dia entra no board no ultimo dia: a v0.4 do MOAI foi um sprint inteiro que atravessou a fronteira sem registro. E vermelho que sobrevive a dois sprints deixa de ser vermelho — o mc-036 provou na pratica que nao era urgente."
   }
 }

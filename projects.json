@@ -1,6 +1,11 @@
 {
   "projects": [
     {
+      "id": "mba",
+      "name": "MBA",
+      "repos": []
+    },
+    {
       "id": "yangplanet",
       "name": "Yang Planet",
       "repos": ["yang-gps", "yang-gps-frontend", "yang-dashboard-eda"]
