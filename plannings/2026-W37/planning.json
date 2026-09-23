@@ -106,14 +106,14 @@
         },
         {
           "id": "mc-049",
-          "title": "Divida de receita: aulas do Mux com playback ID publico",
+          "title": "Fechar o acesso as aulas do Mux: playback ID signed + gate server-side",
           "repo": "memory-club",
-          "estimated_hours": 4,
+          "estimated_hours": 3,
           "actual_hours": null,
           "priority": "red",
           "status": "todo",
           "carryover": false,
-          "notes": "PIOR DO QUE PARECIA. Nao e so 'URL publica': os 20 playback IDs estao NO BUNDLE JS, e o gate do Pro em MobileVerticalPath.jsx:472 (isProLocked) e PURAMENTE CLIENT-SIDE. Qualquer pessoa que abra o devtools e de grep no bundle assiste o curso de R$499 inteiro de graca, sem conta Pro. Nao e compartilhar link, e ler o codigo-fonte. DECISAO: lancar assim mesmo (no dia 1 o publico e o do video do Fuji, a receita perdida por NAO lancar e 100% e a perdida por vazamento e ~0 nas primeiras semanas), mas isto e o ITEM #1 DE 23/09, nao 'algum dia'. O conserto e reversivel sem re-upload: criar signed playback IDs no Mux, apagar os publicos, escrever a lambda de JWT. Evitar mencionar no video que o curso tem player proprio de um jeito que convide curiosidade tecnica. Fora do escopo e sem trabalho: 40-theory e 40-practical seguem na Hotmart (cardLevels.js:63) — nenhum comprador do dia 1 chega na fase 40."
+          "notes": "VERIFICADO NA FONTE em 17/09 (nao e suposicao, e leitura do codigo).\n\nESTADO ATUAL: os 20 playback IDs sao constantes exportadas em src/features/course/lib/lessonVideos.ts, entao vao no bundle servido ao navegador — o proprio comentario do arquivo diz que sao 'os PUBLICOS de teste'. O gate (MobileVerticalPath.jsx:472, isProLocked) so decide classe CSS e destino do onClick; o LessonPlayer.tsx entrega o playbackId direto pro <MuxPlayer>, sem token. Nao existe lambda de assinatura, nao ha UMA mencao a Mux no template.yaml, e nenhuma rota de curso checa member-pro (course-progress-get so valida Cognito, e o comentario da linha 7 diz que nao checa Pro de proposito, porque as primeiras aulas sao freemium).\n\nAS DUAS CAMADAS (a distincao que decide o conserto):\n  Camada 1 — QUEM OBTEM O ID. Resolvida pela API devolvendo o playback ID so pra quem e member-pro. Ideia do Rafael, esta CERTA e vale fazer.\n  Camada 2 — QUEM CONSEGUE REPRODUZIR O ID. So o Mux decide, pela playback policy. O Mux NAO conhece os usuarios do Clube: nao existe login do app do lado de la. Policy 'public' = qualquer um com a string assiste, sem autenticacao nenhuma. Policy 'signed' = exige JWT assinado com a signing key, de vida curta.\nPOR QUE A CAMADA 1 SOZINHA NAO RESOLVE: os IDs atuais sao public e JA VAZARAM — estao no bundle que ja foi servido e no historico do git. Blindar a API controla quem recebe chave nova, mas a chave antiga continua abrindo a porta. So a troca de policy revoga o que ja saiu.\n\nCONSERTO — MENOR DO QUE PARECIA: nao ha nada a criar no Mux. O scripts/mux-lessons.mjs:91 cria o ID publico 'onde so ha signed', ou seja os assets JA TEM os signed, que sao os originais; o --public so adicionou um paralelo pra teste local, e o comentario do script ja manda apagar depois. Tres passos:\n  1. Lambda que checa member-pro e devolve playback ID signed + JWT de vida curta. ESTA LAMBDA E A CAMADA 1 E A 2 AO MESMO TEMPO — o endpoint que valida Pro e o mesmo que assina, entao a ideia da API e o fix de signed URL colapsam num trabalho so. Mesmo padrao dos 5 endpoints do Palacio que ja tem gate server-side.\n  2. Trocar as strings de lessonVideos.ts pelos IDs signed e passar tokens={{playback: ...}} ao MuxPlayer.\n  3. APAGAR os playback IDs publicos no dashboard do Mux. E o passo que revoga o que vazou e o unico que nao da pra pular — sem ele, os passos 1 e 2 protegem so quem chegar depois.\n\nDECIDIR NA HORA DE MIGRAR: as 2 aulas gratis da trilha freemium provavelmente seguem PUBLICAS — sao isca de aquisicao e assinar token pra visitante anonimo e atrito sem ganho. Tem que ser escolha explicita, senao assina tudo e quebra o funil de entrada.\n\nDECISAO DE LANCAMENTO (17/09): nao adia o lancamento de domingo. No dia 1 o publico e o do video do Fuji; a receita perdida por NAO lancar e 100%, a perdida por vazamento e ~0 nas primeiras semanas. Mas e o ITEM #1 DE 23/09, nao 'algum dia'.\nCORRECAO DE RECOMENDACAO ANTERIOR: eu havia sugerido nao mencionar no video que o curso tem player proprio. Isso e seguranca por obscuridade e nao presta — o lancamento precisa poder falar do produto. A resposta e fechar a porta, nao torcer pra ninguem achar a macaneta.\n\nFORA DE ESCOPO, SEM TRABALHO: 40-theory e 40-practical (Desafio final) seguem na Hotmart (src/store/cardLevels.js:63) — nenhum comprador do dia 1 chega na fase 40."
         },
         {
           "id": "mc-051",
@@ -155,7 +155,7 @@
           "estimated_hours": 20,
           "actual_hours": null,
           "priority": "yellow",
-          "status": "doing",
+          "status": "done",
           "carryover": true,
           "notes": "Carryover do W36, em doing. REBAIXADO DE VERMELHO PRA AMARELO neste planning: com 27h de MBA na primeira semana, isto é importante mas não urgente — é a definição de amarelo. Falta fechar os 7 débitos de Plannings/#109: 4 técnicos (autosave sem debounce, Icon.tsx falhando em silêncio, SVGs sem currentColor + licença do Hugeicons, Playwright sem baseline) e 3 decisões de produto a validar com o Victor (variante C da landing, unlock in-place do PalaceHub, régua RAM por slot). As 3 decisões são conversa, não código — dá pra destravar numa call curta mesmo na semana do TCC."
         },
@@ -224,6 +224,61 @@
           "status": "todo",
           "carryover": true,
           "notes": "Backlog crônico desde o W34. Integridade de dados, nunca entrou em nenhum sprint."
+        },
+        {
+          "id": "mc-052",
+          "title": "Motor do ciclo de 28 dias: trilha free do RAM + MindGames (spec #118)",
+          "repo": "memory-club",
+          "estimated_hours": 12,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Spec escrita em 17/09 a partir do programa do Dr. Taya: Plannings/#118-CICLO_28_DIAS_RAM_MINDGAMES.md. O treino diario hoje monta o par de jogos do dia sem programa por tras; passa a executar um ciclo de 28 dias organizado por dominio, com carga crescente (1 item no D1, ate 5 na quarta semana) e o RAM como checkpoint semanal (D1, D8, D15, D22 — nao e treino diario). BOA NOTICIA: os 12 jogos JA EXISTEM em src/features/ (torreControle, coresVelozes, sart, featureMatch, encaixeSombra, espelhoOculto, tokenSearch, stroop, garcomMaluco, cromofila, digitSpanTest, pairedAssociates) — nenhum jogo novo. Escopo desta fatia: representar os 28 dias como DADO (nao hardcode espalhado), resolver 'em que dia do ciclo este usuario esta', e montar a tela do dia com os jogos e os checkboxes de habito (sono, atividade fisica, meditacao, dieta MIND). Habito e checkbox auto-declarado, sem verificacao — declaracao, nao medicao. ABERTO: o ciclo reinicia no D29 igual, ou existe ciclo 2 com progressao?"
+        },
+        {
+          "id": "mc-053",
+          "title": "NEUROCOINS por adesao ao programa — RESOLVER CONFLITO COM O #92 ANTES",
+          "repo": "memory-club",
+          "estimated_hours": 6,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "BLOQUEADO POR DECISAO DE PRODUTO, nao por codigo. A regra nova (+10 NC por meta cumprida conforme a programacao, -5 por meta nao realizada, vegano tira peixe/ave da dieta MIND) CONFLITA com o Plannings/#92-NEUROCOINS_ECONOMIA.md, que ja especificou +5 NC por partida concluida e +10 de bonus ao bater recorde pessoal, sem saldo negativo, calculado em lambdas/minigame-post-session/index.mjs. As duas regras nao podem coexistir: uma premia PARTIDA JOGADA, a outra premia ADESAO AO PROGRAMA, e a nova introduz saldo negativo que o #92 nao previu. Decidir entre: (a) o #118 substitui a earn rule do #92, (b) as duas convivem em eixos separados, (c) o #92 vira so o mecanismo de carteira. NAO IMPLEMENTAR EARN antes dessa decisao. Outras questoes abertas: saldo pode ficar negativo ou trava no zero? Quem marca meta como nao realizada — job diario a meia-noite no fuso do usuario?"
+        },
+        {
+          "id": "mc-054",
+          "title": "Rankings em tempo real: por jogo (semanal) e do RAM (mensal + all-time)",
+          "repo": "memory-club",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Spec #118 secao 5. Ranking em tempo real por jogo COM USERNAME, e vencedores semanais de cada joguinho em duas categorias: quem mais JOGOU e quem mais PONTUOU. Ranking do RAM com vencedor mensal e o melhor de todos os tempos SEMPRE VISIVEL — a pessoa a ser batida. Ja existe base: get-cards-ranking e get-digit-ranking, e o apelido publico e obrigatorio desde o login sem senha. PENDENCIA DE PRODUTO: decidir o que acontece com quem nao quer aparecer no ranking — expor username de todo mundo por padrao e decisao de privacidade, nao de UI."
+        },
+        {
+          "id": "mc-055",
+          "title": "Triangulo RAM na home e Cromocognito (spec de produto, sem codigo)",
+          "repo": "memory-club",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Spec #118 secao 5. Triangulo RAM na pagina inicial, com cards que mudam de design a cada 100 pontos. E o Cromocognito: identidade cromatica cognitiva do usuario, uma 'pedra preciosa' colorida e especifica de cada pessoa, com a cor derivada da pontuacao de cada componente do RAM (raciocinio, atencao, memoria). PRE-REQUISITO: precisa de uma regra de mapeamento score -> cor escrita ANTES de virar design ou codigo. Enquanto nao existir essa regra, isto e conversa de produto, nao tarefa de engenharia."
+        },
+        {
+          "id": "mc-056",
+          "title": "Trilha sonora original do Taya nos jogos e no RAM, com liga/desliga",
+          "repo": "memory-club",
+          "estimated_hours": 5,
+          "actual_hours": null,
+          "priority": "white",
+          "status": "todo",
+          "carryover": false,
+          "notes": "BACKLOG, pedido do Rafael em 17/09. O Taya mandou musicas inteiras dele (arquivos .m4a: duas de meditacao e faixas soltas) pra virarem trilha original do app — plano de fundo dos jogos e do RAM Score, com o usuario podendo ligar ou desligar o audio dentro do 'cockpit cognitivo' dele. PONTOS A RESOLVER ANTES: (1) onde os arquivos ficam hospedados — .m4a de 5 a 10 MB cada nao entram no bundle, provavelmente S3/CDN com carregamento sob demanda; (2) liga/desliga tem que ser preferencia persistida, nao estado de sessao; (3) audio de fundo em jogo cognitivo cronometrado pode ATRAPALHAR a medicao — decidir se fica off por padrao e se vale medir o efeito no score; (4) direitos de uso das faixas registrados por escrito com o Taya. Os arquivos ainda nao estao no repo."
         }
       ]
     },
@@ -342,6 +397,215 @@
           "status": "todo",
           "carryover": false,
           "notes": "PRAZO: amanhã, sexta 18/09. Já em implementação. Sucede a v0.4 (login individual com Clerk + trilha de auditoria, sl-017). O CRM foi identificado no backlog do MOAI em 21/08, o que destravou o item da rotina do CS — esta release é o que fecha aquela ponta. ATENÇÃO: nada da integração aparece commitado no stalolabs-MOAI desta máquina (main parada em 01/09, último branch release/v0.4) — ou o trabalho está em outro lugar, ou não foi pushado. Conferir antes de contar como pronto."
+        },
+        {
+          "id": "sl-021",
+          "title": "Busca do cockpit não acha empresa/pessoa (ex: Marina Vidal)",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 3,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Achado na validação com a Luana (18/09). O filtro da lista de reuniões é 100% local sobre o que o scroll infinito já carregou (`granola-lista.tsx`), e o índice de empresa/pessoa (`indiceBuscaGranola` em `store.ts`) só cobre conselho que tem `granolaNoteIds`. Duas falhas independentes: (1) conselho antigo não carregado ainda = zero resultado mesmo com o nome certo; (2) conselho criado por paste manual nunca entra no índice. Correção: buscar sobre TODAS as sessões em memória (não só as notas paginadas) e mostrar o resultado de conselho mesmo quando a reunião do Granola correspondente ainda não veio na página."
+        },
+        {
+          "id": "sl-022",
+          "title": "Reverter o modelo padrão de criação para Ata Conselho",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 1,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "`ATA_MODELO_NOVO` em `src/lib/cockpit-data.ts` está em 'ato' — era o teste de agosto. Volta pra 'conselho'. NÃO tocar em `ATA_MODELO_PADRAO` (fallback de leitura dos conselhos antigos); trocar o de criação não afeta nenhum conselho já gravado."
+        },
+        {
+          "id": "sl-023",
+          "title": "Renomear 'ATA 2 ato' para 'Quarter Reset'",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 1,
+          "actual_hours": null,
+          "priority": "green",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Nome que a Luana usa: é o ciclo de ~4 meses. Rótulo em `MODELOS_ATA.ato.nome` (`cockpit-data.ts`) — só a label de tela; o id 'ato' fica como está, porque é ele que está gravado em `Session.ataModelo` no banco. Varrer também os textos de Arquitetura/releases."
+        },
+        {
+          "id": "sl-024",
+          "title": "Envio ao Tomato CRM só aparece no modelo Ata Conselho",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Decisão da Luana: o Quarter Reset não vai pro CRM. Hoje os dois botões de envio (`ConselhoPage.tsx`, 'ata' e 'encaminhamento') aparecem sempre, e `MAPA_POR_MODELO` em `crm-core.ts` tem mapeamento pro modelo 'ato' — que grava no mesmo bloco mensal do conselho. Esconder os botões quando `sess.ataModelo !== 'conselho'` e decidir se o mapa 'ato' sai do core ou fica dormente."
+        },
+        {
+          "id": "sl-025",
+          "title": "Reskin do PDF atual com a identidade MOAI (Inter + paleta neutra)",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fase 1 do PDF. Mantém o documento como é hoje (conselho inteiro, uma empresa por página) e troca só a pele, em `@media print` no `index.css` + `resumo-imprimivel.tsx`: (1) Geist Mono -> Inter (@fontsource), Bricolage Grotesque ExtraBold reservada aos numerais; (2) paleta quente (#18160F/#6B655A, herdada do moai-pitch-final.html) -> neutra do guia (#1A1A1A titulo, #5D5D5D corpo, #C6C4C4 hairline, #F5F5F5 superficie); (3) metadados viram colunas rotuladas (EMPRESA · CS RESPONSAVEL · DATA · QUARTER) no lugar dos pills com borda; (4) rodape corrido com paginacao. Material: `discovery/formato pdf /MOAI Style_Guide/SuaVoz_Style_Guide.md`. As fontes saem do proprio PDF de referencia, que embute Inter + Bricolage — o guia pede BDO Grotesk, que e paga, e a referencia ja a substituiu. Entrega os tokens de cor/tipo que a [sl-029] consome."
+        },
+        {
+          "id": "sl-026",
+          "title": "Puxar o nome certo do membro do contato já vinculado no CRM",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Erro real na demo: o Granola transcreveu 'Carol do Pinheiro Móveis' e a ata foi pro CRM assim, em vez de 'Carolina Pinheiro / Pousada Flores'. Como `Empresa.crmContactId` já persiste a escolha manual do CS, da 2ª participação em diante dá pra ler o nome canônico do contato e oferecer a correção. 1ª participação continua manual — o envio segue manual de propósito, pra não multiplicar erro de transcrição."
+        },
+        {
+          "id": "sl-027",
+          "title": "Campo 'encaminhamento' no modelo Ata Conselho",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 2,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "AGUARDANDO A LUANA reabrir a requisição (ela ficou de fazer). O modelo 'conselho' não tem o campo; o encaminhamento hoje vive fora da ata (`Empresa.encaminhamento`). Não começar antes do pedido escrito — mexe nos 5 campos canônicos e no mapa do CRM."
+        },
+        {
+          "id": "sl-028",
+          "title": "Deploy da V5 com os ajustes da validação",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 1,
+          "actual_hours": null,
+          "priority": "red",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fecha sl-021..sl-024. Amplify (front) + `sam build && sam deploy --profile stalolabs` se mexer na Lambda. Acrescentar a entrada no topo de `src/content/releases.ts` ANTES do build — o conteúdo sobe com o bundle. Avisar a Luana quando estiver no ar."
+        },
+        {
+          "id": "sl-029",
+          "title": "Ficha individual em PDF, no formato da referência da Luana",
+          "repo": "stalolabs-MOAI",
+          "estimated_hours": 8,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Fase 2 do PDF, depende dos tokens da [sl-025]. Documento NOVO, não é reskin: um PDF por membro (o `Ficha_JoaoPedro` em `discovery/formato pdf /`), com Big Deal em cartão escuro no topo, campos em itens separados por hairline (um item por linha, não um parágrafo só), Conclusões em cartão claro numerado com Bricolage, e rodapé 'MOAI · Conselho do X' / 'Ficha individual — Nome · 1/2'. DUAS pendências de conteúdo: (a) 'Observações gerais' da referência não existe em nenhum dos dois modelos de ata — proposta é mapear de `anotacoes` no modelo conselho e omitir no Quarter Reset, sem criar campo canônico novo; (b) o link da transcrição no rodapé sai de `Session.granolaNoteIds` montando notes.granola.ai/t/<id> — confirmar que o id casa com a URL antes de imprimir link quebrado. RISCO TÉCNICO conhecido: o cartão escuro depende de `background-color`, que o Chrome não imprime com 'Gráficos de segundo plano' desmarcado (default) — ver o comentário no `index.css` que explica por que o cabeçalho de hoje usa borda em vez de fill."
+        },
+        {
+          "id": "sl-030",
+          "title": "Periograma por voz: PoC áudio → JSON → chart, com score contra o gabarito",
+          "repo": "stalolabs-Periodontograma",
+          "estimated_hours": 4,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "notes": "Setup em 18/09: transcrição whisper local, modelo JSON (schema + gabarito do PNG), index.html com toggle Gabarito/Tentativa/Diff, círculo de acurácia, badge v0.1 e popup com custo em tokens. Tentativa 1 = 38.3%. CLAUDE.md fixa a métrica norte (95% mínimo, 99% clinical grade) e o loop semanal; setup/ guarda a reunião técnica de 18/09. Próximo: kick-off com o cliente 22/09 e mais áudios com gabarito. Fechado em 23/09: v0.2 em 4 pacientes (melhor 96.8%), home com gráfico por versão, planning do épico de coleta em docs/planning."
+        },
+        {
+          "id": "sl-031",
+          "title": "PerioFácil T13: decidir whisper (API vs próprio), leitor de gabarito e identidade do paciente",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "red",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 2,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md. Destrava T2, T5 e T8. Registrar em setup/."
+        },
+        {
+          "id": "sl-032",
+          "title": "PerioFácil T1+T3: modelo de dados do exame + harness empacotado (schema, prompt, R01, score) como módulo versionado",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 6,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md."
+        },
+        {
+          "id": "sl-033",
+          "title": "PerioFácil T2: pipeline assíncrono complete → transcrição (whisper) → preenchimento (Anthropic) → resultado",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 10,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md. Fora do Lambda de 30 s: SQS/Step Functions, retries, failed com motivo."
+        },
+        {
+          "id": "sl-034",
+          "title": "PerioFácil T4: endpoints GET /exames, GET /exames/{id} (estado + ETA), POST gabarito, POST reprocessar",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 4,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md."
+        },
+        {
+          "id": "sl-035",
+          "title": "PerioFácil T5+T6: tela 'Iniciar novo exame' + botão 'Ver resultado' com contagem regressiva pela ETA",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 6,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md. ETA pela duração do áudio, não 60 s fixos; bloqueio de 60 s se ainda processando."
+        },
+        {
+          "id": "sl-036",
+          "title": "PerioFácil T7: tela de resultado em React (chart + donut do index.html; aba única sem gabarito, Gabarito/versão/Diff com)",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 10,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md."
+        },
+        {
+          "id": "sl-037",
+          "title": "PerioFácil T8: upload do gabarito depois + agente leitor (Claude visão) → JSON → conferência do rodapé → score",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 8,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md."
+        },
+        {
+          "id": "sl-038",
+          "title": "PerioFácil T9+T10: visão geral da dentista (pontos por versão) + reprocessar exame quando sair versão nova",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "done",
+          "carryover": false,
+          "estimated_hours": 6,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md."
+        },
+        {
+          "id": "sl-039",
+          "title": "PerioFácil T11+T12: guardrails (aviso de coleta, sem export, logs limpos) + painel Stalo por versão",
+          "repo": "stalolabs",
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "doing",
+          "carryover": false,
+          "estimated_hours": 4,
+          "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md. Feito: aviso fixo de coleta em toda tela (AvisoColeta), sem export/print no app. Falta: painel agregado pra Stalo Labs (todas as dentistas, score/custo por versão) — adiado, o índice do PeriogramaDigital continua sendo a visão do Rafael por enquanto."
         }
       ]
     }
