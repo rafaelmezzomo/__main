@@ -606,6 +606,17 @@
           "carryover": false,
           "estimated_hours": 4,
           "notes": "Épico PerioFácil coleta de dados — spec em stalolabs-Periodontograma/docs/planning/2026-09-23-periofacil-coleta-de-dados.md. Feito: aviso fixo de coleta em toda tela (AvisoColeta), sem export/print no app. Falta: painel agregado pra Stalo Labs (todas as dentistas, score/custo por versão) — adiado, o índice do PeriogramaDigital continua sendo a visão do Rafael por enquanto."
+        },
+        {
+          "id": "sl-040",
+          "title": "PerioFácil: gravador de áudio no app (A) + spike de ditado ao vivo com gramática do harness (B)",
+          "repo": "stalolabs",
+          "estimated_hours": 12,
+          "actual_hours": null,
+          "priority": "yellow",
+          "status": "todo",
+          "carryover": false,
+          "notes": "Spec em stalolabs-Periodontograma/docs/planning/2026-09-24-gravador-e-ditado-ao-vivo.md. Branch feat/gravador-e-ditado-ao-vivo a partir de main. A = 1-2 dias; B = ~1 semana, Chrome desktop, Web Speech + gramática (R02-R05), métrica offline: gramática vs transcripts no mesmo score.mjs."
         }
       ]
     }

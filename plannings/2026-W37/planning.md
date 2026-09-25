@@ -1,6 +1,6 @@
 # Planning Sprint 2026-W37 (14/09 - 27/09)
 
-**Horas disponíveis:** 80h | **Horas alocadas:** 289h | **Livre:** -209h
+**Horas disponíveis:** 80h | **Horas alocadas:** 301h | **Livre:** -221h
 
 ## Resumo
 
@@ -8,9 +8,9 @@
 |---------|-----------|----|----|----|----|---------|
 | MBA | 27h | 4 | 0 | 0 | 0 | 4 |
 | Clube da Memória | 123h | 7 | 10 | 0 | 3 | 20 |
-| Stalo Labs | 100h | 8 | 13 | 1 | 0 | 22 |
+| Stalo Labs | 112h | 8 | 14 | 1 | 0 | 23 |
 | Yang Planet | 39h | 3 | 3 | 1 | 0 | 7 |
-| **Total** | **289h** | 22 | 26 | 2 | 3 | **53** |
+| **Total** | **301h** | 22 | 27 | 2 | 3 | **54** |
 
 ## 🔴 Fazer Agora
 - [ ] [mba-002] TCC: relatório do Business Game — entrega domingo 20/09 à noite (mba) — 8h
@@ -60,6 +60,7 @@
 - [x] [sl-037] PerioFácil T8: upload do gabarito depois + agente leitor (Claude visão) → JSON → conferência do rodapé → score (stalolabs) — 8h
 - [x] [sl-038] PerioFácil T9+T10: visão geral da dentista (pontos por versão) + reprocessar exame quando sair versão nova (stalolabs) — 6h
 - [ ] [sl-039] PerioFácil T11+T12: guardrails (aviso de coleta, sem export, logs limpos) + painel Stalo por versão (stalolabs) — 4h
+- [ ] [sl-040] PerioFácil: gravador de áudio no app (A) + spike de ditado ao vivo com gramática do harness (B) (stalolabs) — 12h
 - [x] [yp-035] Base de fundos a 73 e tiers de qualidade de dado (yang-gps) — 12h
 - [x] [yp-036] Catálogo do frontend vira espelho gerado do backend + KPI de capital endereçável (yang-gps-frontend) — 6h
 - [x] [yp-037] Diagnóstico do match: eliminações do pre-filter e razões de degrade (yang-gps) — 5h
