@@ -54,3 +54,5 @@ Todo post de blog vive em `blog/<slug>/`. Quando Rafael pedir pra escrever um po
 - `/retro <semana>` — retrospectiva semanal
 - `/daily-log [data]` — gerar entrada no changelog diário
 - `/blogpost` — escrever um post de blog (pesquisa, fotos, render, índice)
+- `/jornada` — user flow em raias + telas reais do app num canvas (qualquer app). Vive em
+  `skills/jornada/` e entra em todos os projetos por symlink em `~/.claude/skills/jornada`.
